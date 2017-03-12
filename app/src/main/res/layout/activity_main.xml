@@ -1,0 +1,24 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.bytetobyte.xwallet.MainActivity">
+
+    <com.bytetobyte.xwallet.CircularLayout
+        android:id="@+id/circular_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:center_color="@android:color/holo_red_dark"
+        app:center_icon="@mipmap/ic_launcher"
+        app:inner_radius="@dimen/inner_radius"
+        app:item_colors="@array/colors"
+        app:item_count="4"
+        app:item_icons="@array/icons"
+        app:item_titles="@array/titles"
+        app:outer_radius="@dimen/outer_radius"
+        app:title_color="@android:color/white"
+        app:title_padding="@dimen/title_padding"
+        app:title_size="@dimen/title_size" />
+
+</RelativeLayout>
