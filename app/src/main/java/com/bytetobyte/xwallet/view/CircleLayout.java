@@ -21,6 +21,7 @@ import java.util.Set;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -88,14 +89,16 @@ public class CircleLayout extends ViewGroup {
         mDividerPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mCirclePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-        TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.CircleLayout, 0, 0);
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CircleLayout, 0, 0);
+
+        Resources res = getResources();
 
         try {
-            int dividerColor = a.getColor(R.styleable.CircleLayout_sliceDivider, android.R.color.darker_gray);
+            int dividerColor = a.getColor(R.styleable.CircleLayout_sliceDivider, res.getColor(android.R.color.darker_gray, context.getTheme()));
             mInnerCircle = a.getDrawable(R.styleable.CircleLayout_innerCircle);
 
             if(mInnerCircle instanceof ColorDrawable) {
-                int innerColor = a.getColor(R.styleable.CircleLayout_innerCircle, android.R.color.white);
+                int innerColor = a.getColor(R.styleable.CircleLayout_innerCircle, res.getColor(android.R.color.white, context.getTheme()));
                 mCirclePaint.setColor(innerColor);
             }
 

@@ -231,7 +231,8 @@ public class WheelMenuLayout extends FrameLayout {
         //add the rotation to the total rotation
         totalRotation = totalRotation + degrees;
 
-        mCircleLayout.setRotation(mCircleLayout.getRotation() + degrees);
+        if (mCircleLayout != null)
+            mCircleLayout.setRotation(mCircleLayout.getRotation() + degrees);
         //mCircleLayout.requestLayout();
     }
 
