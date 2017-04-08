@@ -3,23 +3,19 @@ package com.bytetobyte.xwallet;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
+import android.support.v4.app.FragmentTransaction;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.TextView;
 
+import com.bytetobyte.xwallet.fragment.WalletFragment;
 import com.bytetobyte.xwallet.network.api.TwitterAuthApi;
 import com.bytetobyte.xwallet.service.BlockchainService;
 import com.bytetobyte.xwallet.service.coin.CoinManagerFactory;
 import com.bytetobyte.xwallet.service.ipc.SpentValueMessage;
+import com.bytetobyte.xwallet.service.ipc.SyncedMessage;
 import com.bytetobyte.xwallet.view.CircleLayout;
 import com.bytetobyte.xwallet.view.WheelMenuLayout;
-import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
 import com.google.gson.Gson;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import su.levenetc.android.badgeview.BadgeView;
 
@@ -32,12 +28,16 @@ public class MainActivity extends XWalletBaseActivity {
     // ACTIONS
     public static final String SEND_ACTION = "android.intent.action.SEND_COIN";
 
-    private static final String APP_NAME = "xwallet";
     /**
      *
      */
     private BadgeView _badgeView;
-    private LineChart _priceChart;
+
+    //
+    private FrameLayout _content;
+
+    //
+    private WalletFragment _walletFragment;
 
     /**
      *
@@ -51,6 +51,13 @@ public class MainActivity extends XWalletBaseActivity {
         initViews();
 
         new TwitterAuthApi(getString(R.string.twitter_api_key), getString(R.string.twitter_api_secret)).execute();
+
+        if (savedInstanceState == null) {
+            _walletFragment = new WalletFragment();
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.add(_content.getId(), _walletFragment);
+            ft.commit();
+        }
     }
 
     /**
@@ -68,6 +75,8 @@ public class MainActivity extends XWalletBaseActivity {
      *
      */
     private void initViews() {
+        _content = (FrameLayout) findViewById(R.id.xwallet_content_layout);
+
         WheelMenuLayout wheelMenuLayout = (WheelMenuLayout) findViewById(R.id.wheelMenu);
         _badgeView = (BadgeView) findViewById(R.id.lense_badgeview);
 
@@ -85,69 +94,19 @@ public class MainActivity extends XWalletBaseActivity {
                 }
             });
         }
-
-        initGraph();
     }
 
-    /**
-     *
-     */
-    private void initGraph() {
-        _priceChart = (LineChart) findViewById(R.id.line_price_chart);
 
-        List<Entry> entries = new ArrayList<Entry>();
-        entries.add(new Entry(1.0f, 2.0f));
-        entries.add(new Entry(2.0f, 3.0f));
-        entries.add(new Entry(2.0f, 4.0f));
-        entries.add(new Entry(3.0f, 2.0f));
-        entries.add(new Entry(5.0f, 6.0f));
-
-        LineDataSet dataSet = new LineDataSet(entries, "Label");
-
-        dataSet.setDrawValues(false);
-        dataSet.setLineWidth(2f);
-        dataSet.setDrawCircles(true);
-
-        dataSet.setDrawCircles(false);
-
-//        dataSet.setColor(...);
-//        dataSet.setValueTextColor(...); // styling, ...
-
-        LineData lineData = new LineData(dataSet);
-
-        _priceChart.setAutoScaleMinMaxEnabled(true);
-
-        _priceChart.setDrawGridBackground(false);
-        _priceChart.setDrawingCacheEnabled(false);
-        _priceChart.setDrawMarkers(false);
-        _priceChart.setDrawBorders(false);
-        _priceChart.setDrawMarkers(false);
-
-        _priceChart.getAxisLeft().setEnabled(false);
-        _priceChart.getAxisRight().setEnabled(false);
-
-        _priceChart.getXAxis().setDrawAxisLine(false);
-        _priceChart.getXAxis().setDrawGridLines(false);
-
-        _priceChart.getXAxis().setEnabled(false);
-
-        _priceChart.getLegend().setEnabled(false);
-        _priceChart.setTouchEnabled(false);
-
-        _priceChart.setDescription(null);
-
-        _priceChart.setData(lineData);
-    }
 
     /**
      *
      */
     @Override
-    protected void onSyncReady() {
+    protected void onSyncReady(SyncedMessage syncedMessage) {
         System.out.println("MainActivity::onSyncReady()");
 
-        TextView balanceView = (TextView) findViewById(R.id.xwallet_balance_text);
-        balanceView.setText(_syncedMessage.getAmount());
+        _walletFragment.setBalance(syncedMessage.getAmount());
+        _walletFragment.setAddress(syncedMessage.getAddresses());
     }
 
     /**

@@ -22,12 +22,13 @@ import java.util.Map;
 /**
  * Created by bruno on 22.03.17.
  */
-public class BitcoinManager implements CoinManager {
+public class BitcoinManager implements CoinManager, CoinAction.CoinActionCallback {
 
     /**
      *
      */
     private Bitcoin _coin;
+    private boolean _isSyncing;
 
     /**
      *
@@ -42,6 +43,8 @@ public class BitcoinManager implements CoinManager {
      */
     @Override
     public void setup(CoinAction.CoinActionCallback callback) {
+        _isSyncing = true;
+
         BitcoinSetupAction setupAction = new BitcoinSetupAction(_coin);
         setupAction.execute(callback);
     }
@@ -87,7 +90,7 @@ public class BitcoinManager implements CoinManager {
                 + " Available Spendable : " + _coin.getWallet().getBalance(Wallet.BalanceType.AVAILABLE_SPENDABLE)
                 + " Estimated Spendable : " + _coin.getWallet().getBalance(Wallet.BalanceType.ESTIMATED_SPENDABLE);
 
-        return balanceStatus;
+        return balance.toPlainString();
     }
 
     /**
@@ -170,9 +173,40 @@ public class BitcoinManager implements CoinManager {
      */
     @Override
     public void recoverWalletBy(CoinAction.CoinActionCallback callback, String seed) {
+        _isSyncing = true;
+
         // illness bulk jewel deer chaos swing goose fetch patch blood acid call creation
         // creation time: 1490401216
         BitcoinSetupAction setupAction = new BitcoinSetupAction(_coin, seed);
-        setupAction.execute(callback);
+        setupAction.execute(callback, this);
+    }
+
+    /**
+     *
+     * @return
+     */
+    @Override
+    public boolean isSyncing() {
+        return _isSyncing;
+    }
+
+    @Override
+    public void onResult(Object result) {
+        _isSyncing = false;
+    }
+
+    @Override
+    public void onError(Object result) {
+        _isSyncing = false;
+    }
+
+    @Override
+    public void onChainSynced(Object coin) {
+        _isSyncing = false;
+    }
+
+    @Override
+    public void onCoinsReceived(String addressStr, long value, Object coin) {
+        _isSyncing = false;
     }
 }

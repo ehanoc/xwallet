@@ -23,7 +23,7 @@ public class BitcoinSendAction implements CoinAction<CoinAction.CoinActionCallba
     private final long _amount;
 
     //
-    private CoinActionCallback<CurrencyCoin> _callback;
+    private CoinActionCallback<CurrencyCoin>[] _callbacks;
 
     /**
      *
@@ -39,11 +39,11 @@ public class BitcoinSendAction implements CoinAction<CoinAction.CoinActionCallba
 
     /**
      *
-     * @param callback
+     * @param callbacks
      */
     @Override
-    public void execute(final CoinActionCallback<CurrencyCoin> callback) {
-        this._callback = callback;
+    public void execute(final CoinActionCallback<CurrencyCoin>... callbacks) {
+        this._callbacks = callbacks;
         this._bitcoin.getWallet().addCoinsSentEventListener(this);
 
         Coin amountCoin = Coin.valueOf(_amount);
@@ -53,7 +53,10 @@ public class BitcoinSendAction implements CoinAction<CoinAction.CoinActionCallba
         try {
             _bitcoin.getWallet().sendCoins(sendRequest);
         } catch (InsufficientMoneyException e) {
-            callback.onError(_bitcoin);
+
+            for (CoinActionCallback<CurrencyCoin> callback : _callbacks) {
+                callback.onError(_bitcoin);
+            }
             e.printStackTrace();
         }
     }
@@ -67,6 +70,8 @@ public class BitcoinSendAction implements CoinAction<CoinAction.CoinActionCallba
      */
     @Override
     public void onCoinsSent(Wallet wallet, Transaction transaction, Coin coin, Coin coin1) {
-        _callback.onResult(_bitcoin);
+        for (CoinActionCallback<CurrencyCoin> callback : _callbacks) {
+            callback.onResult(_bitcoin);
+        }
     }
 }

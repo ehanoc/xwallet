@@ -77,7 +77,7 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
      */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        return super.onStartCommand(intent, flags, startId);
+        return START_STICKY;
     }
 
     /**
@@ -161,6 +161,12 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
             _replyTo = msg.replyTo;
             System.out.println("BlockchainService handling message!");
 
+            if (_coinManager == null)
+                _coinManager = CoinManagerFactory.getCoinManagerBy(getBaseContext(), msg.arg1);
+
+            if (_coinManager.isSyncing())
+                return;
+
             switch (msg.what) {
                 case IPC_MSG_WALLET_SYNC:
                     PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
@@ -169,12 +175,10 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
                     long lockTime = 1000 * 360 * 5;
                     wakeLock.acquire(lockTime);
 
-                    _coinManager = CoinManagerFactory.getCoinManagerBy(getBaseContext(), msg.arg1);
                     _coinManager.setup(BlockchainService.this);
                     break;
 
                 case IPC_MSG_WALLET_RECOVER:
-                    _coinManager = CoinManagerFactory.getCoinManagerBy(getBaseContext(), msg.arg1);
                     _coinManager.recoverWalletBy(BlockchainService.this, "illness bulk jewel deer chaos swing goose fetch patch blood acid call creation");
                     break;
 

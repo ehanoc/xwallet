@@ -94,11 +94,11 @@ public class CircleLayout extends ViewGroup {
         Resources res = getResources();
 
         try {
-            int dividerColor = a.getColor(R.styleable.CircleLayout_sliceDivider, res.getColor(android.R.color.darker_gray, context.getTheme()));
+            int dividerColor = a.getColor(R.styleable.CircleLayout_sliceDivider, res.getColor(android.R.color.transparent));
             mInnerCircle = a.getDrawable(R.styleable.CircleLayout_innerCircle);
 
             if(mInnerCircle instanceof ColorDrawable) {
-                int innerColor = a.getColor(R.styleable.CircleLayout_innerCircle, res.getColor(android.R.color.white, context.getTheme()));
+                int innerColor = a.getColor(R.styleable.CircleLayout_innerCircle, res.getColor(android.R.color.white));
                 mCirclePaint.setColor(innerColor);
             }
 

@@ -24,10 +24,8 @@ public abstract class XWalletBaseActivity extends AppCompatActivity {
 
     private Gson _gson;
 
-    protected SyncedMessage _syncedMessage;
-
     protected abstract void onServiceReady();
-    protected abstract void onSyncReady();
+    protected abstract void onSyncReady(SyncedMessage syncedMessage);
 
     /**
      *
@@ -105,8 +103,8 @@ public abstract class XWalletBaseActivity extends AppCompatActivity {
 
                 case BlockchainService.IPC_MSG_WALLET_SYNC:
                     String spentJson = msg.getData().getString(BlockchainService.IPC_BUNDLE_DATA_KEY);
-                    _syncedMessage = _gson.fromJson(spentJson, SyncedMessage.class);
-                    onSyncReady();
+                    SyncedMessage syncedMessage = _gson.fromJson(spentJson, SyncedMessage.class);
+                    onSyncReady(syncedMessage);
                     break;
 
                 default:

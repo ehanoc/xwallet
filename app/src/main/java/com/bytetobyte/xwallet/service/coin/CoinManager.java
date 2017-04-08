@@ -22,4 +22,6 @@ public interface CoinManager {
 
     public String getMnemonicSeed();
     void recoverWalletBy(CoinAction.CoinActionCallback callback, String seed);
+
+    boolean isSyncing();
 }

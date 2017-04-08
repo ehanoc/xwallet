@@ -38,7 +38,7 @@ public class BitcoinSetupAction extends DownloadProgressTracker implements CoinA
     private final String _mnemonicSeed;
 
     private WalletAppKit _walletKit;
-    private CoinActionCallback<CurrencyCoin> _callback;
+    private CoinActionCallback<CurrencyCoin>[] _callbacks;
     private org.bitcoinj.core.Context _bitcoinJContext;
 
     /**
@@ -62,11 +62,11 @@ public class BitcoinSetupAction extends DownloadProgressTracker implements CoinA
 
     /**
      *
-     * @param callback
+     * @param callbacks
      */
     @Override
-    public void execute(CoinActionCallback<CurrencyCoin> callback) {
-        this._callback = callback;
+    public void execute(CoinActionCallback<CurrencyCoin>... callbacks) {
+        this._callbacks = callbacks;
         NetworkParameters netParams = Constants.NETWORK_PARAMETERS;
 
         initWallet(netParams);
@@ -126,7 +126,9 @@ public class BitcoinSetupAction extends DownloadProgressTracker implements CoinA
                         String addressStr = WalletUtils.formatAddress(address, Constants.ADDRESS_FORMAT_GROUP_SIZE, Constants.ADDRESS_FORMAT_LINE_SIZE).toString();
                         long value = amount.getValue();
 
-                        _callback.onCoinsReceived(addressStr, value, _bitcoin);
+                        for (CoinActionCallback<CurrencyCoin> callback : _callbacks) {
+                            callback.onCoinsReceived(addressStr, value, _bitcoin);
+                        }
                     }
                 });
 
@@ -141,7 +143,9 @@ public class BitcoinSetupAction extends DownloadProgressTracker implements CoinA
     @Override
     protected void doneDownload() {
         super.doneDownload();
-        _callback.onChainSynced(_bitcoin);
+        for (CoinActionCallback<CurrencyCoin> callback : _callbacks) {
+            callback.onChainSynced(_bitcoin);
+        }
     }
 
     /**
