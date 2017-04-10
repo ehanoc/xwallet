@@ -15,6 +15,7 @@ import org.bitcoinj.wallet.DeterministicSeed;
 import org.bitcoinj.wallet.Wallet;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -208,5 +209,10 @@ public class BitcoinManager implements CoinManager, CoinAction.CoinActionCallbac
     @Override
     public void onCoinsReceived(String addressStr, long value, Object coin) {
         _isSyncing = false;
+    }
+
+    @Override
+    public void onBlocksDownloaded(Object coin, double pct, int blocksSoFar, Date date) {
+
     }
 }

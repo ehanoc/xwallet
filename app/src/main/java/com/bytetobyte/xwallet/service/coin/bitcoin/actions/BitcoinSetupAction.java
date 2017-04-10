@@ -6,14 +6,18 @@ import com.bytetobyte.xwallet.service.Constants;
 import com.bytetobyte.xwallet.service.coin.CoinAction;
 import com.bytetobyte.xwallet.service.coin.CurrencyCoin;
 import com.bytetobyte.xwallet.service.coin.bitcoin.Bitcoin;
+import com.bytetobyte.xwallet.service.coin.bitcoin.DownloadProgressListener;
 import com.bytetobyte.xwallet.service.coin.bitcoin.WalletUtils;
 import com.bytetobyte.xwallet.service.utils.ServiceConsts;
 
 import org.bitcoinj.core.Address;
+import org.bitcoinj.core.Block;
 import org.bitcoinj.core.CheckpointManager;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.ECKey;
+import org.bitcoinj.core.FilteredBlock;
 import org.bitcoinj.core.NetworkParameters;
+import org.bitcoinj.core.Peer;
 import org.bitcoinj.core.Transaction;
 import org.bitcoinj.core.TransactionConfidence;
 import org.bitcoinj.core.listeners.DownloadProgressTracker;
@@ -29,10 +33,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 /**
  * Created by bruno on 22.03.17.
  */
-public class BitcoinSetupAction extends DownloadProgressTracker implements CoinAction<CoinAction.CoinActionCallback<CurrencyCoin>> {
+public class BitcoinSetupAction extends DownloadProgressListener implements CoinAction<CoinAction.CoinActionCallback<CurrencyCoin>> {
 
     private final Bitcoin _bitcoin;
     private final String _mnemonicSeed;
@@ -40,6 +46,7 @@ public class BitcoinSetupAction extends DownloadProgressTracker implements CoinA
     private WalletAppKit _walletKit;
     private CoinActionCallback<CurrencyCoin>[] _callbacks;
     private org.bitcoinj.core.Context _bitcoinJContext;
+
 
     /**
      *
@@ -145,6 +152,22 @@ public class BitcoinSetupAction extends DownloadProgressTracker implements CoinA
         super.doneDownload();
         for (CoinActionCallback<CurrencyCoin> callback : _callbacks) {
             callback.onChainSynced(_bitcoin);
+        }
+    }
+
+    /**
+     *
+     * @param peer
+     * @param block
+     * @param filteredBlock
+     * @param blocksLeft
+     */
+    @Override
+    public void onBlocksDownloaded(Peer peer, Block block, @Nullable FilteredBlock filteredBlock, int blocksLeft) {
+        super.onBlocksDownloaded(peer, block, filteredBlock, blocksLeft);
+
+        for (CoinActionCallback<CurrencyCoin> callback : _callbacks) {
+            callback.onBlocksDownloaded(_bitcoin, this.lastPercent, blocksLeft, this.lastBlockDate);
         }
     }
 

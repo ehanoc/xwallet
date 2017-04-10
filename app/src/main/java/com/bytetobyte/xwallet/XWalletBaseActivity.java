@@ -14,6 +14,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
 import com.bytetobyte.xwallet.service.BlockchainService;
+import com.bytetobyte.xwallet.service.ipc.BlockDownloaded;
 import com.bytetobyte.xwallet.service.ipc.SyncedMessage;
 import com.google.gson.Gson;
 
@@ -26,6 +27,7 @@ public abstract class XWalletBaseActivity extends AppCompatActivity {
 
     protected abstract void onServiceReady();
     protected abstract void onSyncReady(SyncedMessage syncedMessage);
+    protected abstract void onBlockDownloaded(BlockDownloaded block);
 
     /**
      *
@@ -105,6 +107,12 @@ public abstract class XWalletBaseActivity extends AppCompatActivity {
                     String spentJson = msg.getData().getString(BlockchainService.IPC_BUNDLE_DATA_KEY);
                     SyncedMessage syncedMessage = _gson.fromJson(spentJson, SyncedMessage.class);
                     onSyncReady(syncedMessage);
+                    break;
+
+                case BlockchainService.IPC_MSG_WALLET_BLOCK_DOWNLOADED:
+                    String blockJson = msg.getData().getString(BlockchainService.IPC_BUNDLE_DATA_KEY);
+                    BlockDownloaded blocksDownloadMsg = _gson.fromJson(blockJson, BlockDownloaded.class);
+                    onBlockDownloaded(blocksDownloadMsg);
                     break;
 
                 default:

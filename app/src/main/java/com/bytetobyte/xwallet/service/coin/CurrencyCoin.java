@@ -8,6 +8,9 @@ import java.io.File;
 public interface CurrencyCoin<W> {
 
     public int getIconId();
+    
+    public int getCoinId();
+
     public String getCoinSymbol();
 
     /**

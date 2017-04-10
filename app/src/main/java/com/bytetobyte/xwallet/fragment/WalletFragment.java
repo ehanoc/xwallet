@@ -48,7 +48,7 @@ public class WalletFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_wallet, container, false);
 
-        _priceChart = (LineChart) rootView.findViewById(R.id.line_price_chart);
+        //_priceChart = (LineChart) rootView.findViewById(R.id.line_price_chart);
         _balanceTxt = (TextView) rootView.findViewById(R.id.wallet_balance);
         _addressTxt = (TextView) rootView.findViewById(R.id.wallet_address);
         return rootView;
@@ -61,7 +61,7 @@ public class WalletFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        initGraph();
+        //initGraph();
     }
 
     /**

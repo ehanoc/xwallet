@@ -30,4 +30,5 @@ dependencies {
     compile 'com.google.code.gson:gson:2.4'
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.2'
     compile 'com.github.simbiose:Encryption:2.0.0'
+    compile 'com.nightonke:boommenu:2.0.9'
 }

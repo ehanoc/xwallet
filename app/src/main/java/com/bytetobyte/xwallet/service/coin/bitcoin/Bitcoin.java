@@ -1,5 +1,6 @@
 package com.bytetobyte.xwallet.service.coin.bitcoin;
 
+import com.bytetobyte.xwallet.service.coin.CoinManagerFactory;
 import com.bytetobyte.xwallet.service.coin.CurrencyCoin;
 
 import org.bitcoinj.core.Coin;
@@ -37,6 +38,15 @@ public class Bitcoin implements CurrencyCoin<Wallet> {
     @Override
     public int getIconId() {
         return 0;
+    }
+
+    /**
+     *
+     * @return
+     */
+    @Override
+    public int getCoinId() {
+        return CoinManagerFactory.BITCOIN;
     }
 
     /**

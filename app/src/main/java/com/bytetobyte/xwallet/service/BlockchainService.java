@@ -12,10 +12,13 @@ import android.os.RemoteException;
 import com.bytetobyte.xwallet.service.coin.CoinAction;
 import com.bytetobyte.xwallet.service.coin.CoinManager;
 import com.bytetobyte.xwallet.service.coin.CoinManagerFactory;
+import com.bytetobyte.xwallet.service.coin.CurrencyCoin;
+import com.bytetobyte.xwallet.service.ipc.BlockDownloaded;
 import com.bytetobyte.xwallet.service.ipc.SpentValueMessage;
 import com.bytetobyte.xwallet.service.ipc.SyncedMessage;
 import com.google.gson.Gson;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -23,7 +26,7 @@ import java.util.Set;
 /**
  * Created by bruno on 21.03.17.
  */
-public class BlockchainService extends Service implements CoinAction.CoinActionCallback {
+public class BlockchainService extends Service implements CoinAction.CoinActionCallback<CurrencyCoin> {
 
     // ###############################
     // Attributes
@@ -31,6 +34,7 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
     public static final int IPC_MSG_WALLET_SYNC = 0x0;
     public static final int IPC_MSG_WALLET_RECOVER = 0x1;
     public static final int IPC_MSG_WALLET_SEND_AMOUNT = 0x2;
+    public static final int IPC_MSG_WALLET_BLOCK_DOWNLOADED = 0x3;
 
     // ###############################
     // IPC BUNDLE DATA
@@ -85,7 +89,7 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
      * @param result
      */
     @Override
-    public void onResult(Object result) {
+    public void onResult(CurrencyCoin result) {
 
     }
 
@@ -94,7 +98,7 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
      * @param result
      */
     @Override
-    public void onError(Object result) {
+    public void onError(CurrencyCoin result) {
 
     }
 
@@ -103,7 +107,7 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
      * @param coin
      */
     @Override
-    public void onChainSynced(Object coin) {
+    public void onChainSynced(CurrencyCoin coin) {
         System.out.println("BlockchainService CurrencyCoin SYNCED!!");
 
         List<String> addrs = _coinManager.getCurrentAddresses();
@@ -135,8 +139,25 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
      * @param coin
      */
     @Override
-    public void onCoinsReceived(String addressStr, long value, Object coin) {
+    public void onCoinsReceived(String addressStr, long value, CurrencyCoin coin) {
         System.out.println("onCoinsReceived ! add : " + addressStr + " value: " + value);
+    }
+
+    /**
+     *
+     * @param coin
+     * @param pct
+     * @param blocksSoFar
+     * @param date
+     */
+    @Override
+    public void onBlocksDownloaded(CurrencyCoin coin, double pct, int blocksSoFar, Date date) {
+        BlockDownloaded blockDownloaded = new BlockDownloaded(coin, pct, blocksSoFar, date);
+
+        Message toReply = Message.obtain(null, IPC_MSG_WALLET_BLOCK_DOWNLOADED);
+        toReply.getData().putString(IPC_BUNDLE_DATA_KEY, _gson.toJson(blockDownloaded));
+
+        replyMessage(toReply);
     }
 
     /**
@@ -146,7 +167,7 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
     private void replyMessage(Message msg) {
         try {
             _replyTo.send(msg);
-        } catch (RemoteException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
