@@ -166,8 +166,11 @@ public class BitcoinSetupAction extends DownloadProgressListener implements Coin
     public void onBlocksDownloaded(Peer peer, Block block, @Nullable FilteredBlock filteredBlock, int blocksLeft) {
         super.onBlocksDownloaded(peer, block, filteredBlock, blocksLeft);
 
-        for (CoinActionCallback<CurrencyCoin> callback : _callbacks) {
-            callback.onBlocksDownloaded(_bitcoin, this.lastPercent, blocksLeft, this.lastBlockDate);
+        // to avoid overhead on notification, only 100th blocks or the last ones
+        if (blocksLeft % 100 == 0 || blocksLeft < 10) {
+            for (CoinActionCallback<CurrencyCoin> callback : _callbacks) {
+                callback.onBlocksDownloaded(_bitcoin, this.lastPercent, blocksLeft, this.lastBlockDate);
+            }
         }
     }
 

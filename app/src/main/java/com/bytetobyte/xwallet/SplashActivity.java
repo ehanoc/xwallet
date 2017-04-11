@@ -23,6 +23,17 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
+        // resume instead of restarting
+        // check : http://stackoverflow.com/questions/19545889/app-restarts-rather-than-resumes
+        if (!isTaskRoot()
+                && getIntent().hasCategory(Intent.CATEGORY_LAUNCHER)
+                && getIntent().getAction() != null
+                && getIntent().getAction().equals(Intent.ACTION_MAIN)) {
+
+            finish();
+            return;
+        }
+
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override

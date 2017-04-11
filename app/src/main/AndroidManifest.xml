@@ -39,7 +39,8 @@
             </intent-filter>
         </activity>
         
-        <service android:name=".service.BlockchainService"
+        <service
+            android:name=".service.BlockchainService"
             android:process=":BlockChainService" />
 
     </application>

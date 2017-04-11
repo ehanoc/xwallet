@@ -29,7 +29,8 @@ public class BitcoinManager implements CoinManager, CoinAction.CoinActionCallbac
      *
      */
     private Bitcoin _coin;
-    private boolean _isSyncing;
+    private static boolean _isSyncing;
+    private static BitcoinSetupAction _setupAction;
 
     /**
      *
@@ -44,10 +45,11 @@ public class BitcoinManager implements CoinManager, CoinAction.CoinActionCallbac
      */
     @Override
     public void setup(CoinAction.CoinActionCallback callback) {
+        System.out.println("isSyncing :: setup ");
         _isSyncing = true;
 
-        BitcoinSetupAction setupAction = new BitcoinSetupAction(_coin);
-        setupAction.execute(callback);
+        _setupAction = new BitcoinSetupAction(_coin);
+        _setupAction.execute(callback, this);
     }
 
     /**
@@ -174,6 +176,7 @@ public class BitcoinManager implements CoinManager, CoinAction.CoinActionCallbac
      */
     @Override
     public void recoverWalletBy(CoinAction.CoinActionCallback callback, String seed) {
+        System.out.println("isSyncing :: recoverWalletBy");
         _isSyncing = true;
 
         // illness bulk jewel deer chaos swing goose fetch patch blood acid call creation
@@ -193,26 +196,34 @@ public class BitcoinManager implements CoinManager, CoinAction.CoinActionCallbac
 
     @Override
     public void onResult(Object result) {
+        System.out.println("isSyncing :: onResult");
+
         _isSyncing = false;
     }
 
     @Override
     public void onError(Object result) {
+        System.out.println("isSyncing :: onError");
+
         _isSyncing = false;
     }
 
     @Override
     public void onChainSynced(Object coin) {
+        System.out.println("isSyncing :: onChainSynced");
+
         _isSyncing = false;
     }
 
     @Override
     public void onCoinsReceived(String addressStr, long value, Object coin) {
+        System.out.println("isSyncing :: onCoinsReceived");
+
         _isSyncing = false;
     }
 
     @Override
-    public void onBlocksDownloaded(Object coin, double pct, int blocksSoFar, Date date) {
+    public void onBlocksDownloaded(Object coin, double pct, int blocksLeft, Date date) {
 
     }
 }

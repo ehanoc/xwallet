@@ -3,13 +3,17 @@ package com.bytetobyte.xwallet;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.bytetobyte.xwallet.fragment.NewsFragment;
+import com.bytetobyte.xwallet.fragment.TransactionFragment;
 import com.bytetobyte.xwallet.fragment.WalletFragment;
 import com.bytetobyte.xwallet.network.api.TwitterAuthApi;
 import com.bytetobyte.xwallet.service.BlockchainService;
@@ -45,9 +49,9 @@ public class MainActivity extends XWalletBaseActivity {
     //
     private FrameLayout _content;
 
-    //
     private WalletFragment _walletFragment;
-
+    private NewsFragment _newsFragment;
+    private TransactionFragment _transactionsFragment;
 
     /**
      *
@@ -64,6 +68,9 @@ public class MainActivity extends XWalletBaseActivity {
 
         if (savedInstanceState == null) {
             _walletFragment = new WalletFragment();
+            _newsFragment = new NewsFragment();
+            _transactionsFragment = new TransactionFragment();
+
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.add(_content.getId(), _walletFragment);
             ft.commit();
@@ -102,7 +109,13 @@ public class MainActivity extends XWalletBaseActivity {
                 @Override
                 public void onSelectionChange(int selectedPosition) {
                     if (_badgeView != null) {
-                        _badgeView.setValue(selectedPosition + 1);
+
+                        int contentIndex = selectedPosition + 1;
+
+                        showMenuSelection(contentIndex);
+                        _badgeView.setValue(contentIndex);
+
+                        Toast.makeText(MainActivity.this, "contentIndex : " + contentIndex, Toast.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -112,14 +125,14 @@ public class MainActivity extends XWalletBaseActivity {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 _bmb.boom();
-
                 return false;
             }
         });
-
-
     }
 
+    /**
+     *
+     */
     private void initMenuBoom() {
         int[] boomsButtons = { R.drawable.ic_send, R.drawable.ic_receive};
 
@@ -159,14 +172,6 @@ public class MainActivity extends XWalletBaseActivity {
 
     /**
      *
-     */
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    /**
-     *
      * @param intent
      */
     @Override
@@ -188,5 +193,26 @@ public class MainActivity extends XWalletBaseActivity {
             spentMsg.getData().putString(BlockchainService.IPC_BUNDLE_DATA_KEY, spentToAmountJson);
             sendMessage(spentMsg);
         }
+    }
+
+    /**
+     *
+     * @param menuIndex
+     */
+    private void showMenuSelection(int menuIndex) {
+        Fragment newContent = null;
+
+        if (menuIndex == 0) {
+            newContent =_walletFragment;
+        } else if (menuIndex == 1) {
+            newContent = _transactionsFragment;
+        } else {
+            newContent = _newsFragment;
+        }
+
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.setCustomAnimations(R.anim.fade_in, R.anim.fade_out);
+        ft.replace(R.id.xwallet_content_layout, newContent);
+        ft.commit();
     }
 }

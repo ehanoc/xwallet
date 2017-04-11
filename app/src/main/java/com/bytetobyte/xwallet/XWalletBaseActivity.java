@@ -99,7 +99,7 @@ public abstract class XWalletBaseActivity extends AppCompatActivity {
         public void handleMessage(Message msg) {
             int respCode = msg.what;
 
-            System.out.println("XWalletBaseActivity#ResponseHandler::handleMessage msg : " + respCode);
+            //System.out.println("XWalletBaseActivity#ResponseHandler::handleMessage msg : " + respCode);
 
             switch (respCode) {
 

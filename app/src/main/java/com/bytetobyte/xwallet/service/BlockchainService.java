@@ -48,13 +48,13 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
 
     private final Gson _gson;
 
-    private CoinManager _coinManager;
+    private static CoinManager _coinManager;
 
     /**
      * Target we publish for clients to send messages to IncomingHandler.
      */
     final Messenger mMessenger = new Messenger(new IncomingHandler());
-    private Messenger _replyTo;
+    private static Messenger _replyTo;
 
     /**
      *
@@ -180,10 +180,13 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
         @Override
         public void handleMessage(Message msg) {
             _replyTo = msg.replyTo;
-            System.out.println("BlockchainService handling message!");
+
+            System.out.println("isSyncing coinManager : " + _coinManager);
 
             if (_coinManager == null)
                 _coinManager = CoinManagerFactory.getCoinManagerBy(getBaseContext(), msg.arg1);
+
+            System.out.println("BlockchainService handling message! isSyncing : " + _coinManager.isSyncing());
 
             if (_coinManager.isSyncing())
                 return;
