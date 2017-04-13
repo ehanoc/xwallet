@@ -16,6 +16,7 @@ import com.bytetobyte.xwallet.fragment.NewsFragment;
 import com.bytetobyte.xwallet.fragment.TransactionFragment;
 import com.bytetobyte.xwallet.fragment.WalletFragment;
 import com.bytetobyte.xwallet.network.api.TwitterAuthApi;
+import com.bytetobyte.xwallet.network.api.models.TwitterAuthToken;
 import com.bytetobyte.xwallet.service.BlockchainService;
 import com.bytetobyte.xwallet.service.coin.CoinManagerFactory;
 import com.bytetobyte.xwallet.service.ipc.BlockDownloaded;
@@ -34,7 +35,7 @@ import su.levenetc.android.badgeview.BadgeView;
  *
  *
  */
-public class MainActivity extends XWalletBaseActivity {
+public class MainActivity extends XWalletBaseActivity implements TwitterAuthApi.AuthCallback {
 
     // ACTIONS
     public static final String SEND_ACTION = "android.intent.action.SEND_COIN";
@@ -52,6 +53,7 @@ public class MainActivity extends XWalletBaseActivity {
     private WalletFragment _walletFragment;
     private NewsFragment _newsFragment;
     private TransactionFragment _transactionsFragment;
+    private TwitterAuthToken _twitterAuthToken;
 
     /**
      *
@@ -64,7 +66,9 @@ public class MainActivity extends XWalletBaseActivity {
 
         initViews();
 
-        new TwitterAuthApi(getString(R.string.twitter_api_key), getString(R.string.twitter_api_secret)).execute();
+
+
+        new TwitterAuthApi(getString(R.string.twitter_api_key), getString(R.string.twitter_api_secret), this).execute();
 
         if (savedInstanceState == null) {
             _walletFragment = new WalletFragment();
@@ -84,8 +88,8 @@ public class MainActivity extends XWalletBaseActivity {
     protected void onServiceReady() {
         System.out.println("BlockchainService sending message!");
 
-        Message sendMsg = Message.obtain(null, BlockchainService.IPC_MSG_WALLET_SYNC, CoinManagerFactory.BITCOIN, 0);
-        sendMessage(sendMsg);
+//        Message sendMsg = Message.obtain(null, BlockchainService.IPC_MSG_WALLET_SYNC, CoinManagerFactory.BITCOIN, 0);
+//        sendMessage(sendMsg);
     }
 
     /**
@@ -214,5 +218,29 @@ public class MainActivity extends XWalletBaseActivity {
         ft.setCustomAnimations(R.anim.fade_in, R.anim.fade_out);
         ft.replace(R.id.xwallet_content_layout, newContent);
         ft.commit();
+    }
+
+    /**
+     *
+     * @param response
+     */
+    @Override
+    public void onTwitterAuth(TwitterAuthToken response) {
+        _twitterAuthToken = response;
+    }
+
+    /**
+     *
+     * @return
+     */
+    @Override
+    public String getNewsAuthToken() {
+        String token = null;
+
+        if (_twitterAuthToken != null) {
+            token = _twitterAuthToken.getAccessToken();
+        }
+
+        return token;
     }
 }

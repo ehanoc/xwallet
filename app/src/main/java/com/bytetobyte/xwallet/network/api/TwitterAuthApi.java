@@ -1,13 +1,14 @@
 package com.bytetobyte.xwallet.network.api;
 
 import android.os.AsyncTask;
+import android.util.Base64;
 
+import com.bytetobyte.xwallet.network.api.models.TwitterAuthToken;
+import com.google.gson.Gson;
 import com.squareup.okhttp.Credentials;
 import com.squareup.okhttp.FormEncodingBuilder;
-import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
-import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 import com.squareup.okhttp.ResponseBody;
 
@@ -25,15 +26,17 @@ public class TwitterAuthApi extends AsyncTask <Void, Void, String>{
 
     private final String _key;
     private final String _secret;
+    private final AuthCallback _authCallback;
 
     /**
      *
      * @param key
      * @param secret
      */
-    public TwitterAuthApi(String key, String secret) {
+    public TwitterAuthApi(String key, String secret, AuthCallback callback) {
         this._key = key;
         this._secret = secret;
+        this._authCallback = callback;
     }
 
     /**
@@ -107,12 +110,18 @@ public class TwitterAuthApi extends AsyncTask <Void, Void, String>{
         super.onPostExecute(s);
 
         System.out.println("TwitterAuthApi::onPostExecute result : " + s);
+
+        try {
+            Gson gson = new Gson();
+            TwitterAuthToken authResponse = gson.fromJson(s, TwitterAuthToken.class);
+            _authCallback.onTwitterAuth(authResponse);
+        } catch (Exception e) { e.printStackTrace(); }
     }
 
     /**
      *
      */
     public interface AuthCallback {
-
+        void onTwitterAuth(TwitterAuthToken response);
     }
 }

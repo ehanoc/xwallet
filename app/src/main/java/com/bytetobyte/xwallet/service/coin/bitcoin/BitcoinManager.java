@@ -29,8 +29,9 @@ public class BitcoinManager implements CoinManager, CoinAction.CoinActionCallbac
      *
      */
     private Bitcoin _coin;
-    private static boolean _isSyncing;
-    private static BitcoinSetupAction _setupAction;
+    private boolean _isSyncing;
+    private BitcoinSetupAction _setupAction;
+    private boolean _isSynced;
 
     /**
      *
@@ -194,6 +195,19 @@ public class BitcoinManager implements CoinManager, CoinAction.CoinActionCallbac
         return _isSyncing;
     }
 
+    /**
+     *
+     * @return
+     */
+    @Override
+    public boolean isSynced() {
+        return _isSynced;
+    }
+
+    /**
+     *
+     * @param result
+     */
     @Override
     public void onResult(Object result) {
         System.out.println("isSyncing :: onResult");
@@ -201,6 +215,10 @@ public class BitcoinManager implements CoinManager, CoinAction.CoinActionCallbac
         _isSyncing = false;
     }
 
+    /**
+     *
+     * @param result
+     */
     @Override
     public void onError(Object result) {
         System.out.println("isSyncing :: onError");
@@ -208,13 +226,24 @@ public class BitcoinManager implements CoinManager, CoinAction.CoinActionCallbac
         _isSyncing = false;
     }
 
+    /**
+     *
+     * @param coin
+     */
     @Override
     public void onChainSynced(Object coin) {
         System.out.println("isSyncing :: onChainSynced");
 
         _isSyncing = false;
+        _isSynced = true;
     }
 
+    /**
+     *
+     * @param addressStr
+     * @param value
+     * @param coin
+     */
     @Override
     public void onCoinsReceived(String addressStr, long value, Object coin) {
         System.out.println("isSyncing :: onCoinsReceived");
@@ -222,6 +251,13 @@ public class BitcoinManager implements CoinManager, CoinAction.CoinActionCallbac
         _isSyncing = false;
     }
 
+    /**
+     *
+     * @param coin
+     * @param pct
+     * @param blocksLeft
+     * @param date
+     */
     @Override
     public void onBlocksDownloaded(Object coin, double pct, int blocksLeft, Date date) {
 

@@ -193,6 +193,12 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
 
             switch (msg.what) {
                 case IPC_MSG_WALLET_SYNC:
+                    // Just return info to client
+                    if (_coinManager.isSynced()) {
+                        onChainSynced(_coinManager.getCurrencyCoin());
+                        return;
+                    }
+
                     PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
                     PowerManager.WakeLock wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "BlockchainServiceLockTag");
 

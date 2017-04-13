@@ -11,12 +11,15 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 
 import com.bytetobyte.xwallet.service.BlockchainService;
 import com.bytetobyte.xwallet.service.ipc.BlockDownloaded;
 import com.bytetobyte.xwallet.service.ipc.SyncedMessage;
 import com.google.gson.Gson;
+
+import java.util.List;
 
 /**
  * Created by bruno on 22.03.17.
@@ -29,11 +32,14 @@ public abstract class XWalletBaseActivity extends AppCompatActivity {
     protected abstract void onSyncReady(SyncedMessage syncedMessage);
     protected abstract void onBlockDownloaded(BlockDownloaded block);
 
+    // News
+    public abstract String getNewsAuthToken();
+
     /**
      *
      * @param msg
      */
-    protected void sendMessage(Message msg) {
+    public void sendMessage(Message msg) {
         if (!mBound) return;
 //        // Create and send a message to the service, using a supported 'what' value
 //        Message msg = Message.obtain(null, BlockchainService.MSG_SAY_HELLO, 0, 0);
@@ -52,6 +58,17 @@ public abstract class XWalletBaseActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+
+//        String[] compo = XorUtil.generateKeyXorParts(getString(R.string.twitter_api_key));
+//        for (String part : compo) {
+//            System.out.println("key part : " + part);
+//        }
+//
+//        String[] secret = XorUtil.generateKeyXorParts(getString(R.string.twitter_api_secret));
+//        for (String part : secret) {
+//            System.out.println("secret part : " + part);
+//        }
+
         // Bind to the service
         bindService(new Intent(this, BlockchainService.class), mConnection, Context.BIND_AUTO_CREATE);
     }
@@ -143,6 +160,12 @@ public abstract class XWalletBaseActivity extends AppCompatActivity {
             mBound = true;
 
             onServiceReady();
+            // notify fragments too
+            List<Fragment> frags = getSupportFragmentManager().getFragments();
+            for (Fragment f : frags) {
+                BaseFragment baseFragment = (BaseFragment) f;
+                baseFragment.onServiceReady();
+            }
         }
 
         public void onServiceDisconnected(ComponentName className) {

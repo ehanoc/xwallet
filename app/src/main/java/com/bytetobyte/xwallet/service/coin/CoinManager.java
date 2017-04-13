@@ -24,4 +24,5 @@ public interface CoinManager {
     void recoverWalletBy(CoinAction.CoinActionCallback callback, String seed);
 
     boolean isSyncing();
+    boolean isSynced();
 }

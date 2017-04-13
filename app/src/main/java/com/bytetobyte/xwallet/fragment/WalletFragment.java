@@ -2,6 +2,7 @@ package com.bytetobyte.xwallet.fragment;
 
 
 import android.os.Bundle;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -9,7 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.bytetobyte.xwallet.BaseFragment;
 import com.bytetobyte.xwallet.R;
+import com.bytetobyte.xwallet.service.BlockchainService;
+import com.bytetobyte.xwallet.service.coin.CoinManagerFactory;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
@@ -21,7 +25,7 @@ import java.util.List;
 /**
  * Created by bruno on 08.04.17.
  */
-public class WalletFragment extends Fragment {
+public class WalletFragment extends BaseFragment {
 
     private LineChart _priceChart;
     private TextView _balanceTxt;
@@ -62,6 +66,18 @@ public class WalletFragment extends Fragment {
         super.onResume();
 
         //initGraph();
+
+        Message sendMsg = Message.obtain(null, BlockchainService.IPC_MSG_WALLET_SYNC, CoinManagerFactory.BITCOIN, 0);
+        getBaseActivity().sendMessage(sendMsg);
+    }
+
+    /**
+     *
+     */
+    @Override
+    protected void onServiceReady() {
+        Message sendMsg = Message.obtain(null, BlockchainService.IPC_MSG_WALLET_SYNC, CoinManagerFactory.BITCOIN, 0);
+        getBaseActivity().sendMessage(sendMsg);
     }
 
     /**
