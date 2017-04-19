@@ -9,6 +9,8 @@ public class TwitterSearchResult {
     private String text;
     private boolean truncated;
 
+    private TwitterEntities entities;
+
     public String getCreatedAt() {
         return created_at;
     }
@@ -23,5 +25,9 @@ public class TwitterSearchResult {
 
     public boolean isTruncated() {
         return truncated;
+    }
+
+    public TwitterEntities getEntities() {
+        return entities;
     }
 }

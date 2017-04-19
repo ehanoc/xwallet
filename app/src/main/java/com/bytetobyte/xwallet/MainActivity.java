@@ -2,7 +2,6 @@ package com.bytetobyte.xwallet;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.MotionEvent;
@@ -15,18 +14,21 @@ import android.widget.Toast;
 import com.bytetobyte.xwallet.fragment.NewsFragment;
 import com.bytetobyte.xwallet.fragment.TransactionFragment;
 import com.bytetobyte.xwallet.fragment.WalletFragment;
+import com.bytetobyte.xwallet.listeners.MainBoomListener;
 import com.bytetobyte.xwallet.network.api.TwitterAuthApi;
 import com.bytetobyte.xwallet.network.api.models.TwitterAuthToken;
-import com.bytetobyte.xwallet.service.BlockchainService;
 import com.bytetobyte.xwallet.service.coin.CoinManagerFactory;
-import com.bytetobyte.xwallet.service.ipc.BlockDownloaded;
-import com.bytetobyte.xwallet.service.ipc.SpentValueMessage;
-import com.bytetobyte.xwallet.service.ipc.SyncedMessage;
+import com.bytetobyte.xwallet.service.ipcmodel.BlockDownloaded;
+import com.bytetobyte.xwallet.service.ipcmodel.CoinTransaction;
+import com.bytetobyte.xwallet.service.ipcmodel.SpentValueMessage;
+import com.bytetobyte.xwallet.service.ipcmodel.SyncedMessage;
 import com.bytetobyte.xwallet.view.CircleLayout;
 import com.bytetobyte.xwallet.view.WheelMenuLayout;
-import com.google.gson.Gson;
+import com.github.lzyzsd.circleprogress.ArcProgress;
 import com.nightonke.boommenu.BoomButtons.SimpleCircleButton;
 import com.nightonke.boommenu.BoomMenuButton;
+
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import su.levenetc.android.badgeview.BadgeView;
@@ -39,6 +41,9 @@ public class MainActivity extends XWalletBaseActivity implements TwitterAuthApi.
 
     // ACTIONS
     public static final String SEND_ACTION = "android.intent.action.SEND_COIN";
+
+    public static final int SEND_BOOM_ID = 0;
+    public static final int RECEIVE_BOOM_ID = 1;
 
     /**
      *
@@ -55,6 +60,9 @@ public class MainActivity extends XWalletBaseActivity implements TwitterAuthApi.
     private TransactionFragment _transactionsFragment;
     private TwitterAuthToken _twitterAuthToken;
 
+    private SyncedMessage _lastSyncedMessage;
+
+    private ArcProgress _chainArcProgress;
     /**
      *
      * @param savedInstanceState
@@ -65,8 +73,6 @@ public class MainActivity extends XWalletBaseActivity implements TwitterAuthApi.
         setContentView(R.layout.activity_main);
 
         initViews();
-
-
 
         new TwitterAuthApi(getString(R.string.twitter_api_key), getString(R.string.twitter_api_secret), this).execute();
 
@@ -88,6 +94,12 @@ public class MainActivity extends XWalletBaseActivity implements TwitterAuthApi.
     protected void onServiceReady() {
         System.out.println("BlockchainService sending message!");
 
+        BlockchainClientListener chainListener = (BlockchainClientListener) getSupportFragmentManager().findFragmentById(R.id.xwallet_content_layout);
+        if (chainListener != null) {
+            chainListener.onServiceReady();
+        }
+
+        syncChain(CoinManagerFactory.BITCOIN);
 //        Message sendMsg = Message.obtain(null, BlockchainService.IPC_MSG_WALLET_SYNC, CoinManagerFactory.BITCOIN, 0);
 //        sendMessage(sendMsg);
     }
@@ -98,6 +110,7 @@ public class MainActivity extends XWalletBaseActivity implements TwitterAuthApi.
     private void initViews() {
         initMenuBoom();
 
+        _chainArcProgress = (ArcProgress) findViewById(R.id.main_arc_progress);
         _lense = (CircleImageView) findViewById(R.id.lense_middle_image);
         _content = (FrameLayout) findViewById(R.id.xwallet_content_layout);
 
@@ -143,8 +156,11 @@ public class MainActivity extends XWalletBaseActivity implements TwitterAuthApi.
         _bmb = (BoomMenuButton) findViewById(R.id.bmb);
         for (int i = 0; i < _bmb.getButtonPlaceEnum().buttonNumber(); i++) {
             _bmb.addBuilder(new SimpleCircleButton.Builder()
-                    .normalImageRes(boomsButtons[i]));
+                    .normalImageRes(boomsButtons[i])
+            );
         }
+
+        _bmb.setOnBoomListener(new MainBoomListener(this));
     }
 
 
@@ -154,6 +170,9 @@ public class MainActivity extends XWalletBaseActivity implements TwitterAuthApi.
     @Override
     protected void onSyncReady(SyncedMessage syncedMessage) {
         System.out.println("MainActivity::onSyncReady()");
+        _chainArcProgress.setProgress(100);
+
+        _lastSyncedMessage = syncedMessage;
 
         _walletFragment.setBalance(syncedMessage.getAmount());
         _walletFragment.setAddress(syncedMessage.getAddresses());
@@ -165,13 +184,30 @@ public class MainActivity extends XWalletBaseActivity implements TwitterAuthApi.
      */
     @Override
     protected void onBlockDownloaded(BlockDownloaded block) {
+        _chainArcProgress.setProgress((int) block.getPct());
+
         TextView textStatus = (TextView) findViewById(R.id.main_status_textview);
-        textStatus.setText("Chain % : "
-                + block.getPct()
-                + "\n block left : "
-                + block.getBlocksLeft()
-                + "\n Last block : " + block.getLastBlockDate()
-        );
+        textStatus.setText("Last block : " + block.getLastBlockDate());
+    }
+
+    /**
+     *
+     * @param feeSpentcal
+     */
+    @Override
+    protected void onFeeCalculated(SpentValueMessage feeSpentcal) {
+        BlockchainClientListener frag = (BlockchainClientListener) getSupportFragmentManager().findFragmentById(R.id.xwallet_content_layout);
+        frag.onFeeCalculated(feeSpentcal);
+    }
+
+    /**
+     *
+     * @param txs
+     */
+    @Override
+    protected void onTransactions(List<CoinTransaction> txs) {
+        BlockchainClientListener frag = (BlockchainClientListener) getSupportFragmentManager().findFragmentById(R.id.xwallet_content_layout);
+        frag.onTransactions(txs);
     }
 
     /**
@@ -185,18 +221,18 @@ public class MainActivity extends XWalletBaseActivity implements TwitterAuthApi.
 
         System.out.println("MainActivity::onNewIntent!");
 
-        if (getIntent().getAction() == SEND_ACTION) {
-            System.out.println("MainActivity::onNewIntent! SEND_ACTION");
-
-            SpentValueMessage spentToAmount = new SpentValueMessage("mwCwTceJvYV27KXBc3NJZys6CjsgsoeHmf", 100000000);
-
-            Gson gson = new Gson();
-            String spentToAmountJson = gson.toJson(spentToAmount);
-
-            Message spentMsg = Message.obtain(null, BlockchainService.IPC_MSG_WALLET_SEND_AMOUNT, CoinManagerFactory.BITCOIN, 0);
-            spentMsg.getData().putString(BlockchainService.IPC_BUNDLE_DATA_KEY, spentToAmountJson);
-            sendMessage(spentMsg);
-        }
+//        if (getIntent().getAction() == SEND_ACTION) {
+//            System.out.println("MainActivity::onNewIntent! SEND_ACTION");
+//
+//            SpentValueMessage spentToAmount = new SpentValueMessage("mwCwTceJvYV27KXBc3NJZys6CjsgsoeHmf", 100000000);
+//
+//            Gson gson = new Gson();
+//            String spentToAmountJson = gson.toJson(spentToAmount);
+//
+//            Message spentMsg = Message.obtain(null, BlockchainService.IPC_MSG_WALLET_SEND_AMOUNT, CoinManagerFactory.BITCOIN, 0);
+//            spentMsg.getData().putString(BlockchainService.IPC_BUNDLE_DATA_KEY, spentToAmountJson);
+//            sendMessage(spentMsg);
+//        }
     }
 
     /**
@@ -242,5 +278,13 @@ public class MainActivity extends XWalletBaseActivity implements TwitterAuthApi.
         }
 
         return token;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public SyncedMessage getLastSyncedMessage() {
+        return _lastSyncedMessage;
     }
 }

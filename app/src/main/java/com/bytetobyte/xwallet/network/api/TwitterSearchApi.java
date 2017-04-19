@@ -64,19 +64,23 @@ public class TwitterSearchApi extends AsyncTask<Void, Void, String>{
 
         System.out.println("Requesting : " + request.toString());
 
+        String content = null;
         try {
             Response response = client.newCall(request).execute();
+            ResponseBody body = response.body();
 
             if (isZipped(response)) {
-                return unzip(response.body());
+                content = unzip(body);
             } else {
-                return response.body().string();
+                content = body.string();
             }
+
+            body.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        return null;
+        return content;
     }
 
     /**

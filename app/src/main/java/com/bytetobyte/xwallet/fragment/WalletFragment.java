@@ -1,19 +1,27 @@
 package com.bytetobyte.xwallet.fragment;
 
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bytetobyte.xwallet.BaseFragment;
 import com.bytetobyte.xwallet.R;
 import com.bytetobyte.xwallet.service.BlockchainService;
 import com.bytetobyte.xwallet.service.coin.CoinManagerFactory;
+import com.bytetobyte.xwallet.service.ipcmodel.BlockDownloaded;
+import com.bytetobyte.xwallet.service.ipcmodel.CoinTransaction;
+import com.bytetobyte.xwallet.service.ipcmodel.SpentValueMessage;
+import com.bytetobyte.xwallet.service.ipcmodel.SyncedMessage;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
@@ -25,11 +33,12 @@ import java.util.List;
 /**
  * Created by bruno on 08.04.17.
  */
-public class WalletFragment extends BaseFragment {
+public class WalletFragment extends BaseFragment implements View.OnClickListener {
 
     private LineChart _priceChart;
     private TextView _balanceTxt;
     private TextView _addressTxt;
+    private ImageView _addressCopyIc;
 
     /**
      *
@@ -53,6 +62,9 @@ public class WalletFragment extends BaseFragment {
         View rootView = inflater.inflate(R.layout.fragment_wallet, container, false);
 
         //_priceChart = (LineChart) rootView.findViewById(R.id.line_price_chart);
+        _addressCopyIc = (ImageView) rootView.findViewById(R.id.wallet_address_copy_ic);
+        _addressCopyIc.setOnClickListener(this);
+
         _balanceTxt = (TextView) rootView.findViewById(R.id.wallet_balance);
         _addressTxt = (TextView) rootView.findViewById(R.id.wallet_address);
         return rootView;
@@ -75,9 +87,10 @@ public class WalletFragment extends BaseFragment {
      *
      */
     @Override
-    protected void onServiceReady() {
-        Message sendMsg = Message.obtain(null, BlockchainService.IPC_MSG_WALLET_SYNC, CoinManagerFactory.BITCOIN, 0);
-        getBaseActivity().sendMessage(sendMsg);
+    public void onServiceReady() {
+        getBaseActivity().syncChain(CoinManagerFactory.BITCOIN);
+//        Message sendMsg = Message.obtain(null, BlockchainService.IPC_MSG_WALLET_SYNC, CoinManagerFactory.BITCOIN, 0);
+//        getBaseActivity().sendMessage(sendMsg);
     }
 
     /**
@@ -142,5 +155,25 @@ public class WalletFragment extends BaseFragment {
         _priceChart.setDescription(null);
 
         _priceChart.setData(lineData);
+    }
+
+    /**
+     *
+     * @param v
+     */
+    @Override
+    public void onClick(View v) {
+       switch (v.getId()) {
+           case R.id.wallet_address_copy_ic:
+               ClipboardManager clipboard = (ClipboardManager) getBaseActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+               ClipData addData = ClipData.newPlainText("btc_addr_copied", _addressTxt.getText());
+               clipboard.setPrimaryClip(addData);
+
+               Toast.makeText(getBaseActivity(), "Added to clipboard!", Toast.LENGTH_SHORT).show();
+               break;
+
+           default:
+               break;
+       }
     }
 }

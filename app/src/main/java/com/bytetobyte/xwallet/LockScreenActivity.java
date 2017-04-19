@@ -35,7 +35,7 @@ public class LockScreenActivity extends AppCompatActivity {
     private int _nextPinNrIndex;
 
     private TextView _titleText;
-    private BadgeView _badgeView;
+    private TextView _badgeView;
 
     private String _action;
 
@@ -101,7 +101,7 @@ public class LockScreenActivity extends AppCompatActivity {
     private void initView() {
         WheelMenuLayout wheelMenuLayout = (WheelMenuLayout) findViewById(R.id.wheelMenu);
         if (wheelMenuLayout != null) {
-            _badgeView = (BadgeView) findViewById(R.id.lense_badgeview);
+            _badgeView = (TextView) findViewById(R.id.lense_badgeview);
 
             ImageView mWheelBackgroundMenu = (ImageView) findViewById(R.id.wheelmenu_background_menu);
             wheelMenuLayout.prepareWheelUIElements(null, mWheelBackgroundMenu);
@@ -245,6 +245,6 @@ public class LockScreenActivity extends AppCompatActivity {
             }
         }
 
-        _badgeView.setValue(pinCode);
+        _badgeView.setText(pinCode);
     }
 }

@@ -36,9 +36,8 @@ public class NewsFragment extends BaseFragment implements TwitterSearchApi.Twitt
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_news, container, false);
-
         _recyclerView = (RecyclerView) rootView.findViewById(R.id.news_recycler_view);
-
+        onSearchResult(new TwitterSearchStatuses());
 
         return rootView;
     }
@@ -48,15 +47,7 @@ public class NewsFragment extends BaseFragment implements TwitterSearchApi.Twitt
         super.onResume();
 
         String token = getBaseActivity().getNewsAuthToken();
-        new TwitterSearchApi("@BTCTN", token, this).execute();
-    }
-
-    /**
-     *
-     */
-    @Override
-    protected void onServiceReady() {
-
+        new TwitterSearchApi("from:BTCTN", token, this).execute();
     }
 
     /**
@@ -77,8 +68,11 @@ public class NewsFragment extends BaseFragment implements TwitterSearchApi.Twitt
         _layoutManager = new LinearLayoutManager(getBaseActivity());
         _recyclerView.setLayoutManager(_layoutManager);
 
-        _recyclerView.addItemDecoration(new NewsItemDecorator(20, 1));
+        _recyclerView.addItemDecoration(new RecyclerViewItemDecorator(5, 1));
 
-        _recyclerView.setAdapter(new NewsAdapter(statuses));
+        _newsAdapter = new NewsAdapter(getBaseActivity(), statuses);
+        _recyclerView.setAdapter(_newsAdapter);
+
+        _newsAdapter.notifyDataSetChanged();
     }
 }

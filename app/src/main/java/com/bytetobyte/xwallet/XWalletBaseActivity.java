@@ -11,14 +11,18 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 
 import com.bytetobyte.xwallet.service.BlockchainService;
-import com.bytetobyte.xwallet.service.ipc.BlockDownloaded;
-import com.bytetobyte.xwallet.service.ipc.SyncedMessage;
+import com.bytetobyte.xwallet.service.ipcmodel.BlockDownloaded;
+import com.bytetobyte.xwallet.service.ipcmodel.CoinTransaction;
+import com.bytetobyte.xwallet.service.ipcmodel.SpentValueMessage;
+import com.bytetobyte.xwallet.service.ipcmodel.SyncedMessage;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,6 +35,8 @@ public abstract class XWalletBaseActivity extends AppCompatActivity {
     protected abstract void onServiceReady();
     protected abstract void onSyncReady(SyncedMessage syncedMessage);
     protected abstract void onBlockDownloaded(BlockDownloaded block);
+    protected abstract void onFeeCalculated(SpentValueMessage feeSpentcal);
+    protected abstract void onTransactions(List<CoinTransaction> txs);
 
     // News
     public abstract String getNewsAuthToken();
@@ -58,19 +64,7 @@ public abstract class XWalletBaseActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
-//        String[] compo = XorUtil.generateKeyXorParts(getString(R.string.twitter_api_key));
-//        for (String part : compo) {
-//            System.out.println("key part : " + part);
-//        }
-//
-//        String[] secret = XorUtil.generateKeyXorParts(getString(R.string.twitter_api_secret));
-//        for (String part : secret) {
-//            System.out.println("secret part : " + part);
-//        }
-
-        // Bind to the service
-        bindService(new Intent(this, BlockchainService.class), mConnection, Context.BIND_AUTO_CREATE);
+        bind();
     }
 
     /**
@@ -109,27 +103,106 @@ public abstract class XWalletBaseActivity extends AppCompatActivity {
         super.onNewIntent(intent);
     }
 
+    /**
+     *
+     */
+    public void bind() {
+        if (mBound) return;
+
+        bindService(new Intent(this, BlockchainService.class), mConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    public boolean getIsBound() {
+        return mBound;
+    }
+
+    /**
+     *
+     * @param address
+     * @param amount
+     */
+    public void sendCoins(String address, String amount, int coinId) {
+        SpentValueMessage spentToAmount = new SpentValueMessage(address, amount);
+
+        Gson gson = new Gson();
+        String spentToAmountJson = gson.toJson(spentToAmount);
+
+        Message spentMsg = Message.obtain(null, BlockchainService.IPC_MSG_WALLET_SEND_AMOUNT, coinId, 0);
+        spentMsg.getData().putString(BlockchainService.IPC_BUNDLE_DATA_KEY, spentToAmountJson);
+        sendMessage(spentMsg);
+    }
+
+    /**
+     *
+     * @param address
+     * @param amount
+     */
+    public void requestTxFee(String address, String amount, int coinId) {
+        SpentValueMessage spentToAmount = new SpentValueMessage(address, amount);
+
+        Gson gson = new Gson();
+        String spentToAmountJson = gson.toJson(spentToAmount);
+
+        Message spentMsg = Message.obtain(null, BlockchainService.IPC_MSG_WALLET_CALCULATE_FEE, coinId, 0);
+        spentMsg.getData().putString(BlockchainService.IPC_BUNDLE_DATA_KEY, spentToAmountJson);
+        sendMessage(spentMsg);
+    }
+
+    /**
+     *
+     */
+    public void syncChain(int coinId) {
+        Message sendMsg = Message.obtain(null, BlockchainService.IPC_MSG_WALLET_SYNC, coinId, 0);
+        sendMessage(sendMsg);
+    }
+
+    /**
+     *
+     * @param coinId
+     */
+    public void requestTxList(int coinId) {
+        Message sendMsg = Message.obtain(null, BlockchainService.IPC_MSG_WALLET_TRANSACTION_LIST, coinId, 0);
+        sendMessage(sendMsg);
+    }
+
+    /**
+     *
+     */
     // This class handles the Service response
     class ResponseHandler extends Handler {
 
         @Override
         public void handleMessage(Message msg) {
             int respCode = msg.what;
+            String bundledData = null;
 
             //System.out.println("XWalletBaseActivity#ResponseHandler::handleMessage msg : " + respCode);
 
             switch (respCode) {
 
                 case BlockchainService.IPC_MSG_WALLET_SYNC:
-                    String spentJson = msg.getData().getString(BlockchainService.IPC_BUNDLE_DATA_KEY);
-                    SyncedMessage syncedMessage = _gson.fromJson(spentJson, SyncedMessage.class);
+                    bundledData = msg.getData().getString(BlockchainService.IPC_BUNDLE_DATA_KEY);
+                    SyncedMessage syncedMessage = _gson.fromJson(bundledData, SyncedMessage.class);
                     onSyncReady(syncedMessage);
                     break;
 
                 case BlockchainService.IPC_MSG_WALLET_BLOCK_DOWNLOADED:
-                    String blockJson = msg.getData().getString(BlockchainService.IPC_BUNDLE_DATA_KEY);
-                    BlockDownloaded blocksDownloadMsg = _gson.fromJson(blockJson, BlockDownloaded.class);
+                    bundledData = msg.getData().getString(BlockchainService.IPC_BUNDLE_DATA_KEY);
+                    BlockDownloaded blocksDownloadMsg = _gson.fromJson(bundledData, BlockDownloaded.class);
                     onBlockDownloaded(blocksDownloadMsg);
+                    break;
+
+                case BlockchainService.IPC_MSG_WALLET_CALCULATE_FEE:
+                    bundledData = msg.getData().getString(BlockchainService.IPC_BUNDLE_DATA_KEY);
+                    SpentValueMessage feeSpentcal = _gson.fromJson(bundledData, SpentValueMessage.class);
+                    onFeeCalculated(feeSpentcal);
+                    break;
+
+                case BlockchainService.IPC_MSG_WALLET_TRANSACTION_LIST:
+                    bundledData = msg.getData().getString(BlockchainService.IPC_BUNDLE_DATA_KEY);
+                    Type listType = new TypeToken<ArrayList<CoinTransaction>>(){}.getType();
+                    List<CoinTransaction> txs = _gson.fromJson(bundledData, listType);
+                    onTransactions(txs);
                     break;
 
                 default:
@@ -138,7 +211,6 @@ public abstract class XWalletBaseActivity extends AppCompatActivity {
         }
 
     }
-
 
     /** Messenger for communicating with the service. */
     Messenger mService = null;
@@ -161,11 +233,6 @@ public abstract class XWalletBaseActivity extends AppCompatActivity {
 
             onServiceReady();
             // notify fragments too
-            List<Fragment> frags = getSupportFragmentManager().getFragments();
-            for (Fragment f : frags) {
-                BaseFragment baseFragment = (BaseFragment) f;
-                baseFragment.onServiceReady();
-            }
         }
 
         public void onServiceDisconnected(ComponentName className) {

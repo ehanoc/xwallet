@@ -6,12 +6,16 @@ import com.bytetobyte.xwallet.service.coin.CoinManager;
 import com.bytetobyte.xwallet.service.coin.CurrencyCoin;
 import com.bytetobyte.xwallet.service.coin.bitcoin.actions.BitcoinSendAction;
 import com.bytetobyte.xwallet.service.coin.bitcoin.actions.BitcoinSetupAction;
+import com.bytetobyte.xwallet.service.ipcmodel.CoinTransaction;
+import com.bytetobyte.xwallet.service.ipcmodel.SpentValueMessage;
 import com.google.common.base.Joiner;
 
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.ECKey;
+import org.bitcoinj.core.Transaction;
 import org.bitcoinj.wallet.DeterministicSeed;
+import org.bitcoinj.wallet.SendRequest;
 import org.bitcoinj.wallet.Wallet;
 
 import java.util.ArrayList;
@@ -19,6 +23,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by bruno on 22.03.17.
@@ -57,7 +62,7 @@ public class BitcoinManager implements CoinManager, CoinAction.CoinActionCallbac
      *
      */
     @Override
-    public void sendCoins(String address, long amount, CoinAction.CoinActionCallback callback) {
+    public void sendCoins(String address, String amount, CoinAction.CoinActionCallback callback) {
         BitcoinSendAction sendAction = new BitcoinSendAction(address, amount, _coin);
         sendAction.execute(callback);
     }
@@ -95,6 +100,25 @@ public class BitcoinManager implements CoinManager, CoinAction.CoinActionCallbac
                 + " Estimated Spendable : " + _coin.getWallet().getBalance(Wallet.BalanceType.ESTIMATED_SPENDABLE);
 
         return balance.toPlainString();
+    }
+
+    /**
+     *
+     * @param valueMessage
+     * @return
+     */
+    @Override
+    public SpentValueMessage applyTxFee(SpentValueMessage valueMessage) {
+        Coin amountCoin = Coin.parseCoin(valueMessage.getAmount());
+        Address addr = Address.fromBase58(_coin.getWallet().getParams(), valueMessage.getAddress());
+        SendRequest sendRequest = SendRequest.to(addr, amountCoin);
+
+        valueMessage.setTxFee(sendRequest.feePerKb.toPlainString());
+
+        long amountWithFee = amountCoin.getValue() - sendRequest.feePerKb.getValue();
+        valueMessage.setAmount(Coin.valueOf(amountWithFee).toPlainString());
+
+        return valueMessage;
     }
 
     /**
@@ -173,7 +197,7 @@ public class BitcoinManager implements CoinManager, CoinAction.CoinActionCallbac
     /**
      *
      * @param callback
-     * @param s
+     * @param seed
      */
     @Override
     public void recoverWalletBy(CoinAction.CoinActionCallback callback, String seed) {
@@ -261,5 +285,31 @@ public class BitcoinManager implements CoinManager, CoinAction.CoinActionCallbac
     @Override
     public void onBlocksDownloaded(Object coin, double pct, int blocksLeft, Date date) {
 
+    }
+
+    /**
+     *
+     */
+    @Override
+    public List<CoinTransaction> getTransactionList() {
+        List<CoinTransaction> transactions = new ArrayList<>();
+
+        Set<Transaction> txs = _coin.getWallet().getTransactions(true);
+        for (Transaction tx : txs) {
+            Coin amount = tx.getValue(_coin.getWallet());
+
+            String hash = tx.getHash().toString();
+            String amountStr = amount.toPlainString();
+            String fee = "";
+
+            if (tx.getFee() != null) {
+                fee = tx.getFee().toPlainString();
+            }
+
+            CoinTransaction coinTransaction = new CoinTransaction(fee, hash, amountStr, tx.getUpdateTime());
+            transactions.add(coinTransaction);
+        }
+
+        return transactions;
     }
 }

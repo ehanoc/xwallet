@@ -1,4 +1,4 @@
-package com.bytetobyte.xwallet.service.ipc;
+package com.bytetobyte.xwallet.service.ipcmodel;
 
 import com.bytetobyte.xwallet.service.coin.CurrencyCoin;
 

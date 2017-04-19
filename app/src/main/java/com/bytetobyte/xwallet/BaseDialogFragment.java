@@ -1,7 +1,7 @@
 package com.bytetobyte.xwallet;
 
 import android.content.Context;
-import android.support.v4.app.Fragment;
+import android.support.v4.app.DialogFragment;
 
 import com.bytetobyte.xwallet.service.ipcmodel.BlockDownloaded;
 import com.bytetobyte.xwallet.service.ipcmodel.CoinTransaction;
@@ -11,11 +11,11 @@ import com.bytetobyte.xwallet.service.ipcmodel.SyncedMessage;
 import java.util.List;
 
 /**
- * Created by bruno on 12.04.17.
+ * Created by bruno on 17.04.17.
  */
-public abstract class BaseFragment extends Fragment implements BlockchainClientListener {
+public class BaseDialogFragment extends DialogFragment implements BlockchainClientListener {
 
-    private XWalletBaseActivity _baseActivity;
+    private MainActivity _baseActivity;
 
     /**
      *
@@ -25,38 +25,17 @@ public abstract class BaseFragment extends Fragment implements BlockchainClientL
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        _baseActivity = (XWalletBaseActivity) context;
-    }
-
-    /**
-     *
-     */
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        // in case service has crashed
-        if (!getBaseActivity().getIsBound()) {
-            getBaseActivity().bind();
-        }
+        _baseActivity = (MainActivity) context;
     }
 
     /**
      *
      * @return
      */
-    public XWalletBaseActivity getBaseActivity() {
+    public MainActivity getBaseActivity() {
         return _baseActivity;
     }
 
-    @Override
-    public void onTransactions(List<CoinTransaction> txs) {
-
-    }
-
-    /**
-     *
-     */
     @Override
     public void onServiceReady() {
 
@@ -77,4 +56,8 @@ public abstract class BaseFragment extends Fragment implements BlockchainClientL
 
     }
 
+    @Override
+    public void onTransactions(List<CoinTransaction> txs) {
+
+    }
 }

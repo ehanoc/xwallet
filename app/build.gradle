@@ -23,18 +23,25 @@ android {
     testOptions {
         unitTests.returnDefaultValues = true
     }
+
+    lintOptions {
+        abortOnError false
+    }
 }
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
+    compile 'com.github.lzyzsd:circleprogress:1.2.1'
+    compile 'com.nightonke:boommenu:2.0.9'
     compile 'com.android.support:appcompat-v7:25.3.0'
     compile 'com.github.elevenetc:badgeview:v1.0.0'
     compile 'de.hdodenhof:circleimageview:2.1.0'
     compile 'com.google.code.gson:gson:2.4'
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.2'
     compile 'com.github.simbiose:Encryption:2.0.0'
-    compile 'com.nightonke:boommenu:2.0.9'
-
     compile 'com.android.support:recyclerview-v7:25.3.0'
+    compile 'me.grantland:autofittextview:0.2.1'
+    compile 'com.github.bumptech.glide:glide:3.7.0'
+    compile 'cn.pedant.sweetalert:library:1.3'
 }

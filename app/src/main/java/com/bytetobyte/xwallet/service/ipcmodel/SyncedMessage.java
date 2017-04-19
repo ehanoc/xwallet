@@ -1,4 +1,4 @@
-package com.bytetobyte.xwallet.service.ipc;
+package com.bytetobyte.xwallet.service.ipcmodel;
 
 import java.util.List;
 

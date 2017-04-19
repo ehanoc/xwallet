@@ -20,7 +20,7 @@ public class BitcoinSendAction implements CoinAction<CoinAction.CoinActionCallba
     //
     private final Bitcoin _bitcoin;
     private final String _address;
-    private final long _amount;
+    private final String _amount;
 
     //
     private CoinActionCallback<CurrencyCoin>[] _callbacks;
@@ -31,7 +31,7 @@ public class BitcoinSendAction implements CoinAction<CoinAction.CoinActionCallba
      * @param amount
      * @param currencyCoin
      */
-    public BitcoinSendAction(String address, long amount, CurrencyCoin<Wallet> currencyCoin) {
+    public BitcoinSendAction(String address, String amount, CurrencyCoin<Wallet> currencyCoin) {
         this._address = address;
         this._amount = amount;
         this._bitcoin = (Bitcoin) currencyCoin;
@@ -46,7 +46,7 @@ public class BitcoinSendAction implements CoinAction<CoinAction.CoinActionCallba
         this._callbacks = callbacks;
         this._bitcoin.getWallet().addCoinsSentEventListener(this);
 
-        Coin amountCoin = Coin.valueOf(_amount);
+        Coin amountCoin = Coin.parseCoin(_amount);
         Address addr = Address.fromBase58(_bitcoin.getWallet().getParams(), _address);
 
         SendRequest sendRequest = SendRequest.to(addr, amountCoin);
