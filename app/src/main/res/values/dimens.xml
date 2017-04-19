@@ -1,0 +1,66 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="inner_radius">48dp</dimen>
+    <dimen name="outer_radius">140dp</dimen>
+    <dimen name="title_padding">12dp</dimen>
+    <dimen name="title_size">8pt</dimen>
+    <dimen name="appbar_padding_top">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="fab_margin">8dp</dimen>
+
+
+    <dimen name="wheelmenu_size">170dp</dimen>
+
+    <dimen name="inner_lense_size">77dp</dimen>
+    <dimen name="inner_lense_text_width">50dp</dimen>
+    <dimen name="lense_badge_text_size">12pt</dimen>
+    <dimen name="lense_badge_padding">20dp</dimen>
+
+
+    <!-- SPLASH SCREEN -->
+    <dimen name="splash_logo_container_height">200dp</dimen>
+    <dimen name="splash_logo_background_circle_width">240dp</dimen>
+    <dimen name="splash_margin_top_logo_container">160dp</dimen>
+    <dimen name="splash_margin_top_logo">140dp</dimen>
+    <dimen name="splash_app_name_margin_from_container">10dp</dimen>
+    <dimen name="splash_app_name_text_size">36sp</dimen>
+    <dimen name="splash_app_name_x_size">22dp</dimen>
+
+    <!-- LOCK DIALOG -->
+    <dimen name="lock_circle_width">240dp</dimen>
+    <dimen name="lock_inner_lense_size">100dp</dimen>
+    <dimen name="lock_lense_badge_text_size">10pt</dimen>
+    <dimen name="lock_inner_lense_text_width">40dp</dimen>
+
+    <!-- MAIN -->
+    <dimen name="main_top_title_height">88dp</dimen>
+    <dimen name="main_coin_row_background">102dp</dimen>
+    <dimen name="main_ic_address_size">14dp</dimen>
+    <dimen name="main_background_wheel">150dp</dimen>
+    <dimen name="main_footer_wheel_bg_bar">150dp</dimen>
+    <dimen name="wheel_menu_icon_size">30dp</dimen>
+    <dimen name="main_status_textview_width">220dp</dimen>
+
+    <!-- NEWS -->
+    <dimen name="news_row_height">120dp</dimen>
+    <dimen name="news_row_image_height">100dp</dimen>
+    <dimen name="news_row_textview_height">84dp</dimen>
+    <dimen name="news_row_topmargin">22dp</dimen>
+    <dimen name="news_row_padding">16dp</dimen>
+    <dimen name="news_row_left_bar">16dp</dimen>
+
+    <!-- SEND -->
+    <dimen name="send_address_height">44dp</dimen>
+    <dimen name="send_address_text_size">14sp</dimen>
+    <dimen name="send_btm_size">40dp</dimen>
+
+    <!-- TXS -->
+    <dimen name="txs_row_height">122dp</dimen>
+    <dimen name="txs_label_text_size">16sp</dimen>
+    <dimen name="txs_row_coin_right_margin">4dp</dimen>
+    <dimen name="txs_label_hash_size">12sp</dimen>
+    <dimen name="txs_row_max_hash_text_width">200dp</dimen>
+    <dimen name="txs_row_margin">4dp</dimen>
+
+
+</resources>

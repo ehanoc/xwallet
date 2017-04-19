@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:background="@drawable/bar_blue"
+    android:elevation="2dp"
+    android:padding="@dimen/appbar_padding_top"
+    android:layout_margin="@dimen/txs_row_margin"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/txs_row_height">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        
+        <TextView
+            android:id="@+id/txs_row_sent_received_label"
+            android:layout_marginLeft="@dimen/txs_row_margin"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:text="SENT"
+            android:textColor="@color/colorPrimary"
+            android:textStyle="bold"
+            android:textSize="@dimen/txs_label_text_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/txs_row_amount_text"
+            android:text="0.00"
+            android:layout_toLeftOf="@+id/txs_row_coin_label"
+            android:layout_marginRight="@dimen/txs_row_coin_right_margin"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            android:textSize="@dimen/txs_label_text_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+
+        <TextView
+            android:id="@+id/txs_row_coin_label"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:text="BTC"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            android:textSize="@dimen/txs_label_text_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <me.grantland.widget.AutofitTextView
+            android:layout_marginLeft="@dimen/txs_row_margin"
+            android:gravity="center_vertical"
+            android:id="@+id/txs_row_date_textview"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:text="1d8hd1k10a11m1d811d"
+            android:textColor="@color/colorAccent"
+            android:textStyle="bold"
+            android:textSize="@dimen/txs_label_hash_size"
+            android:layout_width="@dimen/txs_row_max_hash_text_width"
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:gravity="center_vertical"
+            android:id="@+id/txs_row_status_textview"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:text="COMPLETED"
+            android:textColor="@color/colorPrimary"
+            android:textStyle="bold"
+            android:textSize="@dimen/txs_label_hash_size"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
+
+
+    </RelativeLayout>
+
+</LinearLayout>

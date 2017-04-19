@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:background="@drawable/bar_blue"
+    android:padding="@dimen/news_row_padding"
+    android:elevation="2dp"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/news_row_height">
+
+        <!--<ImageView-->
+            <!--android:layout_marginTop="@dimen/news_row_topmargin"-->
+            <!--android:id="@+id/news_row_image"-->
+            <!--android:scaleType="fitXY"-->
+            <!--android:adjustViewBounds="true"-->
+            <!--android:layout_alignParentTop="true"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="@dimen/news_row_image_height" />-->
+
+        <me.grantland.widget.AutofitTextView
+            android:autoLink="web"
+            android:textColorLink="@color/colorSecondary"
+            android:layout_marginLeft="2dp"
+            android:id="@+id/news_row_text_body"
+            android:text="@string/section_format"
+            android:layout_alignParentBottom="true"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/news_row_textview_height" />
+
+</LinearLayout>

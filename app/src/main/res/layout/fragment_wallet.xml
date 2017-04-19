@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/xwallet_coin_"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <include
+        android:id="@+id/xwallet_row_coin"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/main_coin_row_background"
+        layout="@layout/row_coin" />
+
+    <!--<com.github.mikephil.charting.charts.LineChart-->
+        <!--android:id="@+id/line_price_chart"-->
+        <!--android:layout_below="@+id/xwallet_row_coin"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="100dp" />-->
+
+    <TextView
+        android:id="@+id/xwallet_balance_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</RelativeLayout>

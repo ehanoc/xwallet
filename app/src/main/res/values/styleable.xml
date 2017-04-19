@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+
+    <declare-styleable name="WheelMenuLayout">
+        <attr name="src" format="reference" />
+        <attr name="dividers" format="integer" />
+    </declare-styleable>
+
+    <declare-styleable name="CircleLayout">
+        <attr name="innerRadius" format="dimension" />
+        <attr name="sliceDivider" format="reference|color" />
+        <attr name="innerCircle" format="reference|color" />
+        <attr name="angleOffset" format="float" />
+        <attr name="angleRange" format="float" />
+        <attr name="layoutMode">
+            <enum name="normal" value="1" />
+            <enum name="pie" value="2" />
+        </attr>
+        <attr name="dividerWidth" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="BadgeView">
+        <attr name="badgeText" format="string"/>
+        <attr name="badgeBitmap" format="reference"/>
+        <attr name="badgeBackgroundColor" format="color"/>
+        <attr name="badgeTextColor" format="color"/>
+        <attr name="badgeTextSize" format="dimension"/>
+        <attr name="badgePadding" format="dimension"/>
+        <attr name="badgeAnimationDuration" format="integer"/>
+    </declare-styleable>
+
+</resources>

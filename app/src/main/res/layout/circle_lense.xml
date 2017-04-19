@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="@dimen/inner_lense_size"
+    android:layout_width="@dimen/inner_lense_size"
+    android:layout_gravity="center"
+    android:elevation="4dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.bytetobyte.xwallet.view.CustomCircleImageView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/lense_middle_image"
+        android:rotation="0"
+        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/lock_inner_lense" />
+
+    <su.levenetc.android.badgeview.BadgeView
+        android:id="@+id/lense_badgeview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:rotation="0"
+        app:badgeText="25£!"
+        app:badgeTextSize="@dimen/lense_badge_text_size"
+        app:badgeTextColor="#39e600"
+        app:badgeBackgroundColor="@android:color/transparent"
+        android:visibility="invisible"
+        />
+
+    <com.nightonke.boommenu.BoomMenuButton
+        android:id="@+id/bmb"
+        android:rotation="0"
+        android:visibility="visible"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="2dp"
+        android:layout_marginLeft="2dp"
+        android:layout_gravity="center"
+        app:bmb_buttonEnum="simpleCircle"
+        app:bmb_piecePlaceEnum="piecePlace_dot_2_1"
+        app:bmb_buttonPlaceEnum="buttonPlace_sc_2_1"
+        app:bmb_normalColor="@android:color/transparent"
+        app:bmb_buttonBottomMargin="100dp"
+        app:bmb_buttonLeftMargin="10dp"
+        app:bmb_buttonPlaceAlignmentEnum="buttonPlaceAlignment_bl"
+        />
+
+</FrameLayout>
+
+
+
