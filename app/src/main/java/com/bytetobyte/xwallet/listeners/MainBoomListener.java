@@ -1,13 +1,17 @@
 package com.bytetobyte.xwallet.listeners;
 
+import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentTransaction;
 
 import com.bytetobyte.xwallet.MainActivity;
 import com.bytetobyte.xwallet.R;
+import com.bytetobyte.xwallet.fragment.ReceiveFragment;
 import com.bytetobyte.xwallet.fragment.SendFragment;
 import com.nightonke.boommenu.BoomButtons.BoomButton;
 import com.nightonke.boommenu.OnBoomListener;
+
+import java.util.List;
 
 /**
  * Created by bruno on 15.04.17.
@@ -40,6 +44,18 @@ public class MainBoomListener implements OnBoomListener {
                 break;
 
             case MainActivity.RECEIVE_BOOM_ID:
+                if (_mainAct.getLastSyncedMessage() == null) return;
+
+                List<String> addrs = _mainAct.getLastSyncedMessage().getAddresses();
+                if (addrs.size() > 0) {
+                    String lastAddr = addrs.get(addrs.size() - 1);
+                    newContent = new ReceiveFragment();
+
+                    Bundle receiveData = new Bundle();
+                    receiveData.putString(ReceiveFragment.DATA_KEY_ADDR, lastAddr);
+                    newContent.setArguments(receiveData);
+                }
+
                 break;
 
             default:

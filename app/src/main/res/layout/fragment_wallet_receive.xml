@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="4dp"
+    android:background="@color/colorPrimaryDark"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:gravity="center"
+        android:id="@+id/receive_addr_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:gravity="center_horizontal"
+            android:textColor="@color/colorAccent"
+            android:textSize="@dimen/receive_addr_text_size"
+            android:id="@+id/receive_addr_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
+    
+    <RelativeLayout
+        android:id="@+id/receive_qr_code_layout"
+        android:layout_below="@+id/receive_addr_layout"
+        android:gravity="center"
+        android:padding="4dp"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/receive_id_qr_code_img"
+            android:layout_width="@dimen/receive_qr_size"
+            android:layout_height="@dimen/receive_qr_size" />
+
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:layout_below="@+id/receive_qr_code_layout"
+        android:id="@+id/receive_amount_layout"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:gravity="center"
+            android:text="Amount :"
+            android:textColor="@color/colorAccent"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/send_address_height">
+
+            <EditText
+                android:textStyle="bold"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="6dp"
+                android:textColor="@color/colorPrimary"
+                android:textColorHint="@color/colorAccent"
+                android:textSize="@dimen/send_address_text_size"
+                android:background="@android:drawable/editbox_background"
+                android:layout_width="@dimen/receive_amount_editbox_width"
+                android:layout_height="match_parent"
+                android:inputType="numberDecimal"
+
+                android:hint="amount..."
+                android:id="@+id/receive_amount_edittext" />
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/receive_btn_id"
+                android:src="@drawable/ic_receive"
+                android:clickable="true"
+                app:civ_border_width="4dp"
+                app:civ_border_color="@android:color/white"
+                app:civ_fill_color="@color/colorPrimaryDark"
+                android:layout_weight="1"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+
+                android:layout_gravity="center_vertical"
+
+                android:visibility="invisible"
+
+                android:layout_width="@dimen/send_address_height"
+                android:layout_height="@dimen/send_address_height" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+</RelativeLayout>

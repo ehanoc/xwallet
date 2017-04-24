@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -26,6 +27,8 @@ import java.util.regex.Pattern;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import de.hdodenhof.circleimageview.CircleImageView;
+import github.nisrulz.qreader.QRDataListener;
+import github.nisrulz.qreader.QREader;
 
 /**
  * Created by bruno on 14.04.17.
@@ -39,9 +42,13 @@ public class SendFragment extends BaseDialogFragment implements View.OnClickList
     private CircleImageView _sendBtn;
 
     // post delay changes
-    private Handler _textHandler;
+    private Handler _handler;
     private Runnable _textHandlerRunnable;
     private SpentValueMessage _feeToSpend;
+
+    private SurfaceView _surfaceView;
+    private QREader qrEader;
+    private String _latestDetectedData;
 
     /**
      *
@@ -60,6 +67,28 @@ public class SendFragment extends BaseDialogFragment implements View.OnClickList
         _addressEdit = (EditText) rootView.findViewById(R.id.send_address_input);
         _maxTextView = (TextView) rootView.findViewById(R.id.send_max_textview);
         _sendBtn = (CircleImageView) rootView.findViewById(R.id.send_btn_id);
+        _surfaceView = (SurfaceView) rootView.findViewById(R.id.send_camera_preview);
+
+        // Init QREader
+        // ------------
+        qrEader = new QREader.Builder(getBaseActivity(), _surfaceView, new QRDataListener() {
+            @Override
+            public void onDetected(final String data) {
+                if (data == null || data.equals(_latestDetectedData)) return;
+
+                _latestDetectedData = data;
+                getBaseActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        _addressEdit.setText(data);
+                    }
+                });
+            }
+        }).facing(QREader.BACK_CAM)
+                .enableAutofocus(true)
+                .height(_surfaceView.getHeight())
+                .width(_surfaceView.getWidth())
+                .build();
 
         _maxTextView.setOnClickListener(this);
         _sendBtn.setOnClickListener(this);
@@ -68,8 +97,32 @@ public class SendFragment extends BaseDialogFragment implements View.OnClickList
         _addressEdit.addTextChangedListener(this);
         _amountEdit.addTextChangedListener(this);
 
-        _textHandler = new Handler();
+        _handler = new Handler();
         return rootView;
+    }
+
+    /**
+     *
+     */
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        // Init and Start with SurfaceView
+        // -------------------------------
+        qrEader.initAndStart(_surfaceView);
+    }
+
+    /**
+     *
+     */
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        // Cleanup in onPause()
+        // --------------------
+        qrEader.releaseAndCleanup();
     }
 
     /**
@@ -213,7 +266,7 @@ public class SendFragment extends BaseDialogFragment implements View.OnClickList
      */
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-        _textHandler.removeCallbacks(_textHandlerRunnable);
+        _handler.removeCallbacks(_textHandlerRunnable);
         _sendBtn.setEnabled(false);
     }
 
@@ -239,7 +292,7 @@ public class SendFragment extends BaseDialogFragment implements View.OnClickList
             }
         };
 
-        _textHandler.postDelayed(_textHandlerRunnable, 1000);
+        _handler.postDelayed(_textHandlerRunnable, 1000);
     }
 
     /**

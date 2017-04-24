@@ -51,7 +51,7 @@
 
     <!-- SEND -->
     <dimen name="send_address_height">44dp</dimen>
-    <dimen name="send_address_text_size">14sp</dimen>
+    <dimen name="send_address_text_size">12sp</dimen>
     <dimen name="send_btm_size">40dp</dimen>
 
     <!-- TXS -->
@@ -61,6 +61,11 @@
     <dimen name="txs_label_hash_size">12sp</dimen>
     <dimen name="txs_row_max_hash_text_width">200dp</dimen>
     <dimen name="txs_row_margin">4dp</dimen>
+
+    <!-- RECEIVE -->
+    <dimen name="receive_qr_size">150dp</dimen>
+    <dimen name="receive_amount_editbox_width">200dp</dimen>
+    <dimen name="receive_addr_text_size">12sp</dimen>
 
 
 </resources>

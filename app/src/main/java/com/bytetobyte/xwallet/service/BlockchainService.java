@@ -127,7 +127,7 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
         System.out.println("Bitcoin balance : " + _coinManager.getBalanceFriendlyStr());
         System.out.println("Bitcoin balance value : " + _coinManager.getBalanceValue());
 
-        SyncedMessage syncedMessage = new SyncedMessage(_coinManager.getBalanceFriendlyStr(), addrs);
+        SyncedMessage syncedMessage = new SyncedMessage(_coinManager.getCurrencyCoin().getCoinId(), _coinManager.getBalanceFriendlyStr(), addrs);
         Message toReply = Message.obtain(null, IPC_MSG_WALLET_SYNC);
         toReply.getData().putString(IPC_BUNDLE_DATA_KEY, _gson.toJson(syncedMessage));
 

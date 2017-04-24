@@ -5,25 +5,40 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:text="TO"
-        android:textStyle="bold"
-        android:textColor="@color/colorAccent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <FrameLayout
 
-    <EditText
-        android:textStyle="bold"
-        android:textColor="@color/colorPrimaryDark"
-        android:textColorHint="@color/colorAccent"
-        android:textSize="@dimen/send_address_text_size"
-        android:background="@android:drawable/editbox_background"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/send_address_height"
-        android:inputType="text"
-        android:gravity="center_vertical"
-        android:hint="receiver address here ..."
-        android:id="@+id/send_address_input" />
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:text="TO"
+            android:textStyle="bold"
+            android:textColor="@color/colorAccent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:layout_gravity="center_vertical"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimaryDark"
+            android:textColorHint="@color/colorAccent"
+            android:textSize="@dimen/send_address_text_size"
+            android:background="@android:drawable/editbox_background"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/send_address_height"
+            android:inputType="text"
+            android:gravity="center_vertical"
+            android:hint="receiver address here ..."
+            android:id="@+id/send_address_input" />
+
+            <SurfaceView
+                android:id="@+id/send_camera_preview"
+                android:background="@drawable/rounded_inside_corners"
+                android:layout_gravity="right"
+                android:elevation="2dp"
+                android:layout_width="80dp"
+                android:layout_height="80dp" />
+    </FrameLayout>
 
     <LinearLayout
         android:weightSum="2"

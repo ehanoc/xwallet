@@ -92,7 +92,7 @@
                 app:arc_finished_color="@color/colorPrimary"
                 app:arc_unfinished_color="@color/colorContentBackgrounds"
                 app:arc_progress="0"
-                app:arc_bottom_text="Chain"/>
+                app:arc_bottom_text="BTC Sync"/>
 
             <TextView
                 android:layout_below="@+id/main_arc_progress"

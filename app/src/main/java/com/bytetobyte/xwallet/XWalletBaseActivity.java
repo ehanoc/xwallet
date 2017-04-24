@@ -30,6 +30,10 @@ import java.util.List;
  */
 public abstract class XWalletBaseActivity extends AppCompatActivity {
 
+    // ACTIONS
+    public static final String SEND_ACTION = "android.intent.action.SEND_COIN";
+    public static final String ACTION_GENERATE_QR_CODE = "ACTION_GENERATE_QR_CODE";
+
     private Gson _gson;
 
     protected abstract void onServiceReady();

@@ -39,21 +39,18 @@ import su.levenetc.android.badgeview.BadgeView;
  */
 public class MainActivity extends XWalletBaseActivity implements TwitterAuthApi.AuthCallback {
 
-    // ACTIONS
-    public static final String SEND_ACTION = "android.intent.action.SEND_COIN";
-
     public static final int SEND_BOOM_ID = 0;
     public static final int RECEIVE_BOOM_ID = 1;
 
     /**
-     *
+     * Views
      */
+    private FrameLayout _content;
     private BadgeView _badgeView;
     private CircleImageView _lense;
-    private BoomMenuButton _bmb;
+    private ArcProgress _chainArcProgress;
 
-    //
-    private FrameLayout _content;
+    private BoomMenuButton _bmb;
 
     private WalletFragment _walletFragment;
     private NewsFragment _newsFragment;
@@ -62,7 +59,7 @@ public class MainActivity extends XWalletBaseActivity implements TwitterAuthApi.
 
     private SyncedMessage _lastSyncedMessage;
 
-    private ArcProgress _chainArcProgress;
+
     /**
      *
      * @param savedInstanceState
@@ -131,8 +128,6 @@ public class MainActivity extends XWalletBaseActivity implements TwitterAuthApi.
 
                         showMenuSelection(contentIndex);
                         _badgeView.setValue(contentIndex);
-
-                        Toast.makeText(MainActivity.this, "contentIndex : " + contentIndex, Toast.LENGTH_SHORT).show();
                     }
                 }
             });
