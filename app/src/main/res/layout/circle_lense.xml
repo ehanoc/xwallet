@@ -6,7 +6,7 @@
     android:elevation="4dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.bytetobyte.xwallet.view.CustomCircleImageView
+    <com.bytetobyte.xwallet.views.CustomCircleImageView
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/lense_middle_image"
         android:rotation="0"

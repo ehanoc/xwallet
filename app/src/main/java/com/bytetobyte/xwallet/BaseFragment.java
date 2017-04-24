@@ -7,6 +7,7 @@ import com.bytetobyte.xwallet.service.ipcmodel.BlockDownloaded;
 import com.bytetobyte.xwallet.service.ipcmodel.CoinTransaction;
 import com.bytetobyte.xwallet.service.ipcmodel.SpentValueMessage;
 import com.bytetobyte.xwallet.service.ipcmodel.SyncedMessage;
+import com.bytetobyte.xwallet.ui.activity.XWalletBaseActivity;
 
 import java.util.List;
 

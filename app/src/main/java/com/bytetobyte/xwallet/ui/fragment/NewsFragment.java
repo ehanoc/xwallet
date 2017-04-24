@@ -1,4 +1,4 @@
-package com.bytetobyte.xwallet.fragment;
+package com.bytetobyte.xwallet.ui.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

@@ -48,7 +48,7 @@
             android:layout_height="@dimen/splash_logo_container_height">
         </RelativeLayout>
 
-        <com.bytetobyte.xwallet.view.WheelMenuLayout
+        <com.bytetobyte.xwallet.views.WheelMenuLayout
             android:id="@+id/wheelMenu"
             android:layout_marginTop="@dimen/splash_margin_top_logo"
             android:layout_gravity="center_horizontal"
@@ -70,7 +70,7 @@
                 android:layout_gravity="center"
                 xmlns:app="http://schemas.android.com/apk/res-auto">
 
-                <com.bytetobyte.xwallet.view.CustomCircleImageView
+                <com.bytetobyte.xwallet.views.CustomCircleImageView
                     xmlns:android="http://schemas.android.com/apk/res/android"
                     android:layout_gravity="center"
                     android:layout_width="@dimen/lock_inner_lense_size"
@@ -90,7 +90,7 @@
                     />
             </FrameLayout>
 
-        </com.bytetobyte.xwallet.view.WheelMenuLayout>
+        </com.bytetobyte.xwallet.views.WheelMenuLayout>
 
     </FrameLayout>
 

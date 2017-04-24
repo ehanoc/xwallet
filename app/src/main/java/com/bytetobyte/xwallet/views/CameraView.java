@@ -1,4 +1,4 @@
-package com.bytetobyte.xwallet.view;
+package com.bytetobyte.xwallet.views;
 
 import android.content.Context;
 import android.graphics.Canvas;

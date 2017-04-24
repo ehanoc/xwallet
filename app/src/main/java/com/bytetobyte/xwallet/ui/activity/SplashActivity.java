@@ -1,4 +1,4 @@
-package com.bytetobyte.xwallet;
+package com.bytetobyte.xwallet.ui.activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -7,7 +7,7 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
-import java.util.Set;
+import com.bytetobyte.xwallet.R;
 
 /**
  * Created by bruno on 05.04.17.

@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/colorScreenBackground"
     android:orientation="vertical"
-    tools:context="com.bytetobyte.xwallet.MainActivity">
+    tools:context=".ui.activity.MainActivity">
 
     <LinearLayout
         android:id="@+id/main_top_bar_layout"
@@ -106,7 +106,7 @@
 
         </RelativeLayout>
 
-        <com.bytetobyte.xwallet.view.WheelMenuLayout
+        <com.bytetobyte.xwallet.views.WheelMenuLayout
             android:id="@+id/wheelMenu"
 
             android:layout_gravity="bottom|right"
@@ -130,7 +130,7 @@
 
             <include layout="@layout/circle_layout" />
 
-        </com.bytetobyte.xwallet.view.WheelMenuLayout>
+        </com.bytetobyte.xwallet.views.WheelMenuLayout>
 
 
     </FrameLayout>

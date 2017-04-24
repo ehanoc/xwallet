@@ -1,4 +1,4 @@
-package com.bytetobyte.xwallet.fragment;
+package com.bytetobyte.xwallet.ui.fragment;
 
 
 import android.content.ClipData;
@@ -18,10 +18,6 @@ import com.bytetobyte.xwallet.BaseFragment;
 import com.bytetobyte.xwallet.R;
 import com.bytetobyte.xwallet.service.BlockchainService;
 import com.bytetobyte.xwallet.service.coin.CoinManagerFactory;
-import com.bytetobyte.xwallet.service.ipcmodel.BlockDownloaded;
-import com.bytetobyte.xwallet.service.ipcmodel.CoinTransaction;
-import com.bytetobyte.xwallet.service.ipcmodel.SpentValueMessage;
-import com.bytetobyte.xwallet.service.ipcmodel.SyncedMessage;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;

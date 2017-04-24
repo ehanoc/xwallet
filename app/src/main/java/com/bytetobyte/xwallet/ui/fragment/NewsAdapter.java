@@ -1,8 +1,6 @@
-package com.bytetobyte.xwallet.fragment;
+package com.bytetobyte.xwallet.ui.fragment;
 
 import android.content.Context;
-import android.content.res.Resources;
-import android.media.Image;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.bytetobyte.xwallet.R;
 import com.bytetobyte.xwallet.network.api.models.TwitterEntities;
 import com.bytetobyte.xwallet.network.api.models.TwitterMedia;

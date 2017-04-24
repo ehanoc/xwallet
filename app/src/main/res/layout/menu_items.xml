@@ -4,21 +4,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.bytetobyte.xwallet.view.CustomCircleImageView
+    <com.bytetobyte.xwallet.views.CustomCircleImageView
         android:id="@+id/main_calendar_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/circle_lense"
         android:elevation="2dp" />
 
-    <com.bytetobyte.xwallet.view.CustomCircleImageView
+    <com.bytetobyte.xwallet.views.CustomCircleImageView
         android:id="@+id/main_mail_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/circle_lense"
         android:elevation="2dp" />
 
-    <com.bytetobyte.xwallet.view.CustomCircleImageView
+    <com.bytetobyte.xwallet.views.CustomCircleImageView
         android:id="@+id/main_cloud_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

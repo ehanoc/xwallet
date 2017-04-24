@@ -1,4 +1,4 @@
-package com.bytetobyte.xwallet.fragment;
+package com.bytetobyte.xwallet.ui.fragment;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.bytetobyte.xwallet.R;
-import com.bytetobyte.xwallet.XWalletBaseActivity;
+import com.bytetobyte.xwallet.ui.activity.XWalletBaseActivity;
 import com.bytetobyte.xwallet.service.ipcmodel.CoinTransaction;
 
 import java.util.List;

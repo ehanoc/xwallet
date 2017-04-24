@@ -1,4 +1,4 @@
-package com.bytetobyte.xwallet.fragment;
+package com.bytetobyte.xwallet.ui.fragment;
 
 import android.graphics.Rect;
 import android.support.annotation.IntRange;

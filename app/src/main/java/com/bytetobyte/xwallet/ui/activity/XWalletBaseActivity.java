@@ -1,4 +1,4 @@
-package com.bytetobyte.xwallet;
+package com.bytetobyte.xwallet.ui.activity;
 
 import android.content.ComponentName;
 import android.content.Context;

@@ -63,7 +63,7 @@
     <dimen name="txs_row_margin">4dp</dimen>
 
     <!-- RECEIVE -->
-    <dimen name="receive_qr_size">150dp</dimen>
+    <dimen name="receive_qr_size">130dp</dimen>
     <dimen name="receive_amount_editbox_width">200dp</dimen>
     <dimen name="receive_addr_text_size">12sp</dimen>
 

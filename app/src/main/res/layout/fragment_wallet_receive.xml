@@ -44,6 +44,7 @@
         android:layout_below="@+id/receive_qr_code_layout"
         android:id="@+id/receive_amount_layout"
         android:orientation="vertical"
+        android:paddingBottom="8dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -57,16 +58,16 @@
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/send_address_height">
+            android:layout_height="wrap_content">
 
             <EditText
                 android:textStyle="bold"
-                android:layout_gravity="center_vertical"
+                android:layout_gravity="top"
                 android:layout_marginTop="6dp"
                 android:textColor="@color/colorPrimary"
                 android:textColorHint="@color/colorAccent"
                 android:textSize="@dimen/send_address_text_size"
-                android:background="@android:drawable/editbox_background"
+                android:background="@android:drawable/editbox_background_normal"
                 android:layout_width="@dimen/receive_amount_editbox_width"
                 android:layout_height="match_parent"
                 android:inputType="numberDecimal"

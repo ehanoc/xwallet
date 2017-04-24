@@ -1,4 +1,4 @@
-package com.bytetobyte.xwallet.fragment;
+package com.bytetobyte.xwallet.ui.fragment;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -9,24 +9,22 @@ import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.TextView;
 
 import com.bytetobyte.xwallet.BaseDialogFragment;
 import com.bytetobyte.xwallet.R;
 import com.bytetobyte.xwallet.service.coin.CoinManagerFactory;
 import com.bytetobyte.xwallet.service.ipcmodel.SpentValueMessage;
 import com.bytetobyte.xwallet.service.ipcmodel.SyncedMessage;
+import com.bytetobyte.xwallet.ui.SendFragmentViewContract;
+import com.bytetobyte.xwallet.ui.fragment.view.SendFragmentView;
 
 import java.math.BigDecimal;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
-import de.hdodenhof.circleimageview.CircleImageView;
 import github.nisrulz.qreader.QRDataListener;
 import github.nisrulz.qreader.QREader;
 
@@ -35,20 +33,22 @@ import github.nisrulz.qreader.QREader;
  */
 public class SendFragment extends BaseDialogFragment implements View.OnClickListener, TextWatcher {
 
-    private TextView _maxTextView;
-    private ClipboardManager _clipboard;
-    private EditText _addressEdit;
-    private EditText _amountEdit;
-    private CircleImageView _sendBtn;
+//    private TextView _maxTextView;
+//    private EditText _addressEdit;
+//    private EditText _amountEdit;
+//    private CircleImageView _sendBtn;
+//    private SurfaceView _surfaceView;
 
     // post delay changes
     private Handler _handler;
     private Runnable _textHandlerRunnable;
     private SpentValueMessage _feeToSpend;
 
-    private SurfaceView _surfaceView;
+    private ClipboardManager _clipboard;
     private QREader qrEader;
     private String _latestDetectedData;
+
+    private SendFragmentViewContract _sendViewContract;
 
     /**
      *
@@ -63,40 +63,7 @@ public class SendFragment extends BaseDialogFragment implements View.OnClickList
         View rootView = inflater.inflate(R.layout.fragment_wallet_send, container, false);
         _clipboard = (ClipboardManager) getContext().getSystemService(Context.CLIPBOARD_SERVICE);
 
-        _amountEdit = (EditText) rootView.findViewById(R.id.send_amount_textview);
-        _addressEdit = (EditText) rootView.findViewById(R.id.send_address_input);
-        _maxTextView = (TextView) rootView.findViewById(R.id.send_max_textview);
-        _sendBtn = (CircleImageView) rootView.findViewById(R.id.send_btn_id);
-        _surfaceView = (SurfaceView) rootView.findViewById(R.id.send_camera_preview);
-
-        // Init QREader
-        // ------------
-        qrEader = new QREader.Builder(getBaseActivity(), _surfaceView, new QRDataListener() {
-            @Override
-            public void onDetected(final String data) {
-                if (data == null || data.equals(_latestDetectedData)) return;
-
-                _latestDetectedData = data;
-                getBaseActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        _addressEdit.setText(data);
-                    }
-                });
-            }
-        }).facing(QREader.BACK_CAM)
-                .enableAutofocus(true)
-                .height(_surfaceView.getHeight())
-                .width(_surfaceView.getWidth())
-                .build();
-
-        _maxTextView.setOnClickListener(this);
-        _sendBtn.setOnClickListener(this);
-        //bitcoin regex ^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$
-
-        _addressEdit.addTextChangedListener(this);
-        _amountEdit.addTextChangedListener(this);
-
+        _sendViewContract = new SendFragmentView(this);
         _handler = new Handler();
         return rootView;
     }
@@ -110,7 +77,7 @@ public class SendFragment extends BaseDialogFragment implements View.OnClickList
 
         // Init and Start with SurfaceView
         // -------------------------------
-        qrEader.initAndStart(_surfaceView);
+        qrEader.initAndStart(_sendViewContract.getCameraSurfaceView());
     }
 
     /**
@@ -133,7 +100,30 @@ public class SendFragment extends BaseDialogFragment implements View.OnClickList
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        checkClipboard();
+        _sendViewContract.initViews();
+
+        // Init QREader
+        // ------------
+        qrEader = new QREader.Builder(getBaseActivity(), _sendViewContract.getCameraSurfaceView(), new QRDataListener() {
+            @Override
+            public void onDetected(final String data) {
+                if ( (data == null || data.equals(_latestDetectedData)) && _sendViewContract.getAddressField().getText().length() > 0) return;
+
+                _latestDetectedData = data;
+                getBaseActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        _sendViewContract.getAddressField().setText(data);
+                    }
+                });
+            }
+        }).facing(QREader.BACK_CAM)
+                .enableAutofocus(true)
+                .height(_sendViewContract.getCameraSurfaceView().getHeight())
+                .width(_sendViewContract.getCameraSurfaceView().getWidth())
+                .build();
+
+        //checkClipboard();
     }
 
     /**
@@ -155,7 +145,7 @@ public class SendFragment extends BaseDialogFragment implements View.OnClickList
             if (m.matches()) {
                 System.out.println("#4");
                 String payload = m.group();
-                _addressEdit.setText(payload);
+                _sendViewContract.getAddressField().setText(payload);
             }
         }
     }
@@ -182,16 +172,16 @@ public class SendFragment extends BaseDialogFragment implements View.OnClickList
                 SyncedMessage lastSyncedMsg = getBaseActivity().getLastSyncedMessage();
                 if (lastSyncedMsg != null) {
                     String amountStr = lastSyncedMsg.getAmount();
-                    _amountEdit.setText(amountStr);
+                    _sendViewContract.getAmountEdit().setText(amountStr);
                 }
                 break;
 
             case R.id.send_btn_id:
                 if (_feeToSpend != null
-                        &&_addressEdit.getText().length() > 0
-                        && _amountEdit.getText().length() > 0
-                        && isBitcoinAddress(_addressEdit.getText())) {
-                    String address = _addressEdit.getText().toString();
+                        &&_sendViewContract.getAddressField().getText().length() > 0
+                        && _sendViewContract.getAmountEdit().getText().length() > 0
+                        && isBitcoinAddress(_sendViewContract.getAddressField().getText())) {
+                    String address = _sendViewContract.getAddressField().getText().toString();
                     //String amount = _amountEdit.getText().toString();
 
                     confirmSend(address, _feeToSpend.getAmount(), _feeToSpend.getTxFee());
@@ -239,7 +229,7 @@ public class SendFragment extends BaseDialogFragment implements View.OnClickList
 //        _amountEdit.addTextChangedListener(this);
 
         _feeToSpend = feeSpentcal;
-        _sendBtn.setEnabled(true);
+        _sendViewContract.getSendBtn().setEnabled(true);
 
 //        TextView feeText = (TextView) v.findViewById(R.id.send_fee_textview);
 //        feeText.setText("Fee :" + feeSpentcal.getTxFee());
@@ -267,7 +257,7 @@ public class SendFragment extends BaseDialogFragment implements View.OnClickList
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
         _handler.removeCallbacks(_textHandlerRunnable);
-        _sendBtn.setEnabled(false);
+        _sendViewContract.getSendBtn().setEnabled(false);
     }
 
     /**
@@ -281,11 +271,11 @@ public class SendFragment extends BaseDialogFragment implements View.OnClickList
             public void run() {
                 // check if its not higher than the max
 
-                if (_addressEdit.getText().length() > 0
-                        && _amountEdit.getText().length() > 0 && isBitcoinAddress(_addressEdit.getText())) {
+                if (_sendViewContract.getAddressField().getText().length() > 0
+                        && _sendViewContract.getAmountEdit().getText().length() > 0 && isBitcoinAddress(_sendViewContract.getAddressField().getText())) {
 
-                    String address = _addressEdit.getText().toString();
-                    String amount = _amountEdit.getText().toString();
+                    String address = _sendViewContract.getAddressField().getText().toString();
+                    String amount = _sendViewContract.getAmountEdit().getText().toString();
 
                     getBaseActivity().requestTxFee(address, amount, CoinManagerFactory.BITCOIN);
                 }

@@ -1,4 +1,4 @@
-package com.bytetobyte.xwallet;
+package com.bytetobyte.xwallet.ui.activity;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -8,16 +8,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bytetobyte.xwallet.R;
 import com.bytetobyte.xwallet.util.EncryptUtils;
-import com.bytetobyte.xwallet.view.WheelMenuLayout;
+import com.bytetobyte.xwallet.views.WheelMenuLayout;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.TreeMap;
-
-import su.levenetc.android.badgeview.BadgeView;
 
 /**
  * Created by bruno on 05.04.17.
