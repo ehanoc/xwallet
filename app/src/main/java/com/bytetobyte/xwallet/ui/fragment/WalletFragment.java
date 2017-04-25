@@ -102,7 +102,7 @@ public class WalletFragment extends BaseFragment implements View.OnClickListener
      * @param addresses
      */
     public void setAddress(List<String> addresses) {
-        _addressTxt.setText(addresses.get(0));
+        _addressTxt.setText(addresses.get(addresses.size() - 1));
     }
 
     /**

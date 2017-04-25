@@ -128,13 +128,18 @@ public class BitcoinSetupAction extends DownloadProgressListener implements Coin
                     public void onCoinsReceived(Wallet wallet, Transaction tx, Coin coin, Coin coin1) {
                         final Address address = WalletUtils.getWalletAddressOfReceived(tx, wallet);
                         final Coin amount = tx.getValue(wallet);
-                        final TransactionConfidence.ConfidenceType confidenceType = tx.getConfidence().getConfidenceType();
+                        //final TransactionConfidence.ConfidenceType confidenceType = tx.getConfidence().getConfidenceType();
 
                         String addressStr = WalletUtils.formatAddress(address, Constants.ADDRESS_FORMAT_GROUP_SIZE, Constants.ADDRESS_FORMAT_LINE_SIZE).toString();
                         long value = amount.getValue();
 
                         for (CoinActionCallback<CurrencyCoin> callback : _callbacks) {
                             callback.onCoinsReceived(addressStr, value, _bitcoin);
+                        }
+
+                        // meaning that we are receiving amount, not sending
+                        if (amount.isPositive()) {
+                            wallet.freshReceiveAddress();
                         }
                     }
                 });

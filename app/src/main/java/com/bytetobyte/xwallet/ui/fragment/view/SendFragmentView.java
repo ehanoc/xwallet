@@ -1,5 +1,7 @@
 package com.bytetobyte.xwallet.ui.fragment.view;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.EditText;
@@ -14,7 +16,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 /**
  * Created by bruno on 24.04.17.
  */
-public class SendFragmentView implements SendFragmentViewContract {
+public class SendFragmentView implements SendFragmentViewContract, View.OnClickListener, TextWatcher {
 
     private final SendFragment _sendFragment;
 
@@ -46,12 +48,32 @@ public class SendFragmentView implements SendFragmentViewContract {
         _sendBtn = (CircleImageView) fragView.findViewById(R.id.send_btn_id);
         _surfaceView = (SurfaceView) fragView.findViewById(R.id.send_camera_preview);
 
-        _maxTextView.setOnClickListener(_sendFragment);
-        _sendBtn.setOnClickListener(_sendFragment);
-        _addressEdit.addTextChangedListener(_sendFragment);
-        _amountEdit.addTextChangedListener(_sendFragment);
+        _maxTextView.setOnClickListener(this);
+        _sendBtn.setOnClickListener(this);
+        _addressEdit.addTextChangedListener(this);
+        _amountEdit.addTextChangedListener(this);
 
         System.out.println("listeners setup");
+    }
+
+    /**
+     *
+     * @param v
+     */
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.send_max_textview:
+                _sendFragment.onMaxAmountSelected();
+                break;
+
+            case R.id.send_btn_id:
+                _sendFragment.sendAmount();
+                break;
+
+            default:
+                break;
+        }
     }
 
     /**
@@ -88,5 +110,38 @@ public class SendFragmentView implements SendFragmentViewContract {
     @Override
     public CircleImageView getSendBtn() {
         return _sendBtn;
+    }
+
+    /**
+     *
+     * @param s
+     * @param start
+     * @param count
+     * @param after
+     */
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+    }
+
+    /**
+     *
+     * @param s
+     * @param start
+     * @param before
+     * @param count
+     */
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+        _sendFragment.dequeueRequestTxFee();
+    }
+
+    /**
+     *
+     * @param s
+     */
+    @Override
+    public void afterTextChanged(Editable s) {
+        _sendFragment.queueRequestTxFee();
     }
 }

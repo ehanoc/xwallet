@@ -4,17 +4,13 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.bytetobyte.xwallet.BaseDialogFragment;
 import com.bytetobyte.xwallet.R;
+import com.bytetobyte.xwallet.ui.fragment.view.ReceiveFragmentView;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
@@ -27,10 +23,11 @@ public class ReceiveFragment extends BaseDialogFragment {
 
     public static final String DATA_KEY_ADDR = "DATA_KEY_ADDR";
     private String _addr;
-    private ImageView _qrImg;
-    private TextView _addrText;
 
-    private EditText _amountText;
+    /**
+     *
+     */
+    private ReceiveFragmentView _receiveFragmentView;
 
     /**
      *
@@ -51,38 +48,44 @@ public class ReceiveFragment extends BaseDialogFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_wallet_receive, container, false);
 
-        _qrImg = (ImageView) rootView.findViewById(R.id.receive_id_qr_code_img);
-        _addrText = (TextView) rootView.findViewById(R.id.receive_addr_text);
-        _amountText = (EditText) rootView.findViewById(R.id.receive_amount_edittext);
+        _receiveFragmentView = new ReceiveFragmentView(this);
 
         Bundle args = getArguments();
         if (args != null) {
             _addr = getArguments().getString(DATA_KEY_ADDR);
         }
 
-        _amountText.addTextChangedListener(new ReceiveTextChangeListener());
-
         return rootView;
+    }
+
+    /**
+     *
+     * @param view
+     * @param savedInstanceState
+     */
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        _receiveFragmentView.initViews();
     }
 
     @Override
     public void onResume() {
         super.onResume();
 
-        _addrText.setText(_addr);
-        generateQRCode(_addr, null);
+        _receiveFragmentView.getAddrText().setText(_addr);
+        generateQRCode(null);
     }
 
     /**
      *
-     * @param addr
      * @param amount
      */
-    private void generateQRCode(String addr, String amount) {
+    public void generateQRCode(String amount) {
 
         String coinName = getBaseActivity().getLastSyncedMessage().getCoinName();
 
-        String uriStr = coinName + ":" + addr;
+        String uriStr = coinName + ":" + _addr;
         if (amount != null && !amount.isEmpty()) {
             uriStr += "?amount="+amount;
         }
@@ -100,29 +103,9 @@ public class ReceiveFragment extends BaseDialogFragment {
                 }
             }
 
-            _qrImg.setImageBitmap(bmp);
+            _receiveFragmentView.getQrImg().setImageBitmap(bmp);
         } catch (WriterException e) {
             e.printStackTrace();
-        }
-    }
-
-    /**
-     *
-     */
-    private class ReceiveTextChangeListener implements TextWatcher {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            generateQRCode(_addr, s.toString());
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-
         }
     }
 }

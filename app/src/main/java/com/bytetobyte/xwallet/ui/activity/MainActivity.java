@@ -158,7 +158,7 @@ public class MainActivity extends XWalletBaseActivity implements TwitterAuthApi.
 
     /**
      *
-     * @param menuIndex
+     * @param menuIndex - 0 = wallet, 1 = txs, 2 = news
      */
     public void showMenuSelection(int menuIndex) {
         Fragment newContent = null;

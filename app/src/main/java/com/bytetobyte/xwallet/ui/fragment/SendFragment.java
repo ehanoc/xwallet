@@ -1,6 +1,5 @@
 package com.bytetobyte.xwallet.ui.fragment;
 
-import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.os.Bundle;
@@ -20,7 +19,6 @@ import com.bytetobyte.xwallet.service.ipcmodel.SyncedMessage;
 import com.bytetobyte.xwallet.ui.SendFragmentViewContract;
 import com.bytetobyte.xwallet.ui.fragment.view.SendFragmentView;
 
-import java.math.BigDecimal;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,13 +29,7 @@ import github.nisrulz.qreader.QREader;
 /**
  * Created by bruno on 14.04.17.
  */
-public class SendFragment extends BaseDialogFragment implements View.OnClickListener, TextWatcher {
-
-//    private TextView _maxTextView;
-//    private EditText _addressEdit;
-//    private EditText _amountEdit;
-//    private CircleImageView _sendBtn;
-//    private SurfaceView _surfaceView;
+public class SendFragment extends BaseDialogFragment {
 
     // post delay changes
     private Handler _handler;
@@ -128,30 +120,6 @@ public class SendFragment extends BaseDialogFragment implements View.OnClickList
 
     /**
      *
-     */
-    private void checkClipboard() {
-        // If the clipboard doesn't contain data, disable the paste menu item.
-        // If it does contain data, decide if you can handle the data.
-        System.out.println("#1");
-        if ((_clipboard.hasPrimaryClip())) {
-            ClipData.Item item = _clipboard.getPrimaryClip().getItemAt(0);
-
-            // Gets the clipboard as text.
-            CharSequence pasteData = item.getText();
-
-            Pattern p = Pattern.compile("^[13-m][a-km-zA-HJ-NP-Z1-9]{25,34}$");
-            Matcher m = p.matcher(pasteData);
-
-            if (m.matches()) {
-                System.out.println("#4");
-                String payload = m.group();
-                _sendViewContract.getAddressField().setText(payload);
-            }
-        }
-    }
-
-    /**
-     *
      * @param text
      * @return
      */
@@ -163,109 +131,20 @@ public class SendFragment extends BaseDialogFragment implements View.OnClickList
 
     /**
      *
-     * @param v
-     */
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.send_max_textview:
-                SyncedMessage lastSyncedMsg = getBaseActivity().getLastSyncedMessage();
-                if (lastSyncedMsg != null) {
-                    String amountStr = lastSyncedMsg.getAmount();
-                    _sendViewContract.getAmountEdit().setText(amountStr);
-                }
-                break;
-
-            case R.id.send_btn_id:
-                if (_feeToSpend != null
-                        &&_sendViewContract.getAddressField().getText().length() > 0
-                        && _sendViewContract.getAmountEdit().getText().length() > 0
-                        && isBitcoinAddress(_sendViewContract.getAddressField().getText())) {
-                    String address = _sendViewContract.getAddressField().getText().toString();
-                    //String amount = _amountEdit.getText().toString();
-
-                    confirmSend(address, _feeToSpend.getAmount(), _feeToSpend.getTxFee());
-                }
-
-                break;
-
-            default:
-                break;
-        }
-    }
-
-    /**
-     *
-     * @param str
-     * @return
-     */
-    private static long parseCoinAmountStr(String str) {
-        long res = -1;
-        try {
-            long e = (new BigDecimal(str)).movePointRight(8).toBigIntegerExact().longValue();
-            res = e;
-        } catch (ArithmeticException var3) {
-            throw new IllegalArgumentException(var3);
-        }
-
-        return res;
-    }
-
-    /**
-     *
      * @param feeSpentcal
      */
     @Override
     public void onFeeCalculated(SpentValueMessage feeSpentcal) {
         super.onFeeCalculated(feeSpentcal);
 
-        System.out.println("Tx fee : " + feeSpentcal.getTxFee());
-//
-//        View v = getView();
-//        if (v == null) return;
-
-//        _amountEdit.removeTextChangedListener(this);
-//        _amountEdit.setText(feeSpentcal.getAmount());
-//        _amountEdit.addTextChangedListener(this);
-
         _feeToSpend = feeSpentcal;
         _sendViewContract.getSendBtn().setEnabled(true);
-
-//        TextView feeText = (TextView) v.findViewById(R.id.send_fee_textview);
-//        feeText.setText("Fee :" + feeSpentcal.getTxFee());
     }
 
     /**
      *
-     * @param s
-     * @param start
-     * @param count
-     * @param after
      */
-    @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-    }
-
-    /**
-     *
-     * @param s
-     * @param start
-     * @param before
-     * @param count
-     */
-    @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) {
-        _handler.removeCallbacks(_textHandlerRunnable);
-        _sendViewContract.getSendBtn().setEnabled(false);
-    }
-
-    /**
-     *
-     * @param s
-     */
-    @Override
-    public void afterTextChanged(Editable s) {
+    public void queueRequestTxFee() {
         _textHandlerRunnable = new Runnable() {
             @Override
             public void run() {
@@ -288,6 +167,40 @@ public class SendFragment extends BaseDialogFragment implements View.OnClickList
     /**
      *
      */
+    public void dequeueRequestTxFee() {
+        _handler.removeCallbacks(_textHandlerRunnable);
+        _sendViewContract.getSendBtn().setEnabled(false);
+    }
+
+    /**
+     *
+     */
+    public void onMaxAmountSelected() {
+        SyncedMessage lastSyncedMsg = getBaseActivity().getLastSyncedMessage();
+        if (lastSyncedMsg != null) {
+            String amountStr = lastSyncedMsg.getAmount();
+            _sendViewContract.getAmountEdit().setText(amountStr);
+        }
+    }
+
+    /**
+     *
+     */
+    public void sendAmount() {
+        if (_feeToSpend != null
+                &&_sendViewContract.getAddressField().getText().length() > 0
+                && _sendViewContract.getAmountEdit().getText().length() > 0
+                && isBitcoinAddress(_sendViewContract.getAddressField().getText())) {
+            String address = _sendViewContract.getAddressField().getText().toString();
+            //String amount = _amountEdit.getText().toString();
+
+            confirmSend(address, _feeToSpend.getAmount(), _feeToSpend.getTxFee());
+        }
+    }
+
+    /**
+     *
+     */
     public void confirmSend(final String address, final String amount, final String txFee) {
 
         new SweetAlertDialog(getBaseActivity(), SweetAlertDialog.NORMAL_TYPE)
@@ -299,6 +212,7 @@ public class SendFragment extends BaseDialogFragment implements View.OnClickList
                     public void onClick(SweetAlertDialog sDialog) {
                         getBaseActivity().sendCoins(address, amount, CoinManagerFactory.BITCOIN);
                         sDialog.dismissWithAnimation();
+                        getBaseActivity().showMenuSelection(0);
                     }
                 })
                 .setCancelText("Cancel")

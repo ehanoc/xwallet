@@ -14,6 +14,7 @@ import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.ECKey;
 import org.bitcoinj.core.Transaction;
+import org.bitcoinj.core.TransactionConfidence;
 import org.bitcoinj.wallet.DeterministicSeed;
 import org.bitcoinj.wallet.SendRequest;
 import org.bitcoinj.wallet.Wallet;
@@ -305,6 +306,9 @@ public class BitcoinManager implements CoinManager, CoinAction.CoinActionCallbac
             if (tx.getFee() != null) {
                 fee = tx.getFee().toPlainString();
             }
+
+//            TransactionConfidence.ConfidenceType confidenceType = tx.getConfidence().getConfidenceType();
+//            System.out.println("Confidence : " + confidenceType);
 
             CoinTransaction coinTransaction = new CoinTransaction(fee, hash, amountStr, tx.getUpdateTime());
             transactions.add(coinTransaction);
