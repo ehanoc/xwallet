@@ -6,12 +6,17 @@ import com.bytetobyte.xwallet.service.coin.CoinManager;
 import com.bytetobyte.xwallet.service.coin.CurrencyCoin;
 import com.bytetobyte.xwallet.service.coin.bitcoin.actions.BitcoinSendAction;
 import com.bytetobyte.xwallet.service.coin.bitcoin.actions.BitcoinSetupAction;
+import com.bytetobyte.xwallet.service.ipcmodel.CoinTransaction;
+import com.bytetobyte.xwallet.service.ipcmodel.SpentValueMessage;
 import com.google.common.base.Joiner;
 
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.ECKey;
+import org.bitcoinj.core.Transaction;
+import org.bitcoinj.core.TransactionConfidence;
 import org.bitcoinj.wallet.DeterministicSeed;
+import org.bitcoinj.wallet.SendRequest;
 import org.bitcoinj.wallet.Wallet;
 
 import java.util.ArrayList;
@@ -19,6 +24,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by bruno on 22.03.17.
@@ -30,6 +36,8 @@ public class BitcoinManager implements CoinManager, CoinAction.CoinActionCallbac
      */
     private Bitcoin _coin;
     private boolean _isSyncing;
+    private BitcoinSetupAction _setupAction;
+    private boolean _isSynced;
 
     /**
      *
@@ -44,17 +52,18 @@ public class BitcoinManager implements CoinManager, CoinAction.CoinActionCallbac
      */
     @Override
     public void setup(CoinAction.CoinActionCallback callback) {
+        System.out.println("isSyncing :: setup ");
         _isSyncing = true;
 
-        BitcoinSetupAction setupAction = new BitcoinSetupAction(_coin);
-        setupAction.execute(callback);
+        _setupAction = new BitcoinSetupAction(_coin);
+        _setupAction.execute(callback, this);
     }
 
     /**
      *
      */
     @Override
-    public void sendCoins(String address, long amount, CoinAction.CoinActionCallback callback) {
+    public void sendCoins(String address, String amount, CoinAction.CoinActionCallback callback) {
         BitcoinSendAction sendAction = new BitcoinSendAction(address, amount, _coin);
         sendAction.execute(callback);
     }
@@ -92,6 +101,25 @@ public class BitcoinManager implements CoinManager, CoinAction.CoinActionCallbac
                 + " Estimated Spendable : " + _coin.getWallet().getBalance(Wallet.BalanceType.ESTIMATED_SPENDABLE);
 
         return balance.toPlainString();
+    }
+
+    /**
+     *
+     * @param valueMessage
+     * @return
+     */
+    @Override
+    public SpentValueMessage applyTxFee(SpentValueMessage valueMessage) {
+        Coin amountCoin = Coin.parseCoin(valueMessage.getAmount());
+        Address addr = Address.fromBase58(_coin.getWallet().getParams(), valueMessage.getAddress());
+        SendRequest sendRequest = SendRequest.to(addr, amountCoin);
+
+        valueMessage.setTxFee(sendRequest.feePerKb.toPlainString());
+
+        long amountWithFee = amountCoin.getValue() - sendRequest.feePerKb.getValue();
+        valueMessage.setAmount(Coin.valueOf(amountWithFee).toPlainString());
+
+        return valueMessage;
     }
 
     /**
@@ -170,10 +198,11 @@ public class BitcoinManager implements CoinManager, CoinAction.CoinActionCallbac
     /**
      *
      * @param callback
-     * @param s
+     * @param seed
      */
     @Override
     public void recoverWalletBy(CoinAction.CoinActionCallback callback, String seed) {
+        System.out.println("isSyncing :: recoverWalletBy");
         _isSyncing = true;
 
         // illness bulk jewel deer chaos swing goose fetch patch blood acid call creation
@@ -191,28 +220,100 @@ public class BitcoinManager implements CoinManager, CoinAction.CoinActionCallbac
         return _isSyncing;
     }
 
+    /**
+     *
+     * @return
+     */
+    @Override
+    public boolean isSynced() {
+        return _isSynced;
+    }
+
+    /**
+     *
+     * @param result
+     */
     @Override
     public void onResult(Object result) {
+        System.out.println("isSyncing :: onResult");
+
         _isSyncing = false;
     }
 
+    /**
+     *
+     * @param result
+     */
     @Override
     public void onError(Object result) {
+        System.out.println("isSyncing :: onError");
+
         _isSyncing = false;
     }
 
+    /**
+     *
+     * @param coin
+     */
     @Override
     public void onChainSynced(Object coin) {
+        System.out.println("isSyncing :: onChainSynced");
+
         _isSyncing = false;
+        _isSynced = true;
     }
 
+    /**
+     *
+     * @param addressStr
+     * @param value
+     * @param coin
+     */
     @Override
     public void onCoinsReceived(String addressStr, long value, Object coin) {
+        System.out.println("isSyncing :: onCoinsReceived");
+
         _isSyncing = false;
     }
 
+    /**
+     *
+     * @param coin
+     * @param pct
+     * @param blocksLeft
+     * @param date
+     */
     @Override
-    public void onBlocksDownloaded(Object coin, double pct, int blocksSoFar, Date date) {
+    public void onBlocksDownloaded(Object coin, double pct, int blocksLeft, Date date) {
 
+    }
+
+    /**
+     *
+     */
+    @Override
+    public List<CoinTransaction> getTransactionList() {
+        List<CoinTransaction> transactions = new ArrayList<>();
+
+        Set<Transaction> txs = _coin.getWallet().getTransactions(true);
+        for (Transaction tx : txs) {
+            Coin amount = tx.getValue(_coin.getWallet());
+
+            String hash = tx.getHash().toString();
+            String amountStr = amount.toPlainString();
+            String fee = "";
+
+            if (tx.getFee() != null) {
+                fee = tx.getFee().toPlainString();
+            }
+
+//            TransactionConfidence.ConfidenceType confidenceType = tx.getConfidence().getConfidenceType();
+//            System.out.println("Confidence : " + confidenceType);
+
+            CoinTransaction coinTransaction = new CoinTransaction(fee, hash, amountStr, tx.getUpdateTime());
+            transactions.add(coinTransaction);
+        }
+
+        return transactions;
     }
 }

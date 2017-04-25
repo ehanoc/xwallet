@@ -37,7 +37,7 @@ public class Bitcoin implements CurrencyCoin<Wallet> {
      */
     @Override
     public int getIconId() {
-        return 0;
+        return CoinManagerFactory.BITCOIN;
     }
 
     /**

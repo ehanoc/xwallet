@@ -1,5 +1,8 @@
 package com.bytetobyte.xwallet.service.coin;
 
+import com.bytetobyte.xwallet.service.ipcmodel.CoinTransaction;
+import com.bytetobyte.xwallet.service.ipcmodel.SpentValueMessage;
+
 import java.util.List;
 import java.util.Map;
 
@@ -8,13 +11,16 @@ import java.util.Map;
  */
 public interface CoinManager {
     void setup(CoinAction.CoinActionCallback callback);
-    void sendCoins(String address, long amount, CoinAction.CoinActionCallback callback);
+    void sendCoins(String address, String amount, CoinAction.CoinActionCallback callback);
     void onCoinsReceived();
 
     void onReady();
 
+    List<CoinTransaction> getTransactionList();
+
     String getBalanceFriendlyStr();
     long getBalanceValue();
+    SpentValueMessage applyTxFee(SpentValueMessage valueMessage);
 
     public CurrencyCoin getCurrencyCoin();
     public List<String> getCurrentAddresses();
@@ -24,4 +30,5 @@ public interface CoinManager {
     void recoverWalletBy(CoinAction.CoinActionCallback callback, String seed);
 
     boolean isSyncing();
+    boolean isSynced();
 }

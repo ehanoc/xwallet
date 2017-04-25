@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.bytetobyte.xwallet.views.CircleLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/circle_layout_id"
+        android:layout_gravity="center"
+        android:layout_width="140dp"
+        android:layout_height="140dp">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:layout_width="@dimen/wheel_menu_icon_size"
+                android:layout_height="@dimen/wheel_menu_icon_size"
+                android:rotation="240"
+                android:src="@drawable/ic_clock"
+                android:background="@android:color/transparent" />
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:rotation="0"
+                android:layout_width="@dimen/wheel_menu_icon_size"
+                android:layout_height="@dimen/wheel_menu_icon_size"
+                android:src="@drawable/ic_wallet"
+                android:background="@android:color/transparent" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:rotation="120"
+                android:layout_width="@dimen/wheel_menu_icon_size"
+                android:layout_height="@dimen/wheel_menu_icon_size"
+                android:src="@drawable/ic_news"
+                android:background="@android:color/transparent" />
+        </RelativeLayout>
+
+
+
+</com.bytetobyte.xwallet.views.CircleLayout>

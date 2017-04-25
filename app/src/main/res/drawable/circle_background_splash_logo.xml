@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:thickness="2dp"
+    android:useLevel="true"
+    android:shape="oval">
+
+    <solid android:color="@color/colorScreenBackground" />
+
+    <!--<size android:width="@dimen/wheelmenu_size"-->
+        <!--android:height="@dimen/wheelmenu_size" />-->
+</shape>

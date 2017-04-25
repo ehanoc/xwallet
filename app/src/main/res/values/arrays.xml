@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="colors">
+        <item>@android:color/holo_blue_bright</item>
+        <item>@android:color/holo_purple</item>
+        <item>@android:color/holo_orange_light</item>
+        <item>@android:color/holo_green_light</item>
+    </array>
+
+    <array name="titles">
+        <item>Flash</item>
+        <item>Battery</item>
+        <item>Gps</item>
+        <item>Bluetooth</item>
+    </array>
+</resources>

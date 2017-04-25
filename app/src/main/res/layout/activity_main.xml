@@ -1,0 +1,138 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorScreenBackground"
+    android:orientation="vertical"
+    tools:context=".ui.activity.MainActivity">
+
+    <LinearLayout
+        android:id="@+id/main_top_bar_layout"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/main_top_title_height">
+
+        <ImageView
+            android:src="@drawable/app_x"
+            android:layout_marginTop="2dp"
+            android:layout_width="@dimen/splash_app_name_x_size"
+            android:layout_height="@dimen/splash_app_name_x_size"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-smallcaps"
+            android:textSize="@dimen/splash_app_name_text_size"
+            android:textStyle="normal"
+            android:textColor="@android:color/white"
+            android:text="@string/wallet_str"
+            />
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_below="@+id/main_top_bar_layout"
+        android:layout_above="@+id/main_footer_container"
+        android:id="@+id/xwallet_content_layout"
+        android:elevation="2dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <!--<RelativeLayout-->
+        <!--android:id="@+id/xwallet_coin_"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content">-->
+
+        <!--<include-->
+            <!--android:id="@+id/xwallet_row_coin"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="@dimen/main_coin_row_background"-->
+            <!--layout="@layout/row_coin" />-->
+
+        <!--<com.github.mikephil.charting.charts.LineChart-->
+            <!--android:id="@+id/line_price_chart"-->
+            <!--android:layout_below="@+id/xwallet_row_coin"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="100dp" />-->
+
+        <!--<TextView-->
+            <!--android:id="@+id/xwallet_balance_text"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content" />-->
+    <!--</RelativeLayout>-->
+
+    <FrameLayout
+        android:id="@+id/main_footer_container"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+
+        android:orientation="horizontal"
+        android:gravity="right"
+        android:background="@color/colorContentBackgrounds"
+        android:layout_gravity="bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:layout_gravity="left|center_vertical"
+            android:background="@color/colorScreenBackground"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/main_footer_wheel_bg_bar">
+
+            <com.github.lzyzsd.circleprogress.ArcProgress
+                android:id="@+id/main_arc_progress"
+                android:background="@color/colorScreenBackground"
+                android:layout_marginTop="25dp"
+                android:layout_marginLeft="20dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                app:arc_max="100"
+                app:arc_finished_color="@color/colorPrimary"
+                app:arc_unfinished_color="@color/colorContentBackgrounds"
+                app:arc_progress="0"
+                app:arc_bottom_text="BTC Sync"/>
+
+            <TextView
+                android:layout_below="@+id/main_arc_progress"
+                android:id="@+id/main_status_textview"
+                android:gravity="center_vertical"
+                android:text="-- --"
+                android:textSize="@dimen/title_size"
+                android:textColor="@color/colorContentBackgrounds"
+                android:layout_width="@dimen/main_status_textview_width"
+                android:layout_height="match_parent" />
+
+        </RelativeLayout>
+
+        <com.bytetobyte.xwallet.views.WheelMenuLayout
+            android:id="@+id/wheelMenu"
+
+            android:layout_gravity="bottom|right"
+            android:layout_margin="@dimen/activity_vertical_margin"
+            app:dividers="3"
+            android:elevation="2dp"
+            android:rotation="0"
+            android:layout_width="@dimen/wheelmenu_size"
+            android:layout_height="@dimen/wheelmenu_size">
+
+            <ImageView
+                android:id="@+id/wheelmenu_background_menu"
+                android:layout_width="@dimen/wheelmenu_size"
+                android:layout_height="@dimen/wheelmenu_size"
+                android:visibility="visible"
+                android:src="@drawable/wheel_white_bg"
+                />
+
+            <include
+                layout="@layout/circle_lense" />
+
+            <include layout="@layout/circle_layout" />
+
+        </com.bytetobyte.xwallet.views.WheelMenuLayout>
+
+
+    </FrameLayout>
+
+</RelativeLayout>
