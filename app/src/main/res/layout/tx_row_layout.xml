@@ -54,7 +54,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <me.grantland.widget.AutofitTextView
+        <TextView
             android:layout_marginLeft="@dimen/txs_row_margin"
             android:gravity="center_vertical"
             android:id="@+id/txs_row_date_textview"

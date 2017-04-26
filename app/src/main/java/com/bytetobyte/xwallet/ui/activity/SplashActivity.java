@@ -12,7 +12,7 @@ import com.bytetobyte.xwallet.R;
 /**
  * Created by bruno on 05.04.17.
  */
-public class SplashActivity extends AppCompatActivity {
+public class SplashActivity extends XWalletBaseActivity {
 
     /**
      *

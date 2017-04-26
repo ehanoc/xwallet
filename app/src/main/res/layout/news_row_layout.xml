@@ -16,7 +16,7 @@
             <!--android:layout_width="match_parent"-->
             <!--android:layout_height="@dimen/news_row_image_height" />-->
 
-        <me.grantland.widget.AutofitTextView
+        <TextView
             android:autoLink="web"
             android:textColorLink="@color/colorSecondary"
             android:layout_marginLeft="2dp"

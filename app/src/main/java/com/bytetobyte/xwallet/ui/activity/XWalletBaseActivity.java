@@ -14,6 +14,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
 import com.bytetobyte.xwallet.service.BlockchainService;
+import com.bytetobyte.xwallet.service.coin.CoinManagerFactory;
 import com.bytetobyte.xwallet.service.ipcmodel.BlockDownloaded;
 import com.bytetobyte.xwallet.service.ipcmodel.CoinTransaction;
 import com.bytetobyte.xwallet.service.ipcmodel.SpentValueMessage;
@@ -35,15 +36,6 @@ public abstract class XWalletBaseActivity extends AppCompatActivity {
     public static final String ACTION_GENERATE_QR_CODE = "ACTION_GENERATE_QR_CODE";
 
     private Gson _gson;
-
-    protected abstract void onServiceReady();
-    protected abstract void onSyncReady(SyncedMessage syncedMessage);
-    protected abstract void onBlockDownloaded(BlockDownloaded block);
-    protected abstract void onFeeCalculated(SpentValueMessage feeSpentcal);
-    protected abstract void onTransactions(List<CoinTransaction> txs);
-
-    // News
-    public abstract String getNewsAuthToken();
 
     /**
      *
@@ -247,4 +239,17 @@ public abstract class XWalletBaseActivity extends AppCompatActivity {
         }
     };
 
+    protected void onServiceReady() {
+        syncChain(CoinManagerFactory.BITCOIN);
+    }
+
+    protected void onSyncReady(SyncedMessage syncedMessage) {}
+    protected void onBlockDownloaded(BlockDownloaded block) {}
+    protected void onFeeCalculated(SpentValueMessage feeSpentcal) {}
+    protected void onTransactions(List<CoinTransaction> txs) {}
+
+    // News
+    public String getNewsAuthToken() {
+        return null;
+    }
 }

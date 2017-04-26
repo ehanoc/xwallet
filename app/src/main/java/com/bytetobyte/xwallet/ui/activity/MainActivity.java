@@ -80,7 +80,7 @@ public class MainActivity extends XWalletBaseActivity implements TwitterAuthApi.
             chainListener.onServiceReady();
         }
 
-        syncChain(CoinManagerFactory.BITCOIN);
+        super.onServiceReady();
 //        Message sendMsg = Message.obtain(null, BlockchainService.IPC_MSG_WALLET_SYNC, CoinManagerFactory.BITCOIN, 0);
 //        sendMessage(sendMsg);
     }

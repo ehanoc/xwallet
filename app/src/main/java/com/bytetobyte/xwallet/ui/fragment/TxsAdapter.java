@@ -12,8 +12,6 @@ import com.bytetobyte.xwallet.service.ipcmodel.CoinTransaction;
 
 import java.util.List;
 
-import me.grantland.widget.AutofitTextView;
-
 /**
  * Created by bruno on 19.04.17.
  */
@@ -104,7 +102,7 @@ public class TxsAdapter extends RecyclerView.Adapter<TxsAdapter.ViewHolder> {
         public TextView _sentReceivedText;
         public TextView _statusText;
         public TextView _amountText;
-        public AutofitTextView _dateText;
+        public TextView _dateText;
 
         public ViewHolder(View v) {
             super(v);
@@ -112,7 +110,7 @@ public class TxsAdapter extends RecyclerView.Adapter<TxsAdapter.ViewHolder> {
             _sentReceivedText = (TextView) v.findViewById(R.id.txs_row_sent_received_label);
             _statusText = (TextView) v.findViewById(R.id.txs_row_status_textview);
             _amountText = (TextView) v.findViewById(R.id.txs_row_amount_text);
-            _dateText = (AutofitTextView) v.findViewById(R.id.txs_row_date_textview);
+            _dateText = (TextView) v.findViewById(R.id.txs_row_date_textview);
         }
 
         /**

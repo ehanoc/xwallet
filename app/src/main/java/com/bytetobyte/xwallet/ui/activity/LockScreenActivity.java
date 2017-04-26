@@ -9,19 +9,25 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bytetobyte.xwallet.R;
+import com.bytetobyte.xwallet.service.coin.CoinManagerFactory;
+import com.bytetobyte.xwallet.service.ipcmodel.BlockDownloaded;
+import com.bytetobyte.xwallet.service.ipcmodel.CoinTransaction;
+import com.bytetobyte.xwallet.service.ipcmodel.SpentValueMessage;
+import com.bytetobyte.xwallet.service.ipcmodel.SyncedMessage;
 import com.bytetobyte.xwallet.util.EncryptUtils;
 import com.bytetobyte.xwallet.views.WheelMenuLayout;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 /**
  * Created by bruno on 05.04.17.
  */
-public class LockScreenActivity extends AppCompatActivity {
+public class LockScreenActivity extends XWalletBaseActivity {
 
     public static final String SET_PIN_ACTION = "android.intent.action.SET_PIN_ACTION";
     public static final String UNLOCK_PIN_ACTION = "android.intent.action.UNLOCK_PIN_ACTION";
