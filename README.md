@@ -23,6 +23,42 @@ _**Service**_ (All wallet management; dedicated thread) **< ----- IPC  ----- >**
 
  - Feel free
  - Just keep clean dependencies of specific coin (only btc atm) on the client side.
+ 
+### Addin other currencies ? 
+
+- Service side
+- Pay attention to service structure.
+
+├── **service**
+
+│   ├── BlockchainService.java
+
+│   ├── **coin**
+
+│   │   ├── **bitcoin**
+
+│   │   │   ├── **actions**
+
+│   │   │   │   ├── BitcoinSendAction.java
+
+│   │   │   │   └── BitcoinSetupAction.java
+
+│   │   │   ├── Bitcoin.java
+
+│   │   │   ├── BitcoinManager.java
+
+│   │   │   ├── DownloadProgressListener.java
+
+│   │   │   └── WalletUtils.java
+
+│   │   ├── CoinAction.java (Interface)
+
+│   │   ├── CoinManagerFactory.java
+
+│   │   ├── CoinManager.java (Interface)
+
+│   │   └── CurrencyCoin.java (Interface)
+
 
 # License
 
