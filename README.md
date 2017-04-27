@@ -4,12 +4,14 @@ A pet project, a bitcoin wallet.
 
 - Thin Client (Partial chain sync)
 - No third-party servers
-
-![](https://raw.githubusercontent.com/BrunoAlexandreMendesMartins/xwallet/master/app/src/main/res/drawable/logo.png)
+- Open source
 
 ## **Techy Info**
 
 _**Service**_ (All wallet management; dedicated thread) **< ----- IPC  ----- >** _**Main Thread**_ (UI / Flow ) 
+
+##Contributions
+
 
 ## Dependencies Credits 
 
