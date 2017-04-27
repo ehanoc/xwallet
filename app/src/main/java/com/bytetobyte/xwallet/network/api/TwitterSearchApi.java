@@ -62,8 +62,6 @@ public class TwitterSearchApi extends AsyncTask<Void, Void, String>{
                 .addHeader("Accept-Encoding", "gzip")
                 .build();
 
-        System.out.println("Requesting : " + request.toString());
-
         String content = null;
         try {
             Response response = client.newCall(request).execute();
@@ -90,8 +88,6 @@ public class TwitterSearchApi extends AsyncTask<Void, Void, String>{
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
-
-        System.out.println("Twitter Result : " + s);
 
         try {
             Gson gson = new Gson();

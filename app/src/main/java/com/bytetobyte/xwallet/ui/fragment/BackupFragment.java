@@ -14,9 +14,7 @@ import com.bytetobyte.xwallet.BaseDialogFragment;
 import com.bytetobyte.xwallet.R;
 import com.bytetobyte.xwallet.service.coin.CoinManagerFactory;
 import com.bytetobyte.xwallet.service.ipcmodel.MnemonicSeedBackup;
-import com.bytetobyte.xwallet.ui.ViewContract;
 import com.bytetobyte.xwallet.ui.fragment.view.BackupFragmentView;
-import com.bytetobyte.xwallet.ui.fragment.view.RecoverFragmentView;
 
 /**
  * Created by bruno on 27.04.17.
@@ -58,8 +56,6 @@ public class BackupFragment extends BaseDialogFragment {
     @Override
     public void onResume() {
         super.onResume();
-
-        getBaseActivity().requestMnemonic(CoinManagerFactory.BITCOIN);
     }
 
     /**
@@ -69,6 +65,15 @@ public class BackupFragment extends BaseDialogFragment {
     @Override
     public void onMnemonicSeedBackup(MnemonicSeedBackup seedBackup) {
         _backupView.displayBackup(seedBackup);
+    }
+
+    /**
+     *
+     */
+    @Override
+    public void onServiceReady() {
+        super.onServiceReady();
+        getBaseActivity().requestMnemonic(CoinManagerFactory.BITCOIN);
     }
 
     /**

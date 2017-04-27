@@ -3,25 +3,23 @@ package com.bytetobyte.xwallet.service.coin.bitcoin;
 import com.bytetobyte.xwallet.service.coin.CoinManagerFactory;
 import com.bytetobyte.xwallet.service.coin.CurrencyCoin;
 
-import org.bitcoinj.core.Coin;
-import org.bitcoinj.core.Transaction;
+import org.bitcoinj.kits.WalletAppKit;
 import org.bitcoinj.wallet.Wallet;
-import org.bitcoinj.wallet.listeners.WalletCoinsReceivedEventListener;
 
 import java.io.File;
 
 /**
  * Created by bruno on 22.03.17.
  */
-public class Bitcoin implements CurrencyCoin<Wallet> {
+public class Bitcoin implements CurrencyCoin<WalletAppKit> {
 
     /**
      *
      */
     private File _dataDir = null;
     public static final String BITCOIN_DATA_DIR_NAME = "bitcoinDataDir";
-    private Wallet _wallet;
-    private Class<Wallet> _walletClassType;
+    private WalletAppKit _walletKit;
+    private Class<WalletAppKit> _walletKitClassType;
 
     /**
      *
@@ -73,8 +71,8 @@ public class Bitcoin implements CurrencyCoin<Wallet> {
      * @param wallet
      */
     @Override
-    public void setWallet(Wallet wallet) {
-        this._wallet = wallet;
+    public void setWallet(WalletAppKit wallet) {
+        this._walletKit = wallet;
     }
 
     /**
@@ -82,8 +80,7 @@ public class Bitcoin implements CurrencyCoin<Wallet> {
      * @return
      */
     @Override
-    public Wallet getWallet() {
-        return _wallet;
+    public WalletAppKit getWalletManager() {
+        return _walletKit;
     }
-
 }

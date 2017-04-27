@@ -4,6 +4,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -13,6 +14,7 @@ import android.os.RemoteException;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
+import com.bytetobyte.xwallet.R;
 import com.bytetobyte.xwallet.service.BlockchainService;
 import com.bytetobyte.xwallet.service.coin.CoinManagerFactory;
 import com.bytetobyte.xwallet.service.ipcmodel.BlockDownloaded;
@@ -283,9 +285,41 @@ public abstract class XWalletBaseActivity extends AppCompatActivity {
     protected void onFeeCalculated(SpentValueMessage feeSpentcal) {}
     protected void onTransactions(List<CoinTransaction> txs) {}
     protected void onMnemonicSeedBackup(MnemonicSeedBackup seedBackup) {}
+    protected void onLockPinResult(int requestCode, int resultCode) {};
 
     // News
     public String getNewsAuthToken() {
         return null;
+    }
+
+
+    /**
+     *
+     */
+    public void toLock(int requestCode) {
+        SharedPreferences prefs = getSharedPreferences(getString(R.string.app_name), MODE_PRIVATE);
+        String pinSet = prefs.getString(LockScreenActivity.PREFS_KEY_PIN, null);
+
+        String lockAction = LockScreenActivity.UNLOCK_PIN_ACTION;
+        if (pinSet == null) {
+            lockAction = LockScreenActivity.SET_PIN_ACTION;
+        }
+
+        Intent intent = new Intent(this, LockScreenActivity.class);
+        intent.setAction(lockAction);
+        startActivityForResult(intent, requestCode);
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+    }
+
+    /**
+     *
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        onLockPinResult(requestCode, resultCode);
     }
 }

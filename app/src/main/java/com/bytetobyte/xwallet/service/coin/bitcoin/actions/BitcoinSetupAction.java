@@ -53,7 +53,7 @@ public class BitcoinSetupAction extends DownloadProgressListener implements Coin
      *
      * @param currencyCoin
      */
-    public BitcoinSetupAction(CurrencyCoin<Wallet> currencyCoin) {
+    public BitcoinSetupAction(CurrencyCoin<WalletAppKit> currencyCoin) {
         this._bitcoin = (Bitcoin) currencyCoin;
         this._mnemonicSeed = null;
         this._date = null;
@@ -64,7 +64,7 @@ public class BitcoinSetupAction extends DownloadProgressListener implements Coin
      * @param currencyCoin
      * @param mnemonicSeed
      */
-    public BitcoinSetupAction(CurrencyCoin<Wallet> currencyCoin, String mnemonicSeed, Date creationDate) {
+    public BitcoinSetupAction(CurrencyCoin<WalletAppKit> currencyCoin, String mnemonicSeed, Date creationDate) {
         this._bitcoin = (Bitcoin) currencyCoin;
         this._mnemonicSeed = mnemonicSeed;
         this._date = creationDate;
@@ -109,17 +109,17 @@ public class BitcoinSetupAction extends DownloadProgressListener implements Coin
              */
             @Override
             protected void onSetupCompleted() {
-                if (_mnemonicSeed != null && _date != null) {
-                    _walletKit.peerGroup().setFastCatchupTimeSecs(_date.getTime());
-                } else {
-                    _walletKit.peerGroup().setFastCatchupTimeSecs(wallet().getEarliestKeyCreationTime());
-                }
-
                 // This is called in a background thread after startAndWait is called, as setting up various objects
                 // can do disk and network IO that may cause UI jank/stuttering in wallet apps if it were to be done
                 // on the main thread.
                 if (wallet().getKeyChainGroupSize() < 1)
                     wallet().importKey(new ECKey());
+
+                if (_mnemonicSeed != null && _date != null) {
+                    _walletKit.peerGroup().setFastCatchupTimeSecs(_date.getTime());
+                } else {
+                    _walletKit.peerGroup().setFastCatchupTimeSecs(wallet().getEarliestKeyCreationTime());
+                }
 
                 _walletKit.peerGroup().setBloomFilterFalsePositiveRate(0.0001);
 
@@ -147,7 +147,7 @@ public class BitcoinSetupAction extends DownloadProgressListener implements Coin
                     }
                 });
 
-                _bitcoin.setWallet(wallet);
+                _bitcoin.setWallet(_walletKit);
             }
         };
     }

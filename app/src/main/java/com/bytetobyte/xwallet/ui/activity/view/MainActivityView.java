@@ -89,7 +89,7 @@ public class MainActivityView implements MainViewContract {
      *
      */
     private void initSettingsBoom() {
-        int[] settingsBtns = {android.R.drawable.ic_menu_manage, android.R.drawable.ic_dialog_alert};
+        int[] settingsBtns = {R.drawable.ic_backup_black, R.drawable.ic_settings_backup_restore};
         String[] settingsStrs = { "Backup Wallet" , "Recover Wallet" };
 
 

@@ -8,6 +8,7 @@ import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.InsufficientMoneyException;
 import org.bitcoinj.core.Transaction;
+import org.bitcoinj.kits.WalletAppKit;
 import org.bitcoinj.wallet.SendRequest;
 import org.bitcoinj.wallet.Wallet;
 import org.bitcoinj.wallet.listeners.WalletCoinsSentEventListener;
@@ -31,7 +32,7 @@ public class BitcoinSendAction implements CoinAction<CoinAction.CoinActionCallba
      * @param amount
      * @param currencyCoin
      */
-    public BitcoinSendAction(String address, String amount, CurrencyCoin<Wallet> currencyCoin) {
+    public BitcoinSendAction(String address, String amount, CurrencyCoin<WalletAppKit> currencyCoin) {
         this._address = address;
         this._amount = amount;
         this._bitcoin = (Bitcoin) currencyCoin;
@@ -44,14 +45,14 @@ public class BitcoinSendAction implements CoinAction<CoinAction.CoinActionCallba
     @Override
     public void execute(final CoinActionCallback<CurrencyCoin>... callbacks) {
         this._callbacks = callbacks;
-        this._bitcoin.getWallet().addCoinsSentEventListener(this);
+        this._bitcoin.getWalletManager().wallet().addCoinsSentEventListener(this);
 
         Coin amountCoin = Coin.parseCoin(_amount);
-        Address addr = Address.fromBase58(_bitcoin.getWallet().getParams(), _address);
+        Address addr = Address.fromBase58(_bitcoin.getWalletManager().wallet().getParams(), _address);
 
         SendRequest sendRequest = SendRequest.to(addr, amountCoin);
         try {
-            _bitcoin.getWallet().sendCoins(sendRequest);
+            _bitcoin.getWalletManager().wallet().sendCoins(sendRequest);
         } catch (InsufficientMoneyException e) {
 
             for (CoinActionCallback<CurrencyCoin> callback : _callbacks) {

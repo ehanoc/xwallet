@@ -32,6 +32,8 @@ public interface CoinManager {
 
     void recoverWalletBy(CoinAction.CoinActionCallback callback, String seed, Date creationdDate);
 
+    void stopSync();
+
     boolean isSyncing();
     boolean isSynced();
 }

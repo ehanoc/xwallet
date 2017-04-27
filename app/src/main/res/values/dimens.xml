@@ -71,6 +71,7 @@
     <dimen name="recover_input_height">80dp</dimen>
     <dimen name="recover_set_date_text_size">18sp</dimen>
     <dimen name="recover_dialog_size">280dp</dimen>
+    <dimen name="recover_seed_input_text_size">12sp</dimen>
 
 
 </resources>

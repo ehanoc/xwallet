@@ -22,13 +22,8 @@ public class TwitterEntities {
 
         if (media != null) {
             for (TwitterMedia m : media) {
-                System.out.println(" media type : " + m.getType());
-
                 if (m.getType().equalsIgnoreCase("photo")) {
                     result = m;
-
-                    System.out.println(" photo : " + result.getMediaUrlHttps());
-
                     //break;
                 }
             }
