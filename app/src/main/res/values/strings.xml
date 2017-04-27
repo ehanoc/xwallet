@@ -8,4 +8,6 @@
     <string name="lock_confirm_pin_title">PLEASE CONFIRM</string>
     <string name="lock_enter_pin_title">PLEASE ENTER</string>
     <string name="lock_enter_pin">YOUR PIN</string>
+    <string name="recover_enter_seed_and_date">Please enter your recovery seed and the wallet\'s creation date (helps with faster chain sync)</string>
+    <string name="backup_wallet_seed_description">Keep this next set of words secret. Without it you won\'t be able to recover your wallet!</string>
 </resources>

@@ -188,7 +188,7 @@ public class BitcoinManager implements CoinManager, CoinAction.CoinActionCallbac
         DeterministicSeed seed = _coin.getWallet().getKeyChainSeed();
         String seedStr = Joiner.on(" ").join(seed.getMnemonicCode());
 
-        seedStr += " creation time:" + seed.getCreationTimeSeconds();
+       // seedStr += " creation time:" + seed.getCreationTimeSeconds();
 
         return seedStr;
 //        System.out.println("Seed words are: " + Joiner.on(" ").join(seed.getMnemonicCode()));
@@ -197,17 +197,31 @@ public class BitcoinManager implements CoinManager, CoinAction.CoinActionCallbac
 
     /**
      *
+     * @return
+     */
+    @Override
+    public Date getMnemonicSeedCreationDate() {
+        DeterministicSeed seed = _coin.getWallet().getKeyChainSeed();
+
+        Date date = new Date();
+        date.setTime(seed.getCreationTimeSeconds());
+
+        return date;
+    }
+
+    /**
+     *
      * @param callback
      * @param seed
      */
     @Override
-    public void recoverWalletBy(CoinAction.CoinActionCallback callback, String seed) {
+    public void recoverWalletBy(CoinAction.CoinActionCallback callback, String seed, Date creationDate) {
         System.out.println("isSyncing :: recoverWalletBy");
         _isSyncing = true;
 
         // illness bulk jewel deer chaos swing goose fetch patch blood acid call creation
         // creation time: 1490401216
-        BitcoinSetupAction setupAction = new BitcoinSetupAction(_coin, seed);
+        BitcoinSetupAction setupAction = new BitcoinSetupAction(_coin, seed, creationDate);
         setupAction.execute(callback, this);
     }
 

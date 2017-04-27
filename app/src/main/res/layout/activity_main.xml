@@ -7,29 +7,54 @@
     android:orientation="vertical"
     tools:context=".ui.activity.MainActivity">
 
-    <LinearLayout
+
+    <RelativeLayout
         android:id="@+id/main_top_bar_layout"
-        android:orientation="horizontal"
-        android:gravity="center"
+        android:gravity="center_vertical"
         android:layout_width="match_parent"
         android:layout_height="@dimen/main_top_title_height">
+        <LinearLayout
 
-        <ImageView
-            android:src="@drawable/app_x"
-            android:layout_marginTop="2dp"
-            android:layout_width="@dimen/splash_app_name_x_size"
-            android:layout_height="@dimen/splash_app_name_x_size"/>
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <TextView
+            <ImageView
+                android:src="@drawable/app_x"
+                android:layout_marginTop="2dp"
+                android:layout_width="@dimen/splash_app_name_x_size"
+                android:layout_height="@dimen/splash_app_name_x_size"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-smallcaps"
+                android:textSize="@dimen/splash_app_name_text_size"
+                android:textStyle="normal"
+                android:textColor="@android:color/white"
+                android:text="@string/wallet_str"
+                />
+        </LinearLayout>
+
+        <com.nightonke.boommenu.BoomMenuButton
+            android:id="@+id/main_settings_boom"
+            android:layout_marginRight="@dimen/txs_row_coin_right_margin"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:src="@android:drawable/ic_menu_manage"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-smallcaps"
-            android:textSize="@dimen/splash_app_name_text_size"
-            android:textStyle="normal"
-            android:textColor="@android:color/white"
-            android:text="@string/wallet_str"
+            android:layout_height="match_parent"
+            app:bmb_buttonEnum="ham"
+            app:bmb_piecePlaceEnum="piecePlace_ham_2"
+            app:bmb_buttonPlaceEnum="buttonPlace_ham_2"
+            app:bmb_normalColor="@color/colorScreenBackground"
+            app:bmb_buttonBottomMargin="100dp"
+            app:bmb_buttonLeftMargin="10dp"
+            app:bmb_buttonPlaceAlignmentEnum="buttonPlaceAlignment_center"
             />
-    </LinearLayout>
+
+    </RelativeLayout>
 
     <FrameLayout
         android:layout_below="@+id/main_top_bar_layout"
@@ -84,7 +109,7 @@
             <com.github.lzyzsd.circleprogress.ArcProgress
                 android:id="@+id/main_arc_progress"
                 android:background="@color/colorScreenBackground"
-                android:layout_marginTop="25dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginLeft="20dp"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
@@ -98,7 +123,7 @@
                 android:layout_below="@+id/main_arc_progress"
                 android:id="@+id/main_status_textview"
                 android:gravity="center_vertical"
-                android:text="-- --"
+                android:text=""
                 android:textSize="@dimen/title_size"
                 android:textColor="@color/colorContentBackgrounds"
                 android:layout_width="@dimen/main_status_textview_width"

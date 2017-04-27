@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 
 import com.bytetobyte.xwallet.service.ipcmodel.BlockDownloaded;
 import com.bytetobyte.xwallet.service.ipcmodel.CoinTransaction;
+import com.bytetobyte.xwallet.service.ipcmodel.MnemonicSeedBackup;
 import com.bytetobyte.xwallet.service.ipcmodel.SpentValueMessage;
 import com.bytetobyte.xwallet.service.ipcmodel.SyncedMessage;
 import com.bytetobyte.xwallet.ui.activity.XWalletBaseActivity;
@@ -78,4 +79,8 @@ public abstract class BaseFragment extends Fragment implements BlockchainClientL
 
     }
 
+    @Override
+    public void onMnemonicSeedBackup(MnemonicSeedBackup seedBackup) {
+
+    }
 }

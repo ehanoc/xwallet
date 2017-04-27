@@ -1,4 +1,4 @@
-package com.bytetobyte.xwallet.ui.fragment;
+package com.bytetobyte.xwallet.ui.adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;

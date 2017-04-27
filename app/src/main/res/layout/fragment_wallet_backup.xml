@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:padding="@dimen/title_padding"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/recover_dialog_size">
+
+        <TextView
+            android:layout_alignParentTop="true"
+            android:textColor="@color/colorAccent"
+            android:id="@+id/backup_text_description"
+            android:text="@string/backup_wallet_seed_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:layout_below="@+id/backup_text_description"
+            android:layout_marginTop="@dimen/appbar_padding_top"
+            android:weightSum="10"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_weight="6"
+                android:textColor="@color/colorSecondary"
+                android:id="@+id/backup_seed_ouput"
+                android:textStyle="bold"
+                android:layout_below="@+id/backup_text_description"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/recover_input_height" />
+
+            <ImageView
+                android:layout_weight="4"
+                android:id="@+id/backup_copy_seed"
+                android:src="@drawable/ic_copy_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+
+
+    </RelativeLayout>
+
+</RelativeLayout>

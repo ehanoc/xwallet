@@ -13,6 +13,7 @@ import com.bytetobyte.xwallet.network.api.models.TwitterAuthToken;
 import com.bytetobyte.xwallet.service.coin.CoinManagerFactory;
 import com.bytetobyte.xwallet.service.ipcmodel.BlockDownloaded;
 import com.bytetobyte.xwallet.service.ipcmodel.CoinTransaction;
+import com.bytetobyte.xwallet.service.ipcmodel.MnemonicSeedBackup;
 import com.bytetobyte.xwallet.service.ipcmodel.SpentValueMessage;
 import com.bytetobyte.xwallet.service.ipcmodel.SyncedMessage;
 import com.bytetobyte.xwallet.ui.MainViewContract;
@@ -29,8 +30,12 @@ import java.util.List;
  */
 public class MainActivity extends XWalletBaseActivity implements TwitterAuthApi.AuthCallback {
 
-    public static final int SEND_BOOM_ID = 0;
-    public static final int RECEIVE_BOOM_ID = 1;
+    // main wheel boom
+    public static final int SEND_BOOM_INDEX = 0;
+    public static final int RECEIVE_BOOM_INDEX = 1;
+    // setting boom
+    public static final int BACKUP_BOOM_INDEX = 0;
+    public static final int RECOVER_BOOM_INDEX = 1;
 
     //
     private MainViewContract _mainView;
@@ -129,6 +134,12 @@ public class MainActivity extends XWalletBaseActivity implements TwitterAuthApi.
     protected void onTransactions(List<CoinTransaction> txs) {
         BlockchainClientListener frag = (BlockchainClientListener) getSupportFragmentManager().findFragmentById(R.id.xwallet_content_layout);
         frag.onTransactions(txs);
+    }
+
+    @Override
+    protected void onMnemonicSeedBackup(MnemonicSeedBackup seedBackup) {
+        BlockchainClientListener frag = (BlockchainClientListener) getSupportFragmentManager().findFragmentById(R.id.xwallet_content_layout);
+        frag.onMnemonicSeedBackup(seedBackup);
     }
 
     /**

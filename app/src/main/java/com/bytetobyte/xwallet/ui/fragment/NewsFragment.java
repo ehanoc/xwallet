@@ -13,6 +13,7 @@ import com.bytetobyte.xwallet.R;
 import com.bytetobyte.xwallet.network.api.TwitterSearchApi;
 import com.bytetobyte.xwallet.network.api.models.TwitterSearchResult;
 import com.bytetobyte.xwallet.network.api.models.TwitterSearchStatuses;
+import com.bytetobyte.xwallet.ui.adapters.NewsAdapter;
 
 import java.util.List;
 

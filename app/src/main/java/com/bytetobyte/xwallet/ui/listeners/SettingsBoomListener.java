@@ -1,23 +1,19 @@
 package com.bytetobyte.xwallet.ui.listeners;
 
-import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentTransaction;
 
-import com.bytetobyte.xwallet.ui.activity.MainActivity;
 import com.bytetobyte.xwallet.R;
-import com.bytetobyte.xwallet.ui.fragment.ReceiveFragment;
-import com.bytetobyte.xwallet.ui.fragment.SendFragment;
+import com.bytetobyte.xwallet.ui.activity.MainActivity;
+import com.bytetobyte.xwallet.ui.fragment.BackupFragment;
+import com.bytetobyte.xwallet.ui.fragment.RecoverFragment;
 import com.nightonke.boommenu.BoomButtons.BoomButton;
 import com.nightonke.boommenu.OnBoomListener;
 
-import java.util.List;
-
 /**
- * Created by bruno on 15.04.17.
+ * Created by bruno on 26.04.17.
  */
-public class MainBoomListener implements OnBoomListener {
-
+public class SettingsBoomListener implements OnBoomListener {
     //
     private final MainActivity _mainAct;
 
@@ -25,7 +21,7 @@ public class MainBoomListener implements OnBoomListener {
      *
      * @param activity
      */
-    public MainBoomListener(MainActivity activity) {
+    public SettingsBoomListener(MainActivity activity) {
         this._mainAct = activity;
     }
 
@@ -39,22 +35,12 @@ public class MainBoomListener implements OnBoomListener {
         DialogFragment newContent = null;
 
         switch (index) {
-            case MainActivity.SEND_BOOM_INDEX:
-                newContent = new SendFragment();
+            case MainActivity.BACKUP_BOOM_INDEX:
+                newContent = new BackupFragment();
                 break;
 
-            case MainActivity.RECEIVE_BOOM_INDEX:
-                if (_mainAct.getLastSyncedMessage() == null) return;
-
-                List<String> addrs = _mainAct.getLastSyncedMessage().getAddresses();
-                if (addrs.size() > 0) {
-                    String lastAddr = addrs.get(addrs.size() - 1);
-                    newContent = new ReceiveFragment();
-
-                    Bundle receiveData = new Bundle();
-                    receiveData.putString(ReceiveFragment.DATA_KEY_ADDR, lastAddr);
-                    newContent.setArguments(receiveData);
-                }
+            case MainActivity.RECOVER_BOOM_INDEX:
+                newContent = new RecoverFragment();
                 break;
 
             default:

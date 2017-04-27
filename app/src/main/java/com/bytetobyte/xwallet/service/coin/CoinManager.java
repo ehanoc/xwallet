@@ -3,6 +3,7 @@ package com.bytetobyte.xwallet.service.coin;
 import com.bytetobyte.xwallet.service.ipcmodel.CoinTransaction;
 import com.bytetobyte.xwallet.service.ipcmodel.SpentValueMessage;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -27,7 +28,9 @@ public interface CoinManager {
     public Map<String, String> getAddressesKeys();
 
     public String getMnemonicSeed();
-    void recoverWalletBy(CoinAction.CoinActionCallback callback, String seed);
+    public Date getMnemonicSeedCreationDate();
+
+    void recoverWalletBy(CoinAction.CoinActionCallback callback, String seed, Date creationdDate);
 
     boolean isSyncing();
     boolean isSynced();

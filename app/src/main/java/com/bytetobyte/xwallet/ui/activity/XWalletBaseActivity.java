@@ -17,6 +17,8 @@ import com.bytetobyte.xwallet.service.BlockchainService;
 import com.bytetobyte.xwallet.service.coin.CoinManagerFactory;
 import com.bytetobyte.xwallet.service.ipcmodel.BlockDownloaded;
 import com.bytetobyte.xwallet.service.ipcmodel.CoinTransaction;
+import com.bytetobyte.xwallet.service.ipcmodel.MnemonicSeedBackup;
+import com.bytetobyte.xwallet.service.ipcmodel.RecoverWalletMessage;
 import com.bytetobyte.xwallet.service.ipcmodel.SpentValueMessage;
 import com.bytetobyte.xwallet.service.ipcmodel.SyncedMessage;
 import com.google.gson.Gson;
@@ -24,6 +26,7 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -146,6 +149,23 @@ public abstract class XWalletBaseActivity extends AppCompatActivity {
 
     /**
      *
+     * @param coinId
+     * @param seed
+     * @param creationDate
+     */
+    public void recoverWallet(int coinId, String seed, Date creationDate) {
+        RecoverWalletMessage recoverWalletMessage = new RecoverWalletMessage(seed, creationDate);
+
+        Gson gson = new Gson();
+        String jsonStr = gson.toJson(recoverWalletMessage);
+
+        Message recoverMsg = Message.obtain(null, BlockchainService.IPC_MSG_WALLET_RECOVER, coinId, 0);
+        recoverMsg.getData().putString(BlockchainService.IPC_BUNDLE_DATA_KEY, jsonStr);
+        sendMessage(recoverMsg);
+    }
+
+    /**
+     *
      */
     public void syncChain(int coinId) {
         Message sendMsg = Message.obtain(null, BlockchainService.IPC_MSG_WALLET_SYNC, coinId, 0);
@@ -158,6 +178,15 @@ public abstract class XWalletBaseActivity extends AppCompatActivity {
      */
     public void requestTxList(int coinId) {
         Message sendMsg = Message.obtain(null, BlockchainService.IPC_MSG_WALLET_TRANSACTION_LIST, coinId, 0);
+        sendMessage(sendMsg);
+    }
+
+    /**
+     *
+     * @param coinId
+     */
+    public void requestMnemonic(int coinId) {
+        Message sendMsg = Message.obtain(null, BlockchainService.IPC_MSG_WALLET_MNENOMIC_SEED, coinId, 0);
         sendMessage(sendMsg);
     }
 
@@ -199,6 +228,12 @@ public abstract class XWalletBaseActivity extends AppCompatActivity {
                     Type listType = new TypeToken<ArrayList<CoinTransaction>>(){}.getType();
                     List<CoinTransaction> txs = _gson.fromJson(bundledData, listType);
                     onTransactions(txs);
+                    break;
+
+                case BlockchainService.IPC_MSG_WALLET_MNENOMIC_SEED:
+                    bundledData = msg.getData().getString(BlockchainService.IPC_BUNDLE_DATA_KEY);
+                    MnemonicSeedBackup seedBackup = _gson.fromJson(bundledData, MnemonicSeedBackup.class);
+                    onMnemonicSeedBackup(seedBackup);
                     break;
 
                 default:
@@ -247,6 +282,7 @@ public abstract class XWalletBaseActivity extends AppCompatActivity {
     protected void onBlockDownloaded(BlockDownloaded block) {}
     protected void onFeeCalculated(SpentValueMessage feeSpentcal) {}
     protected void onTransactions(List<CoinTransaction> txs) {}
+    protected void onMnemonicSeedBackup(MnemonicSeedBackup seedBackup) {}
 
     // News
     public String getNewsAuthToken() {

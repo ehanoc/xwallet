@@ -19,6 +19,26 @@
 
         <item name="android:editTextStyle">@android:style/TextAppearance.Holo.Widget.EditText</item>
         <item name="android:editTextBackground">@android:style/TextAppearance.Holo.Widget.EditText</item>
+
+        <item name="android:datePickerStyle">@android:style/Widget.DatePicker</item>
+    </style>
+
+    <style name="PickerDialogStyle" parent="BetterPickersRadialTimePickerDialog.PrimaryColor">
+        <item name="bpPreHeaderBackgroundColor">@color/colorScreenBackground</item>
+        <item name="bpHeaderBackgroundColor">@color/colorContentBackgrounds</item>
+        <item name="bpHeaderSelectedTextColor">@color/colorSecondary</item>
+        <item name="bpHeaderUnselectedTextColor">@color/colorAccent</item>
+
+        <item name="bpBodyBackgroundColor">@color/colorContentBackgrounds</item>
+        <item name="bpBodySelectedTextColor">@color/colorSecondary</item>
+        <item name="bpBodyUnselectedTextColor">@android:color/white</item>
+
+        <item name="bpRadialBackgroundColor">@color/colorContentBackgrounds</item>
+        <item name="bpRadialTextColor">@color/colorPrimary</item>
+        <item name="bpRadialPointerColor">@android:color/black</item>
+
+        <item name="bpButtonsBackgroundColor">@color/colorContentBackgrounds</item>
+        <item name="bpButtonsTextColor">@color/colorSecondary</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="AppTheme" />

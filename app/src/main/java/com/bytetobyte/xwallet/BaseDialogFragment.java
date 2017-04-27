@@ -5,6 +5,7 @@ import android.support.v4.app.DialogFragment;
 
 import com.bytetobyte.xwallet.service.ipcmodel.BlockDownloaded;
 import com.bytetobyte.xwallet.service.ipcmodel.CoinTransaction;
+import com.bytetobyte.xwallet.service.ipcmodel.MnemonicSeedBackup;
 import com.bytetobyte.xwallet.service.ipcmodel.SpentValueMessage;
 import com.bytetobyte.xwallet.service.ipcmodel.SyncedMessage;
 import com.bytetobyte.xwallet.ui.activity.MainActivity;
@@ -59,6 +60,11 @@ public class BaseDialogFragment extends DialogFragment implements BlockchainClie
 
     @Override
     public void onTransactions(List<CoinTransaction> txs) {
+
+    }
+
+    @Override
+    public void onMnemonicSeedBackup(MnemonicSeedBackup seedBackup) {
 
     }
 }

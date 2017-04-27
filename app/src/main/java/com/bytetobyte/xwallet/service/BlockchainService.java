@@ -14,6 +14,8 @@ import com.bytetobyte.xwallet.service.coin.CoinManagerFactory;
 import com.bytetobyte.xwallet.service.coin.CurrencyCoin;
 import com.bytetobyte.xwallet.service.ipcmodel.BlockDownloaded;
 import com.bytetobyte.xwallet.service.ipcmodel.CoinTransaction;
+import com.bytetobyte.xwallet.service.ipcmodel.MnemonicSeedBackup;
+import com.bytetobyte.xwallet.service.ipcmodel.RecoverWalletMessage;
 import com.bytetobyte.xwallet.service.ipcmodel.SpentValueMessage;
 import com.bytetobyte.xwallet.service.ipcmodel.SyncedMessage;
 import com.google.gson.Gson;
@@ -37,6 +39,7 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
     public static final int IPC_MSG_WALLET_BLOCK_DOWNLOADED = 0x3;
     public static final int IPC_MSG_WALLET_CALCULATE_FEE = 0x4;
     public static final int IPC_MSG_WALLET_TRANSACTION_LIST = 0x5;
+    public static final int IPC_MSG_WALLET_MNENOMIC_SEED = 0x6;
 
     // ###############################
     // IPC BUNDLE DATA
@@ -211,13 +214,15 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
                     break;
 
                 case IPC_MSG_WALLET_RECOVER:
-                    _coinManager.recoverWalletBy(BlockchainService.this, "illness bulk jewel deer chaos swing goose fetch patch blood acid call creation");
+                    RecoverWalletMessage recoverMsg = _gson.fromJson(msg.getData().getString(IPC_BUNDLE_DATA_KEY), RecoverWalletMessage.class);
+
+                    // illness bulk jewel deer chaos swing goose fetch patch blood acid call creation
+                    _coinManager.recoverWalletBy(BlockchainService.this, recoverMsg.getSeed(), recoverMsg.getDate());
                     break;
 
                 case IPC_MSG_WALLET_SEND_AMOUNT:
                     String spentJson = msg.getData().getString(IPC_BUNDLE_DATA_KEY);
                     SpentValueMessage spentValueMsg = _gson.fromJson(spentJson, SpentValueMessage.class);
-
                     _coinManager.sendCoins(spentValueMsg.getAddress(), spentValueMsg.getAmount(), BlockchainService.this);
                     break;
 
@@ -235,10 +240,19 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
                 case IPC_MSG_WALLET_TRANSACTION_LIST:
                     List<CoinTransaction> txs = _coinManager.getTransactionList();
 
-
                     Message txReply = Message.obtain(null, IPC_MSG_WALLET_TRANSACTION_LIST);
                     txReply.getData().putString(IPC_BUNDLE_DATA_KEY, _gson.toJson(txs));
                     replyMessage(txReply);
+                    break;
+
+                case IPC_MSG_WALLET_MNENOMIC_SEED:
+                    String seed = _coinManager.getMnemonicSeed();
+                    Date seedCreationDate = _coinManager.getMnemonicSeedCreationDate();
+
+                    MnemonicSeedBackup seedBackup = new MnemonicSeedBackup(seed, seedCreationDate);
+                    Message seedReplyMsg = Message.obtain(null, IPC_MSG_WALLET_MNENOMIC_SEED);
+                    seedReplyMsg.getData().putString(IPC_BUNDLE_DATA_KEY, _gson.toJson(seedBackup));
+                    replyMessage(seedReplyMsg);
                     break;
 
                 default:

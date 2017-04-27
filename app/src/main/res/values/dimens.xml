@@ -3,7 +3,7 @@
     <dimen name="inner_radius">48dp</dimen>
     <dimen name="outer_radius">140dp</dimen>
     <dimen name="title_padding">12dp</dimen>
-    <dimen name="title_size">8pt</dimen>
+    <dimen name="title_size">6sp</dimen>
     <dimen name="appbar_padding_top">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">8dp</dimen>
@@ -66,6 +66,11 @@
     <dimen name="receive_qr_size">130dp</dimen>
     <dimen name="receive_amount_editbox_width">200dp</dimen>
     <dimen name="receive_addr_text_size">12sp</dimen>
+
+    <!-- RECOVER -->
+    <dimen name="recover_input_height">80dp</dimen>
+    <dimen name="recover_set_date_text_size">18sp</dimen>
+    <dimen name="recover_dialog_size">280dp</dimen>
 
 
 </resources>

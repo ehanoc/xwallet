@@ -30,6 +30,7 @@ import org.bitcoinj.wallet.listeners.WalletCoinsReceivedEventListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -42,6 +43,7 @@ public class BitcoinSetupAction extends DownloadProgressListener implements Coin
 
     private final Bitcoin _bitcoin;
     private final String _mnemonicSeed;
+    private final Date _date;
 
     private WalletAppKit _walletKit;
     private CoinActionCallback<CurrencyCoin>[] _callbacks;
@@ -55,6 +57,7 @@ public class BitcoinSetupAction extends DownloadProgressListener implements Coin
     public BitcoinSetupAction(CurrencyCoin<Wallet> currencyCoin) {
         this._bitcoin = (Bitcoin) currencyCoin;
         this._mnemonicSeed = null;
+        this._date = null;
     }
 
     /**
@@ -62,9 +65,10 @@ public class BitcoinSetupAction extends DownloadProgressListener implements Coin
      * @param currencyCoin
      * @param mnemonicSeed
      */
-    public BitcoinSetupAction(CurrencyCoin<Wallet> currencyCoin, String mnemonicSeed) {
+    public BitcoinSetupAction(CurrencyCoin<Wallet> currencyCoin, String mnemonicSeed, Date creationDate) {
         this._bitcoin = (Bitcoin) currencyCoin;
         this._mnemonicSeed = mnemonicSeed;
+        this._date = creationDate;
     }
 
     /**
@@ -106,11 +110,20 @@ public class BitcoinSetupAction extends DownloadProgressListener implements Coin
              */
             @Override
             protected void onSetupCompleted() {
-                if (_mnemonicSeed != null) {
-                    _walletKit.peerGroup().setFastCatchupTimeSecs(1413414000);
-                } else {
-                    _walletKit.peerGroup().setFastCatchupTimeSecs(wallet().getEarliestKeyCreationTime());
-                }
+//                @SuppressLint("SimpleDateFormat")
+//                SimpleDateFormat datetimeFormatter1 = new SimpleDateFormat("yyyy-MM-dd");
+//                Date lFromDate1 = null;
+//                try {
+//                    lFromDate1 = datetimeFormatter1.parse("2017-01-01");
+//                } catch (ParseException e) {
+//                    e.printStackTrace();
+//                }
+//
+//                if (_mnemonicSeed != null) {
+//                    _walletKit.peerGroup().setFastCatchupTimeSecs(lFromDate1.getTime());
+//                } else {
+//                    _walletKit.peerGroup().setFastCatchupTimeSecs(lFromDate1.getTime());
+//                }
 
                 // This is called in a background thread after startAndWait is called, as setting up various objects
                 // can do disk and network IO that may cause UI jank/stuttering in wallet apps if it were to be done
@@ -195,11 +208,14 @@ public class BitcoinSetupAction extends DownloadProgressListener implements Coin
         @SuppressLint("SimpleDateFormat")
         SimpleDateFormat datetimeFormatter1 = new SimpleDateFormat("yyyy-MM-dd");
 
-        Date lFromDate1 = null;
-        try {
-            lFromDate1 = datetimeFormatter1.parse(Constants.EARLIEST_HD_WALLET_DATE);
-        } catch (ParseException e) {
-            e.printStackTrace();
+        Date lFromDate1 = _date;
+
+        if (lFromDate1 == null) {
+            try {
+                lFromDate1 = datetimeFormatter1.parse(Constants.EARLIEST_HD_WALLET_DATE);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         }
 
         System.out.println("earlist date  :" + lFromDate1.getTime() / 1000);

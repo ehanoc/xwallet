@@ -9,9 +9,11 @@ import com.bytetobyte.xwallet.R;
 import com.bytetobyte.xwallet.ui.MainViewContract;
 import com.bytetobyte.xwallet.ui.activity.MainActivity;
 import com.bytetobyte.xwallet.ui.listeners.MainBoomListener;
+import com.bytetobyte.xwallet.ui.listeners.SettingsBoomListener;
 import com.bytetobyte.xwallet.views.CircleLayout;
 import com.bytetobyte.xwallet.views.WheelMenuLayout;
 import com.github.lzyzsd.circleprogress.ArcProgress;
+import com.nightonke.boommenu.BoomButtons.HamButton;
 import com.nightonke.boommenu.BoomButtons.SimpleCircleButton;
 import com.nightonke.boommenu.BoomMenuButton;
 
@@ -30,6 +32,7 @@ public class MainActivityView implements MainViewContract {
     private FrameLayout _content;
     private BadgeView _badgeView;
     private BoomMenuButton _bmb;
+    private BoomMenuButton _settingsBmb;
 
     /**
      *
@@ -44,7 +47,8 @@ public class MainActivityView implements MainViewContract {
      */
     @Override
     public void initViews() {
-        initMenuBoom();
+        initCircleMenuBoom();
+        initSettingsBoom();
 
         _chainArcProgress = (ArcProgress) _act.findViewById(R.id.main_arc_progress);
         _lense = (CircleImageView) _act.findViewById(R.id.lense_middle_image);
@@ -84,7 +88,26 @@ public class MainActivityView implements MainViewContract {
     /**
      *
      */
-    private void initMenuBoom() {
+    private void initSettingsBoom() {
+        int[] settingsBtns = {android.R.drawable.ic_menu_manage, android.R.drawable.ic_dialog_alert};
+        String[] settingsStrs = { "Backup Wallet" , "Recover Wallet" };
+
+
+        _settingsBmb = (BoomMenuButton) _act.findViewById(R.id.main_settings_boom);
+        for (int i = 0; i < _settingsBmb.getButtonPlaceEnum().buttonNumber(); i++) {
+            _settingsBmb.addBuilder(new HamButton.Builder()
+                    .normalImageRes(settingsBtns[i])
+                    .normalText(settingsStrs[i])
+            );
+        }
+
+        _settingsBmb.setOnBoomListener(new SettingsBoomListener(_act));
+    }
+
+    /**
+     *
+     */
+    private void initCircleMenuBoom() {
         int[] boomsButtons = { R.drawable.ic_send, R.drawable.ic_receive};
 
         _bmb = (BoomMenuButton) _act.findViewById(R.id.bmb);
@@ -103,6 +126,6 @@ public class MainActivityView implements MainViewContract {
      */
     @Override
     public void setSyncProgress(int progress) {
-        _chainArcProgress.setProgress(100);
+        _chainArcProgress.setProgress(progress);
     }
 }

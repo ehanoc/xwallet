@@ -12,6 +12,7 @@ import com.bytetobyte.xwallet.BaseFragment;
 import com.bytetobyte.xwallet.R;
 import com.bytetobyte.xwallet.service.coin.CoinManagerFactory;
 import com.bytetobyte.xwallet.service.ipcmodel.CoinTransaction;
+import com.bytetobyte.xwallet.ui.adapters.TxsAdapter;
 
 import java.util.ArrayList;
 import java.util.Collections;

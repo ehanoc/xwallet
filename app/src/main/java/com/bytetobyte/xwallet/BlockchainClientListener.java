@@ -2,6 +2,7 @@ package com.bytetobyte.xwallet;
 
 import com.bytetobyte.xwallet.service.ipcmodel.BlockDownloaded;
 import com.bytetobyte.xwallet.service.ipcmodel.CoinTransaction;
+import com.bytetobyte.xwallet.service.ipcmodel.MnemonicSeedBackup;
 import com.bytetobyte.xwallet.service.ipcmodel.SpentValueMessage;
 import com.bytetobyte.xwallet.service.ipcmodel.SyncedMessage;
 
@@ -16,4 +17,5 @@ public interface BlockchainClientListener {
       void onBlockDownloaded(BlockDownloaded block);
       void onFeeCalculated(SpentValueMessage feeSpentcal);
       void onTransactions(List<CoinTransaction> txs);
+      void onMnemonicSeedBackup(MnemonicSeedBackup seedBackup);
 }
