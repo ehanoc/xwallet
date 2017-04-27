@@ -17,7 +17,10 @@ A pet project, a bitcoin wallet.
 
 _**Service**_ (All wallet management; dedicated thread) **< ----- IPC  ----- >** _**Main Thread**_ (UI / Flow ) 
 
-##Contributions
+## Contributions
+
+ - Feel free
+ - Just keep clean dependencies of specific coin (only btc atm) on the client side.
 
 
 ## Dependencies Credits 
