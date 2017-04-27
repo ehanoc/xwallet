@@ -24,7 +24,7 @@ _**Service**_ (All wallet management; dedicated thread) **< ----- IPC  ----- >**
  - Feel free
  - Just keep clean dependencies of specific coin (only btc atm) on the client side.
  
-### Addin other currencies ? 
+### Adding other currencies ? 
 
 - Service side
 - Pay attention to service structure.
