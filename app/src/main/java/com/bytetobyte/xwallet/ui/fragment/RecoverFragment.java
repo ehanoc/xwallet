@@ -16,6 +16,8 @@ import com.codetroopers.betterpickers.calendardatepicker.MonthAdapter;
 import java.util.Calendar;
 import java.util.Date;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
 /**
  * Created by bruno on 26.04.17.
  */
@@ -88,8 +90,27 @@ public class RecoverFragment extends BaseDialogFragment implements CalendarDateP
      *
      * @param seed
      */
-    public void startWalletRecovery(String seed) {
-        getBaseActivity().recoverWallet(CoinManagerFactory.BITCOIN, seed, _lastDateSet);
+    public void promptWalletRecovery(final String seed) {
+        new SweetAlertDialog(getBaseActivity(), SweetAlertDialog.NORMAL_TYPE)
+                .setTitleText("Recovery")
+                .setContentText("You sure you want to recover wallet from the seed : " + seed)
+                .setConfirmText("Yes, Recover!")
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        sDialog.dismissWithAnimation();
+                        getBaseActivity().recoverWallet(CoinManagerFactory.BITCOIN, seed, _lastDateSet);
+                        getBaseActivity().showMenuSelection(0);
+                    }
+                })
+                .setCancelText("Cancel")
+                .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        sweetAlertDialog.cancel();
+                    }
+                })
+                .show();
     }
 
 }

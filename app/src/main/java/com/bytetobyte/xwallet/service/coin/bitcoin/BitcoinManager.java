@@ -14,7 +14,6 @@ import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.ECKey;
 import org.bitcoinj.core.Transaction;
-import org.bitcoinj.core.TransactionConfidence;
 import org.bitcoinj.wallet.DeterministicSeed;
 import org.bitcoinj.wallet.SendRequest;
 import org.bitcoinj.wallet.Wallet;
@@ -91,14 +90,14 @@ public class BitcoinManager implements CoinManager, CoinAction.CoinActionCallbac
     public String getBalanceFriendlyStr() {
         //send test coins back to : mwCwTceJvYV27KXBc3NJZys6CjsgsoeHmf
 
-        Coin balance = _coin.getWallet().getBalance(Wallet.BalanceType.ESTIMATED);
+        Coin balance = _coin.getWalletManager().wallet().getBalance(Wallet.BalanceType.ESTIMATED);
 
         String balanceStatus =
                 "Friendly balance : " + balance.toFriendlyString()
-                + " Estimated : " + _coin.getWallet().getBalance(Wallet.BalanceType.ESTIMATED)
-                + " Available : " + _coin.getWallet().getBalance(Wallet.BalanceType.AVAILABLE)
-                + " Available Spendable : " + _coin.getWallet().getBalance(Wallet.BalanceType.AVAILABLE_SPENDABLE)
-                + " Estimated Spendable : " + _coin.getWallet().getBalance(Wallet.BalanceType.ESTIMATED_SPENDABLE);
+                + " Estimated : " + _coin.getWalletManager().wallet().getBalance(Wallet.BalanceType.ESTIMATED)
+                + " Available : " + _coin.getWalletManager().wallet().getBalance(Wallet.BalanceType.AVAILABLE)
+                + " Available Spendable : " + _coin.getWalletManager().wallet().getBalance(Wallet.BalanceType.AVAILABLE_SPENDABLE)
+                + " Estimated Spendable : " + _coin.getWalletManager().wallet().getBalance(Wallet.BalanceType.ESTIMATED_SPENDABLE);
 
         return balance.toPlainString();
     }
@@ -111,7 +110,7 @@ public class BitcoinManager implements CoinManager, CoinAction.CoinActionCallbac
     @Override
     public SpentValueMessage applyTxFee(SpentValueMessage valueMessage) {
         Coin amountCoin = Coin.parseCoin(valueMessage.getAmount());
-        Address addr = Address.fromBase58(_coin.getWallet().getParams(), valueMessage.getAddress());
+        Address addr = Address.fromBase58(_coin.getWalletManager().wallet().getParams(), valueMessage.getAddress());
         SendRequest sendRequest = SendRequest.to(addr, amountCoin);
 
         valueMessage.setTxFee(sendRequest.feePerKb.toPlainString());
@@ -128,7 +127,7 @@ public class BitcoinManager implements CoinManager, CoinAction.CoinActionCallbac
      */
     @Override
     public long getBalanceValue() {
-        Coin balance = _coin.getWallet().getBalance(Wallet.BalanceType.ESTIMATED);
+        Coin balance = _coin.getWalletManager().wallet().getBalance(Wallet.BalanceType.ESTIMATED);
         return balance.getValue();
     }
 
@@ -149,7 +148,7 @@ public class BitcoinManager implements CoinManager, CoinAction.CoinActionCallbac
     public List<String> getCurrentAddresses() {
         List<String> addrHash160List = new ArrayList<>();
 
-        List<Address> walletAddresses = _coin.getWallet().getIssuedReceiveAddresses();
+        List<Address> walletAddresses = _coin.getWalletManager().wallet().getIssuedReceiveAddresses();
         for (Address aAddr : walletAddresses) {
             String hash = WalletUtils.formatAddress(aAddr, Constants.ADDRESS_FORMAT_GROUP_SIZE, Constants.ADDRESS_FORMAT_LINE_SIZE).toString();
             addrHash160List.add(hash);
@@ -166,8 +165,8 @@ public class BitcoinManager implements CoinManager, CoinAction.CoinActionCallbac
     public Map<String, String> getAddressesKeys() {
         Map<String, String> addrKeysMap = new HashMap<>();
 
-        List<ECKey> allWalletKeys = _coin.getWallet().getImportedKeys();
-        allWalletKeys.addAll(_coin.getWallet().getIssuedReceiveKeys());
+        List<ECKey> allWalletKeys = _coin.getWalletManager().wallet().getImportedKeys();
+        allWalletKeys.addAll(_coin.getWalletManager().wallet().getIssuedReceiveKeys());
 
         for (ECKey k : allWalletKeys) {
             Address addr = k.toAddress(Constants.NETWORK_PARAMETERS);
@@ -185,7 +184,7 @@ public class BitcoinManager implements CoinManager, CoinAction.CoinActionCallbac
      */
     @Override
     public String getMnemonicSeed() {
-        DeterministicSeed seed = _coin.getWallet().getKeyChainSeed();
+        DeterministicSeed seed = _coin.getWalletManager().wallet().getKeyChainSeed();
         String seedStr = Joiner.on(" ").join(seed.getMnemonicCode());
 
        // seedStr += " creation time:" + seed.getCreationTimeSeconds();
@@ -201,7 +200,7 @@ public class BitcoinManager implements CoinManager, CoinAction.CoinActionCallbac
      */
     @Override
     public Date getMnemonicSeedCreationDate() {
-        DeterministicSeed seed = _coin.getWallet().getKeyChainSeed();
+        DeterministicSeed seed = _coin.getWalletManager().wallet().getKeyChainSeed();
 
         Date date = new Date();
         date.setTime(seed.getCreationTimeSeconds());
@@ -223,6 +222,14 @@ public class BitcoinManager implements CoinManager, CoinAction.CoinActionCallbac
         // creation time: 1490401216
         BitcoinSetupAction setupAction = new BitcoinSetupAction(_coin, seed, creationDate);
         setupAction.execute(callback, this);
+    }
+
+    /**
+     *
+     */
+    @Override
+    public void stopSync() {
+        _coin.getWalletManager().stopAsync();
     }
 
     /**
@@ -309,9 +316,9 @@ public class BitcoinManager implements CoinManager, CoinAction.CoinActionCallbac
     public List<CoinTransaction> getTransactionList() {
         List<CoinTransaction> transactions = new ArrayList<>();
 
-        Set<Transaction> txs = _coin.getWallet().getTransactions(true);
+        Set<Transaction> txs = _coin.getWalletManager().wallet().getTransactions(true);
         for (Transaction tx : txs) {
-            Coin amount = tx.getValue(_coin.getWallet());
+            Coin amount = tx.getValue(_coin.getWalletManager().wallet());
 
             String hash = tx.getHash().toString();
             String amountStr = amount.toPlainString();

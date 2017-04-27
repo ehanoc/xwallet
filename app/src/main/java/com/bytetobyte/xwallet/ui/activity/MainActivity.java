@@ -10,7 +10,6 @@ import com.bytetobyte.xwallet.BlockchainClientListener;
 import com.bytetobyte.xwallet.R;
 import com.bytetobyte.xwallet.network.api.TwitterAuthApi;
 import com.bytetobyte.xwallet.network.api.models.TwitterAuthToken;
-import com.bytetobyte.xwallet.service.coin.CoinManagerFactory;
 import com.bytetobyte.xwallet.service.ipcmodel.BlockDownloaded;
 import com.bytetobyte.xwallet.service.ipcmodel.CoinTransaction;
 import com.bytetobyte.xwallet.service.ipcmodel.MnemonicSeedBackup;
@@ -18,6 +17,7 @@ import com.bytetobyte.xwallet.service.ipcmodel.SpentValueMessage;
 import com.bytetobyte.xwallet.service.ipcmodel.SyncedMessage;
 import com.bytetobyte.xwallet.ui.MainViewContract;
 import com.bytetobyte.xwallet.ui.activity.view.MainActivityView;
+import com.bytetobyte.xwallet.ui.fragment.BackupFragment;
 import com.bytetobyte.xwallet.ui.fragment.NewsFragment;
 import com.bytetobyte.xwallet.ui.fragment.TransactionFragment;
 import com.bytetobyte.xwallet.ui.fragment.WalletFragment;
@@ -36,6 +36,8 @@ public class MainActivity extends XWalletBaseActivity implements TwitterAuthApi.
     // setting boom
     public static final int BACKUP_BOOM_INDEX = 0;
     public static final int RECOVER_BOOM_INDEX = 1;
+
+    public static final int BACKUP_UNLOCK_REQUEST_CODE = 0x7;
 
     //
     private MainViewContract _mainView;
@@ -78,16 +80,12 @@ public class MainActivity extends XWalletBaseActivity implements TwitterAuthApi.
      */
     @Override
     protected void onServiceReady() {
-        System.out.println("BlockchainService sending message!");
-
         BlockchainClientListener chainListener = (BlockchainClientListener) getSupportFragmentManager().findFragmentById(R.id.xwallet_content_layout);
         if (chainListener != null) {
             chainListener.onServiceReady();
         }
 
         super.onServiceReady();
-//        Message sendMsg = Message.obtain(null, BlockchainService.IPC_MSG_WALLET_SYNC, CoinManagerFactory.BITCOIN, 0);
-//        sendMessage(sendMsg);
     }
 
     /**
@@ -136,6 +134,10 @@ public class MainActivity extends XWalletBaseActivity implements TwitterAuthApi.
         frag.onTransactions(txs);
     }
 
+    /**
+     *
+     * @param seedBackup
+     */
     @Override
     protected void onMnemonicSeedBackup(MnemonicSeedBackup seedBackup) {
         BlockchainClientListener frag = (BlockchainClientListener) getSupportFragmentManager().findFragmentById(R.id.xwallet_content_layout);
@@ -150,21 +152,6 @@ public class MainActivity extends XWalletBaseActivity implements TwitterAuthApi.
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         setIntent(intent);
-
-        System.out.println("MainActivity::onNewIntent!");
-
-//        if (getIntent().getAction() == SEND_ACTION) {
-//            System.out.println("MainActivity::onNewIntent! SEND_ACTION");
-//
-//            SpentValueMessage spentToAmount = new SpentValueMessage("mwCwTceJvYV27KXBc3NJZys6CjsgsoeHmf", 100000000);
-//
-//            Gson gson = new Gson();
-//            String spentToAmountJson = gson.toJson(spentToAmount);
-//
-//            Message spentMsg = Message.obtain(null, BlockchainService.IPC_MSG_WALLET_SEND_AMOUNT, CoinManagerFactory.BITCOIN, 0);
-//            spentMsg.getData().putString(BlockchainService.IPC_BUNDLE_DATA_KEY, spentToAmountJson);
-//            sendMessage(spentMsg);
-//        }
     }
 
     /**
@@ -182,9 +169,17 @@ public class MainActivity extends XWalletBaseActivity implements TwitterAuthApi.
             newContent = _newsFragment;
         }
 
+        replaceContent(newContent);
+    }
+
+    /**
+     *
+     * @param frag
+     */
+    public void replaceContent(Fragment frag) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.setCustomAnimations(R.anim.fade_in, R.anim.fade_out);
-        ft.replace(R.id.xwallet_content_layout, newContent);
+        ft.replace(R.id.xwallet_content_layout, frag);
         ft.commit();
     }
 
@@ -195,6 +190,24 @@ public class MainActivity extends XWalletBaseActivity implements TwitterAuthApi.
     @Override
     public void onTwitterAuth(TwitterAuthToken response) {
         _twitterAuthToken = response;
+    }
+
+    /**
+     *
+     * @param requestCode
+     * @param resultCode
+     */
+    @Override
+    protected void onLockPinResult(int requestCode, int resultCode) {
+        super.onLockPinResult(requestCode, resultCode);
+
+        switch (resultCode) {
+            case RESULT_OK:
+                if (requestCode == BACKUP_UNLOCK_REQUEST_CODE) {
+                    replaceContent(new BackupFragment());
+                }
+                break;
+        }
     }
 
     /**

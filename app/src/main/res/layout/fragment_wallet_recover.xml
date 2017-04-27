@@ -21,6 +21,7 @@
             android:id="@+id/recover_seed_input"
             android:layout_below="@+id/recover_text_description"
             android:layout_width="match_parent"
+            android:textSize="@dimen/recover_seed_input_text_size"
             android:layout_height="@dimen/recover_input_height" />
 
         <LinearLayout

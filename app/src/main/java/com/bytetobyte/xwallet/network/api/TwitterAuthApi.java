@@ -51,8 +51,6 @@ public class TwitterAuthApi extends AsyncTask <Void, Void, String>{
 
         String cred = Credentials.basic(_key, _secret);
 
-        System.out.println("TwitterAuthApi Trying with : " + _key + ":" + _secret);
-
         FormEncodingBuilder formBody = new FormEncodingBuilder();
         formBody.add("grant_type", "client_credentials");
 
@@ -108,8 +106,6 @@ public class TwitterAuthApi extends AsyncTask <Void, Void, String>{
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
-
-        System.out.println("TwitterAuthApi::onPostExecute result : " + s);
 
         try {
             Gson gson = new Gson();
