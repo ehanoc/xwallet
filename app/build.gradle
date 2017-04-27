@@ -9,8 +9,8 @@ android {
         applicationId "com.bytetobyte.xwallet"
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 1
-        versionName "0.1-pre-alpha"
+        versionCode 3
+        versionName "0.2.1-pre-alpha"
         multiDexEnabled true
     }
     buildTypes {
@@ -27,11 +27,29 @@ android {
     lintOptions {
         abortOnError false
     }
+
+//    splits {
+//        abi {
+//            enable true
+//            reset()
+//            include 'x86', 'armeabi', 'armeabi-v7a', 'mips'
+//            universalApk true
+//        }
+//    }
+
+    packagingOptions {
+        exclude 'lib/x86_64/darwin/libscrypt.dylib'
+        exclude 'lib/x86_64/freebsd/libscrypt.so'
+        exclude 'lib/x86_64/linux/libscrypt.so'
+        exclude 'com/google/thirdparty/publicsuffix/PublicSuffixPatterns.gwt.xml'
+        exclude 'com/google/thirdparty/publicsuffix/PublicSuffixType.gwt.xml'
+    }
 }
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
+    compile 'org.bitcoinj:bitcoinj-core:0.14.4'
     compile 'com.github.lzyzsd:circleprogress:1.2.1'
     compile 'com.nightonke:boommenu:2.0.9'
     compile 'com.android.support:appcompat-v7:25.3.0'

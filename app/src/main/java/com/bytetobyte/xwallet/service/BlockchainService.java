@@ -195,8 +195,6 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
 
                 case IPC_MSG_WALLET_RECOVER:
                     RecoverWalletMessage recoverMsg = _gson.fromJson(msg.getData().getString(IPC_BUNDLE_DATA_KEY), RecoverWalletMessage.class);
-
-                    // illness bulk jewel deer chaos swing goose fetch patch blood acid call creation
                     _coinManager.stopSync();
                     _coinManager.recoverWalletBy(BlockchainService.this, recoverMsg.getSeed(), recoverMsg.getDate());
                     break;
