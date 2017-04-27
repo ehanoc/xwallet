@@ -30,7 +30,6 @@ import org.bitcoinj.wallet.listeners.WalletCoinsReceivedEventListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -110,20 +109,11 @@ public class BitcoinSetupAction extends DownloadProgressListener implements Coin
              */
             @Override
             protected void onSetupCompleted() {
-//                @SuppressLint("SimpleDateFormat")
-//                SimpleDateFormat datetimeFormatter1 = new SimpleDateFormat("yyyy-MM-dd");
-//                Date lFromDate1 = null;
-//                try {
-//                    lFromDate1 = datetimeFormatter1.parse("2017-01-01");
-//                } catch (ParseException e) {
-//                    e.printStackTrace();
-//                }
-//
-//                if (_mnemonicSeed != null) {
-//                    _walletKit.peerGroup().setFastCatchupTimeSecs(lFromDate1.getTime());
-//                } else {
-//                    _walletKit.peerGroup().setFastCatchupTimeSecs(lFromDate1.getTime());
-//                }
+                if (_mnemonicSeed != null && _date != null) {
+                    _walletKit.peerGroup().setFastCatchupTimeSecs(_date.getTime());
+                } else {
+                    _walletKit.peerGroup().setFastCatchupTimeSecs(wallet().getEarliestKeyCreationTime());
+                }
 
                 // This is called in a background thread after startAndWait is called, as setting up various objects
                 // can do disk and network IO that may cause UI jank/stuttering in wallet apps if it were to be done
