@@ -28,6 +28,7 @@ _**Service**_ (All wallet management; dedicated thread) **< ----- IPC  ----- >**
 
 ## Dependencies Credits 
 
+- https://github.com/bitcoinj
 - https://github.com/lzyzsd/CircleProgress
 - https://github.com/Nightonke/BoomMenu
 - https://github.com/hdodenhof/CircleImageView
