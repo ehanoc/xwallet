@@ -22,6 +22,9 @@ _**Service**_ (All wallet management; dedicated thread) **< ----- IPC  ----- >**
  - Feel free
  - Just keep clean dependencies of specific coin (only btc atm) on the client side.
 
+# License
+
+- GPL v3.0
 
 ## Dependencies Credits 
 
