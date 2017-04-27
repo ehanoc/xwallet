@@ -47,7 +47,10 @@
             android:process=":BlockChainService" />
 
     </application>
-    
+
+    <supports-screens android:anyDensity="true"  />
+    <uses-sdk android:minSdkVersion="15" android:maxSdkVersion="25" android:targetSdkVersion="23" />
+
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.INTERNET" />
