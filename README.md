@@ -6,6 +6,13 @@ A pet project, a bitcoin wallet.
 - No third-party servers
 - Open source
 
+
+<img src="https://raw.githubusercontent.com/ehanoc/xwallet/master/promos/tx_screenshot.png" width="100">
+
+<img src="https://raw.githubusercontent.com/ehanoc/xwallet/master/promos/lock_screenshot.png" width="100">
+
+<img src="https://raw.githubusercontent.com/ehanoc/xwallet/master/promos/color_scheme.png" width="400">
+
 ## **Techy Info**
 
 _**Service**_ (All wallet management; dedicated thread) **< ----- IPC  ----- >** _**Main Thread**_ (UI / Flow ) 
