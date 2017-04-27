@@ -1,6 +1,6 @@
 # **XWallet**
 
-A pet project, a bitcoin wallet.
+A pet project, a bitcoin wallet. TESTNET only atm
 
 - Thin Client (Partial chain sync)
 - No third-party servers
