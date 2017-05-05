@@ -63,6 +63,7 @@ public class BackupFragmentView implements BackupFragmentViewContract, View.OnCl
      * @param seedBackup
      */
     public void displayBackup(MnemonicSeedBackup seedBackup) {
+        //TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
         _backupText.setText(String.format("%s\n \n Creation Date : %s", seedBackup.getMnemonicSeed(), seedBackup.getCreationDate()));
     }
 }

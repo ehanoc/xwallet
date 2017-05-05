@@ -10,6 +10,7 @@ public class CoinTransaction implements Comparable<CoinTransaction> {
     private String _txFee;
     private String _txHash;
     private String _txAmount;
+    private String _confirmations;
     private Date _txUpdate;
 
     /**
@@ -18,15 +19,24 @@ public class CoinTransaction implements Comparable<CoinTransaction> {
      * @param hash
      * @param amount
      */
-    public CoinTransaction(String fee, String hash, String amount, Date updateTime) {
+    public CoinTransaction(String fee, String hash, String amount, String confirmations, Date updateTime) {
         this._txFee = fee;
         this._txHash = hash;
         this._txAmount = amount;
         this._txUpdate = updateTime;
+        this._confirmations = confirmations;
     }
 
     public Date getTxUpdate() {
         return _txUpdate;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getConfirmations() {
+        return _confirmations;
     }
 
     /**

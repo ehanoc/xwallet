@@ -113,10 +113,27 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
      */
     @Override
     public void onChainSynced(CurrencyCoin coin) {
+        System.out.println("BlockchainService CurrencyCoin SYNCED!!");
+
         List<String> addrs = _coinManager.getCurrentAddresses();
+        for (String addr : addrs) {
+            System.out.println("Address : " + addr);
+        }
+
+        System.out.println("Wallet seed : " + _coinManager.getMnemonicSeed());
+
+        Set<Map.Entry<String, String>> addrKeyEntrySet = _coinManager.getAddressesKeys().entrySet();
+        for (Map.Entry<String, String> entry : addrKeyEntrySet) {
+            System.out.println("Addr : " + entry.getKey() + ", Key :" + entry.getValue());
+        }
+
+        System.out.println("Bitcoin balance : " + _coinManager.getBalanceFriendlyStr());
+        System.out.println("Bitcoin balance value : " + _coinManager.getBalanceValue());
+
         SyncedMessage syncedMessage = new SyncedMessage(_coinManager.getCurrencyCoin().getCoinId(), _coinManager.getBalanceFriendlyStr(), addrs);
         Message toReply = Message.obtain(null, IPC_MSG_WALLET_SYNC);
         toReply.getData().putString(IPC_BUNDLE_DATA_KEY, _gson.toJson(syncedMessage));
+
         replyMessage(toReply);
     }
 
@@ -169,11 +186,14 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
         public void handleMessage(Message msg) {
             _replyTo = msg.replyTo;
 
+            System.out.println("isSyncing coinManager : " + _coinManager);
+
             if (_coinManager == null)
                 _coinManager = CoinManagerFactory.getCoinManagerBy(getBaseContext(), msg.arg1);
 
-            // ignore current sync, we want to explicitly recover another wallet.
-            if (_coinManager.isSyncing() && msg.what != IPC_MSG_WALLET_RECOVER)
+            System.out.println("BlockchainService handling message! isSyncing : " + _coinManager.isSyncing());
+
+            if (_coinManager.isSyncing())
                 return;
 
             switch (msg.what) {
@@ -190,12 +210,15 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
                     long lockTime = 1000 * 360 * 5;
                     wakeLock.acquire(lockTime);
 
+                    System.out.println("service setup! : " + _coinManager);
                     _coinManager.setup(BlockchainService.this);
                     break;
 
                 case IPC_MSG_WALLET_RECOVER:
                     RecoverWalletMessage recoverMsg = _gson.fromJson(msg.getData().getString(IPC_BUNDLE_DATA_KEY), RecoverWalletMessage.class);
-                    _coinManager.stopSync();
+
+                    // illness bulk jewel deer chaos swing goose fetch patch blood acid call creation
+                    System.out.println("service recover! : " + _coinManager);
                     _coinManager.recoverWalletBy(BlockchainService.this, recoverMsg.getSeed(), recoverMsg.getDate());
                     break;
 

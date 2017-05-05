@@ -1,6 +1,7 @@
 package com.bytetobyte.xwallet.ui.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -21,6 +22,7 @@ import com.bytetobyte.xwallet.ui.fragment.BackupFragment;
 import com.bytetobyte.xwallet.ui.fragment.NewsFragment;
 import com.bytetobyte.xwallet.ui.fragment.TransactionFragment;
 import com.bytetobyte.xwallet.ui.fragment.WalletFragment;
+import com.google.gson.Gson;
 
 import java.util.List;
 
@@ -38,6 +40,8 @@ public class MainActivity extends XWalletBaseActivity implements TwitterAuthApi.
     public static final int RECOVER_BOOM_INDEX = 1;
 
     public static final int BACKUP_UNLOCK_REQUEST_CODE = 0x7;
+
+    private static final String PREFS_KEY_LAST_SYNCED_MESSAGE = "PREFS_KEY_LAST_SYNCED_MESSAGE";
 
     //
     private MainViewContract _mainView;
@@ -79,6 +83,17 @@ public class MainActivity extends XWalletBaseActivity implements TwitterAuthApi.
      *
      */
     @Override
+    protected void onResume() {
+        super.onResume();
+        if (!hasSyncedBefore()) {
+            _mainView.startTutorial();
+        }
+    }
+
+    /**
+     *
+     */
+    @Override
     protected void onServiceReady() {
         BlockchainClientListener chainListener = (BlockchainClientListener) getSupportFragmentManager().findFragmentById(R.id.xwallet_content_layout);
         if (chainListener != null) {
@@ -100,6 +115,9 @@ public class MainActivity extends XWalletBaseActivity implements TwitterAuthApi.
 
         _walletFragment.setBalance(syncedMessage.getAmount());
         _walletFragment.setAddress(syncedMessage.getAddresses());
+
+        SharedPreferences prefs = getSharedPreferences(getString(R.string.app_name), MODE_PRIVATE);
+        prefs.edit().putString(PREFS_KEY_LAST_SYNCED_MESSAGE, new Gson().toJson(_lastSyncedMessage)).apply();
     }
 
     /**
@@ -231,5 +249,15 @@ public class MainActivity extends XWalletBaseActivity implements TwitterAuthApi.
      */
     public SyncedMessage getLastSyncedMessage() {
         return _lastSyncedMessage;
+    }
+
+    /**
+     *
+     * @return
+     */
+    private boolean hasSyncedBefore() {
+        SharedPreferences prefs = getSharedPreferences(getString(R.string.app_name), MODE_PRIVATE);
+        String lastSyncMsgStr = prefs.getString(PREFS_KEY_LAST_SYNCED_MESSAGE, null);
+        return lastSyncMsgStr != null;
     }
 }

@@ -1,5 +1,6 @@
 package com.bytetobyte.xwallet.ui.activity.view;
 
+import android.app.Activity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -26,6 +27,7 @@ import su.levenetc.android.badgeview.BadgeView;
 public class MainActivityView implements MainViewContract {
 
     private final MainActivity _act;
+    private final TutorialAnim _tutorialHandler;
 
     private ArcProgress _chainArcProgress;
     private CircleImageView _lense;
@@ -33,6 +35,7 @@ public class MainActivityView implements MainViewContract {
     private BadgeView _badgeView;
     private BoomMenuButton _bmb;
     private BoomMenuButton _settingsBmb;
+    private WheelMenuLayout _wheelMenuLayout;
 
     /**
      *
@@ -40,6 +43,7 @@ public class MainActivityView implements MainViewContract {
      */
     public MainActivityView(MainActivity activity) {
         this._act = activity;
+        this._tutorialHandler = new TutorialAnim(this);
     }
 
     /**
@@ -54,15 +58,15 @@ public class MainActivityView implements MainViewContract {
         _lense = (CircleImageView) _act.findViewById(R.id.lense_middle_image);
         _content = (FrameLayout) _act.findViewById(R.id.xwallet_content_layout);
 
-        WheelMenuLayout wheelMenuLayout = (WheelMenuLayout) _act.findViewById(R.id.wheelMenu);
+         _wheelMenuLayout = (WheelMenuLayout) _act.findViewById(R.id.wheelMenu);
         _badgeView = (BadgeView) _act.findViewById(R.id.lense_badgeview);
 
         CircleLayout mCircleLayout = (CircleLayout) _act.findViewById(R.id.circle_layout_id);
         ImageView mWheelBackgroundMenu = (ImageView) _act.findViewById(R.id.wheelmenu_background_menu);
 
-        if (wheelMenuLayout != null) {
-            wheelMenuLayout.prepareWheelUIElements(mCircleLayout, mWheelBackgroundMenu);
-            wheelMenuLayout.setWheelChangeListener(new WheelMenuLayout.WheelChangeListener() {
+        if (_wheelMenuLayout != null) {
+            _wheelMenuLayout.prepareWheelUIElements(mCircleLayout, mWheelBackgroundMenu);
+            _wheelMenuLayout.setWheelChangeListener(new WheelMenuLayout.WheelChangeListener() {
                 @Override
                 public void onSelectionChange(int selectedPosition) {
                     if (_badgeView != null) {
@@ -122,10 +126,38 @@ public class MainActivityView implements MainViewContract {
 
     /**
      *
+     */
+    @Override
+    public void startTutorial() {
+        this._tutorialHandler.tutorialFocus();
+    }
+
+    /**
+     *
      * @param progress
      */
     @Override
     public void setSyncProgress(int progress) {
         _chainArcProgress.setProgress(progress);
+    }
+
+    public View getWheelMiddleLense() {
+        return _bmb;
+    }
+
+    public Activity getActivity() {
+        return _act;
+    }
+
+    public View getSettingsMenu() {
+        return _settingsBmb;
+    }
+
+    public View getBtcSyncMeter() {
+        return _chainArcProgress;
+    }
+
+    public View getWheelMenuLayout() {
+        return _wheelMenuLayout;
     }
 }

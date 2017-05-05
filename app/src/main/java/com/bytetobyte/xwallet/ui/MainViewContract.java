@@ -6,4 +6,6 @@ package com.bytetobyte.xwallet.ui;
 public interface MainViewContract extends ViewContract {
 
     void setSyncProgress(int progress);
+
+    void startTutorial();
 }

@@ -90,7 +90,7 @@ public class RecoverFragmentView implements RecoverFragmentViewContract, View.On
         if (str == null) return false;
 
         int words = str.trim().split("\\s+").length;
-        return (words == 13 || words == 25);
+        return (words == 12 || words == 13 || words == 25);
     }
 
     /**

@@ -1,37 +1,21 @@
 package com.bytetobyte.xwallet.service.coin.bitcoin.actions;
 
-import android.annotation.SuppressLint;
-
 import com.bytetobyte.xwallet.service.Constants;
 import com.bytetobyte.xwallet.service.coin.CoinAction;
 import com.bytetobyte.xwallet.service.coin.CurrencyCoin;
 import com.bytetobyte.xwallet.service.coin.bitcoin.Bitcoin;
+import com.bytetobyte.xwallet.service.coin.bitcoin.BitcoinManager;
 import com.bytetobyte.xwallet.service.coin.bitcoin.DownloadProgressListener;
-import com.bytetobyte.xwallet.service.coin.bitcoin.WalletUtils;
 import com.bytetobyte.xwallet.service.utils.ServiceConsts;
 
-import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Block;
 import org.bitcoinj.core.CheckpointManager;
-import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.ECKey;
 import org.bitcoinj.core.FilteredBlock;
 import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.core.Peer;
-import org.bitcoinj.core.Transaction;
-import org.bitcoinj.core.TransactionConfidence;
-import org.bitcoinj.core.listeners.DownloadProgressTracker;
-import org.bitcoinj.crypto.MnemonicCode;
 import org.bitcoinj.kits.WalletAppKit;
-import org.bitcoinj.wallet.DeterministicSeed;
 import org.bitcoinj.wallet.Wallet;
-import org.bitcoinj.wallet.listeners.WalletCoinsReceivedEventListener;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 import javax.annotation.Nullable;
 
@@ -40,34 +24,22 @@ import javax.annotation.Nullable;
  */
 public class BitcoinSetupAction extends DownloadProgressListener implements CoinAction<CoinAction.CoinActionCallback<CurrencyCoin>> {
 
+   // private final Bitcoin _bitcoin;
+    private final BitcoinManager _bitcoinManger;
     private final Bitcoin _bitcoin;
-    private final String _mnemonicSeed;
-    private final Date _date;
 
     private WalletAppKit _walletKit;
     private CoinActionCallback<CurrencyCoin>[] _callbacks;
-    private org.bitcoinj.core.Context _bitcoinJContext;
+   // private org.bitcoinj.core.Context _bitcoinJContext;
 
 
     /**
      *
-     * @param currencyCoin
+     * @param bitcoinManager
      */
-    public BitcoinSetupAction(CurrencyCoin<WalletAppKit> currencyCoin) {
-        this._bitcoin = (Bitcoin) currencyCoin;
-        this._mnemonicSeed = null;
-        this._date = null;
-    }
-
-    /**
-     *
-     * @param currencyCoin
-     * @param mnemonicSeed
-     */
-    public BitcoinSetupAction(CurrencyCoin<WalletAppKit> currencyCoin, String mnemonicSeed, Date creationDate) {
-        this._bitcoin = (Bitcoin) currencyCoin;
-        this._mnemonicSeed = mnemonicSeed;
-        this._date = creationDate;
+    public BitcoinSetupAction(BitcoinManager bitcoinManager) {
+        this._bitcoinManger = bitcoinManager;
+        this._bitcoin = _bitcoinManger.getCurrencyCoin();
     }
 
     /**
@@ -80,10 +52,6 @@ public class BitcoinSetupAction extends DownloadProgressListener implements Coin
         NetworkParameters netParams = Constants.NETWORK_PARAMETERS;
 
         initWallet(netParams);
-
-        if (_mnemonicSeed != null) {
-            recoverWalletFromSeed();
-        }
 
         _walletKit.setDownloadListener(this)
                 .setBlockingStartup(false)
@@ -99,53 +67,33 @@ public class BitcoinSetupAction extends DownloadProgressListener implements Coin
     private void initWallet(NetworkParameters netParams) {
         //File dataDir = getDir("consensus_folder", Context.MODE_PRIVATE);
 
-        _bitcoinJContext = new org.bitcoinj.core.Context(netParams);
+      //  _bitcoinJContext = new org.bitcoinj.core.Context(netParams);
 
         // Start up a basic app using a class that automates some boilerplate. Ensure we always have at least one key.
-        _walletKit = new WalletAppKit(_bitcoinJContext, _bitcoin.getDataDir(), ServiceConsts.SERVICE_APP_NAME) {
+        _walletKit = new WalletAppKit(Constants.NETWORK_PARAMETERS,
+                _bitcoin.getDataDir(),
+                ServiceConsts.SERVICE_APP_NAME + "-" + netParams.getPaymentProtocolId()) {
 
             /**
              *
              */
             @Override
             protected void onSetupCompleted() {
+                System.out.println("Setting up wallet : " + wallet().toString());
+
                 // This is called in a background thread after startAndWait is called, as setting up various objects
                 // can do disk and network IO that may cause UI jank/stuttering in wallet apps if it were to be done
                 // on the main thread.
                 if (wallet().getKeyChainGroupSize() < 1)
                     wallet().importKey(new ECKey());
 
-                if (_mnemonicSeed != null && _date != null) {
-                    _walletKit.peerGroup().setFastCatchupTimeSecs(_date.getTime());
-                } else {
-                    _walletKit.peerGroup().setFastCatchupTimeSecs(wallet().getEarliestKeyCreationTime());
-                }
-
                 _walletKit.peerGroup().setBloomFilterFalsePositiveRate(0.0001);
 
-
                 Wallet wallet = _walletKit.wallet();
+                System.out.println("Setup wallet : " + wallet);
 
-                wallet.addCoinsReceivedEventListener(new WalletCoinsReceivedEventListener() {
-                    @Override
-                    public void onCoinsReceived(Wallet wallet, Transaction tx, Coin coin, Coin coin1) {
-                        final Address address = WalletUtils.getWalletAddressOfReceived(tx, wallet);
-                        final Coin amount = tx.getValue(wallet);
-                        //final TransactionConfidence.ConfidenceType confidenceType = tx.getConfidence().getConfidenceType();
-
-                        String addressStr = WalletUtils.formatAddress(address, Constants.ADDRESS_FORMAT_GROUP_SIZE, Constants.ADDRESS_FORMAT_LINE_SIZE).toString();
-                        long value = amount.getValue();
-
-                        for (CoinActionCallback<CurrencyCoin> callback : _callbacks) {
-                            callback.onCoinsReceived(addressStr, value, _bitcoin);
-                        }
-
-                        // meaning that we are receiving amount, not sending
-                        if (amount.isPositive()) {
-                            wallet.freshReceiveAddress();
-                        }
-                    }
-                });
+//                wallet.removeCoinsReceivedEventListener(_bitcoinManger);
+//                wallet.addCoinsReceivedEventListener(_bitcoinManger);
 
                 _bitcoin.setWallet(_walletKit);
             }
@@ -180,37 +128,5 @@ public class BitcoinSetupAction extends DownloadProgressListener implements Coin
                 callback.onBlocksDownloaded(_bitcoin, this.lastPercent, blocksLeft, this.lastBlockDate);
             }
         }
-    }
-
-    /**
-     *
-     */
-    private void recoverWalletFromSeed() {
-        if (_mnemonicSeed == null) return;
-
-        String[] words = _mnemonicSeed.split(" ");
-        List<String> wordList = new ArrayList<>();
-
-        for (String word : words) {
-            wordList.add(word);
-        }
-
-        @SuppressLint("SimpleDateFormat")
-        SimpleDateFormat datetimeFormatter1 = new SimpleDateFormat("yyyy-MM-dd");
-
-        Date lFromDate1 = _date;
-
-        if (lFromDate1 == null) {
-            try {
-                lFromDate1 = datetimeFormatter1.parse(Constants.EARLIEST_HD_WALLET_DATE);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        }
-
-        System.out.println("earlist date  :" + lFromDate1.getTime() / 1000);
-
-        DeterministicSeed deterministicSeed = new DeterministicSeed(MnemonicCode.toSeed(wordList, ""), wordList, lFromDate1.getTime() / 1000);
-        _walletKit.restoreWalletFromSeed(deterministicSeed);
     }
 }

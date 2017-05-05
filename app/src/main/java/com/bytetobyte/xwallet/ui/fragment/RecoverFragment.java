@@ -12,20 +12,30 @@ import com.bytetobyte.xwallet.service.coin.CoinManagerFactory;
 import com.bytetobyte.xwallet.ui.fragment.view.RecoverFragmentView;
 import com.codetroopers.betterpickers.calendardatepicker.CalendarDatePickerDialogFragment;
 import com.codetroopers.betterpickers.calendardatepicker.MonthAdapter;
+import com.codetroopers.betterpickers.numberpicker.NumberPickerBuilder;
+import com.codetroopers.betterpickers.numberpicker.NumberPickerDialogFragment;
+import com.codetroopers.betterpickers.radialtimepicker.RadialTimePickerDialogFragment;
+import com.codetroopers.betterpickers.timepicker.TimePickerBuilder;
+import com.codetroopers.betterpickers.timepicker.TimePickerDialogFragment;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 /**
  * Created by bruno on 26.04.17.
  */
-public class RecoverFragment extends BaseDialogFragment implements CalendarDatePickerDialogFragment.OnDateSetListener {
+public class RecoverFragment extends BaseDialogFragment implements CalendarDatePickerDialogFragment.OnDateSetListener, RadialTimePickerDialogFragment.OnTimeSetListener {
     private static final String FRAG_TAG_DATE_PICKER = "FRAG_TAG_DATE_PICKER";
+    private static final String FRAG_TAG_TIME_PICKER = "FRAG_TAG_TIME_PICKER";
 
     private RecoverFragmentView _rView;
     private Date _lastDateSet;
+    private Calendar _calendar;
 
     /**
      *
@@ -54,7 +64,10 @@ public class RecoverFragment extends BaseDialogFragment implements CalendarDateP
      *
      */
     public void launchDatePicker() {
+        _calendar = Calendar.getInstance();
+
         Calendar dateStart = Calendar.getInstance();
+        //dateStart.setTimeZone(TimeZone.getTimeZone("UTC"));
         dateStart.set(2010, 01, 01);
 
         MonthAdapter.CalendarDay calendarStartDay = new MonthAdapter.CalendarDay(dateStart);
@@ -78,12 +91,55 @@ public class RecoverFragment extends BaseDialogFragment implements CalendarDateP
      * @param dayOfMonth
      */
     @Override
-    public void onDateSet(CalendarDatePickerDialogFragment dialog, int year, int monthOfYear, int dayOfMonth) {
-        Calendar cal = Calendar.getInstance();
-        cal.set(year, monthOfYear, dayOfMonth);
+    public void onDateSet(CalendarDatePickerDialogFragment dialog, final int year, final int monthOfYear, final int dayOfMonth) {
+        //TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
 
-        _lastDateSet = cal.getTime();
+        _calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
+        _calendar.set(year, monthOfYear, dayOfMonth, 0, 0, 0);
+
+        _lastDateSet = _calendar.getTime();
+        System.out.println("Last date : " + _lastDateSet.getTime() / 1000);
         _rView.setDate(_lastDateSet);
+
+      //  long timeSinceEpoch = Date.UTC(year, monthOfYear, dayOfMonth, 0, 0, 0);
+
+//        RadialTimePickerDialogFragment rtpd = new RadialTimePickerDialogFragment()
+//                .setOnTimeSetListener(this)
+//                .setStartTime(10, 10)
+//                .setDoneText("Yay")
+//                .setCancelText("Nop")
+//                .setThemeCustom(R.style.PickerDialogStyle);
+//        rtpd.show(getBaseActivity().getSupportFragmentManager(), FRAG_TAG_TIME_PICKER);
+    }
+
+    /**
+     *
+     * @param dialog
+     * @param hourOfDay
+     * @param minute
+     */
+    @Override
+    public void onTimeSet(RadialTimePickerDialogFragment dialog, final int hourOfDay, final int minute) {
+        NumberPickerBuilder npb = new NumberPickerBuilder()
+                .addNumberPickerDialogHandler(new NumberPickerDialogFragment.NumberPickerDialogHandlerV2() {
+                    @Override
+                    public void onDialogNumberSet(int reference, BigInteger number, double decimal, boolean isNegative, BigDecimal fullNumber) {
+                        _calendar.set(_calendar.get(Calendar.YEAR),
+                                _calendar.get(Calendar.MONTH),
+                                _calendar.get(Calendar.DAY_OF_MONTH),
+                                hourOfDay,
+                                minute,
+                                number.intValue());
+
+                        _lastDateSet = _calendar.getTime();
+                        System.out.println("Last date : " + _lastDateSet.getTime() / 1000);
+                        _rView.setDate(_lastDateSet);
+                    }
+                })
+                .setFragmentManager(getBaseActivity().getSupportFragmentManager())
+                .setStyleResId(R.style.BetterPickersDialogFragment)
+                .setLabelText("Seconds!");
+        npb.show();
     }
 
     /**
@@ -98,9 +154,9 @@ public class RecoverFragment extends BaseDialogFragment implements CalendarDateP
                 .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                     @Override
                     public void onClick(SweetAlertDialog sDialog) {
-                        sDialog.dismissWithAnimation();
                         getBaseActivity().recoverWallet(CoinManagerFactory.BITCOIN, seed, _lastDateSet);
-                        getBaseActivity().showMenuSelection(0);
+                       // getBaseActivity().showMenuSelection(0);
+                        sDialog.dismissWithAnimation();
                     }
                 })
                 .setCancelText("Cancel")
@@ -112,5 +168,4 @@ public class RecoverFragment extends BaseDialogFragment implements CalendarDateP
                 })
                 .show();
     }
-
 }

@@ -156,6 +156,8 @@ public abstract class XWalletBaseActivity extends AppCompatActivity {
      * @param creationDate
      */
     public void recoverWallet(int coinId, String seed, Date creationDate) {
+        System.out.println("recoverWallet coinId : " + coinId);
+
         RecoverWalletMessage recoverWalletMessage = new RecoverWalletMessage(seed, creationDate);
 
         Gson gson = new Gson();
@@ -170,6 +172,8 @@ public abstract class XWalletBaseActivity extends AppCompatActivity {
      *
      */
     public void syncChain(int coinId) {
+        System.out.println("syncChain : coinId " + coinId);
+
         Message sendMsg = Message.obtain(null, BlockchainService.IPC_MSG_WALLET_SYNC, coinId, 0);
         sendMessage(sendMsg);
     }
