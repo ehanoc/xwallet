@@ -56,6 +56,7 @@ public class BackupFragment extends BaseDialogFragment {
     @Override
     public void onResume() {
         super.onResume();
+        getBaseActivity().requestMnemonic(CoinManagerFactory.BITCOIN);
     }
 
     /**
@@ -73,7 +74,6 @@ public class BackupFragment extends BaseDialogFragment {
     @Override
     public void onServiceReady() {
         super.onServiceReady();
-        getBaseActivity().requestMnemonic(CoinManagerFactory.BITCOIN);
     }
 
     /**

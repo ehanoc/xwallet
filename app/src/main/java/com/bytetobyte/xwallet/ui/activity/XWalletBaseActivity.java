@@ -72,8 +72,8 @@ public abstract class XWalletBaseActivity extends AppCompatActivity {
      *
      */
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onDestroy() {
+        super.onDestroy();
         // Unbind from the service
         if (mBound) {
             unbindService(mConnection);

@@ -40,6 +40,9 @@ public class BitcoinManager implements CoinManager, CoinAction.CoinActionCallbac
     private boolean _isSyncing;
     private boolean _isSynced;
 
+    private static BitcoinSetupAction _setupAction;
+    private static BitcoinRecoverAction _recoverAction;
+
     /**
      *
      * @param coin
@@ -57,8 +60,8 @@ public class BitcoinManager implements CoinManager, CoinAction.CoinActionCallbac
         _isSyncing = true;
         _isSynced = false;
 
-        BitcoinSetupAction setupAction = new BitcoinSetupAction(this);
-        setupAction.execute(callback, this);
+        _setupAction = new BitcoinSetupAction(this);
+        _setupAction.execute(callback, this);
     }
 
     /**
@@ -222,8 +225,8 @@ public class BitcoinManager implements CoinManager, CoinAction.CoinActionCallbac
         _isSyncing = true;
         _isSynced = false;
 
-        BitcoinRecoverAction recoverAction = new BitcoinRecoverAction(this, seed, creationDate);
-        recoverAction.execute(callback, this);
+        _recoverAction = new BitcoinRecoverAction(this, seed, creationDate);
+        _recoverAction.execute(callback, this);
 
         // illness bulk jewel deer chaos swing goose fetch patch blood acid call creation
         // creation time: 1490401216

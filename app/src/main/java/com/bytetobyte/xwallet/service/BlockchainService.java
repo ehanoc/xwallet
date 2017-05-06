@@ -1,13 +1,18 @@
 package com.bytetobyte.xwallet.service;
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.net.wifi.WifiManager;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.PowerManager;
 
+import com.bytetobyte.xwallet.R;
 import com.bytetobyte.xwallet.service.coin.CoinAction;
 import com.bytetobyte.xwallet.service.coin.CoinManager;
 import com.bytetobyte.xwallet.service.coin.CoinManagerFactory;
@@ -51,6 +56,9 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
     // ###############################
     public static final int BROADCAST_MSG_COINS_RECEIVED = 0x3;
 
+
+    private static final int NOTIFICATION_SYNC_ID = 0x78;
+
     private final Gson _gson;
 
     private static CoinManager _coinManager;
@@ -60,6 +68,9 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
      */
     final Messenger mMessenger = new Messenger(new IncomingHandler());
     private static Messenger _replyTo;
+
+    private static PowerManager.WakeLock _wakeLock;
+    private static WifiManager.WifiLock _wifiLock;
 
     /**
      *
@@ -113,6 +124,9 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
      */
     @Override
     public void onChainSynced(CurrencyCoin coin) {
+        stopForeground(true);
+        releaseWakeLocks();
+
         System.out.println("BlockchainService CurrencyCoin SYNCED!!");
 
         List<String> addrs = _coinManager.getCurrentAddresses();
@@ -157,11 +171,15 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
      */
     @Override
     public void onBlocksDownloaded(CurrencyCoin coin, double pct, int blocksSoFar, Date date) {
-        BlockDownloaded blockDownloaded = new BlockDownloaded(coin, pct, blocksSoFar, date);
+        String text = "Syncing : " + pct + " %";
 
+        Notification notification = getServiceNotification(text);
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(NOTIFICATION_SYNC_ID, notification);
+
+        BlockDownloaded blockDownloaded = new BlockDownloaded(coin, pct, blocksSoFar, date);
         Message toReply = Message.obtain(null, IPC_MSG_WALLET_BLOCK_DOWNLOADED);
         toReply.getData().putString(IPC_BUNDLE_DATA_KEY, _gson.toJson(blockDownloaded));
-
         replyMessage(toReply);
     }
 
@@ -204,19 +222,19 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
                         return;
                     }
 
-                    PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
-                    PowerManager.WakeLock wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "BlockchainServiceLockTag");
-
-                    long lockTime = 1000 * 360 * 5;
-                    wakeLock.acquire(lockTime);
+                   acquireWakeLocks();
 
                     System.out.println("service setup! : " + _coinManager);
+                    startForeground(NOTIFICATION_SYNC_ID, getServiceNotification("Starting"));
                     _coinManager.setup(BlockchainService.this);
                     break;
 
                 case IPC_MSG_WALLET_RECOVER:
                     RecoverWalletMessage recoverMsg = _gson.fromJson(msg.getData().getString(IPC_BUNDLE_DATA_KEY), RecoverWalletMessage.class);
 
+                    acquireWakeLocks();
+                    //wakeLock.acquire(1000 * 360 * 5);
+                    startForeground(NOTIFICATION_SYNC_ID, getServiceNotification("Starting"));
                     // illness bulk jewel deer chaos swing goose fetch patch blood acid call creation
                     System.out.println("service recover! : " + _coinManager);
                     _coinManager.recoverWalletBy(BlockchainService.this, recoverMsg.getSeed(), recoverMsg.getDate());
@@ -261,5 +279,62 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
                     super.handleMessage(msg);
             }
         }
+    }
+
+    /**
+     *
+     * @return
+     */
+    private Notification getServiceNotification (String text) {
+       // Bitmap logo = BitmapFactory.decodeResource(getResources(), R.drawable.logo);
+
+        Notification.Builder builder = new Notification.Builder(this);
+        builder.setContentTitle(getString(R.string.service_notification_title))
+                .setContentText(text)
+                .setSmallIcon(R.drawable.logo)
+                .setOngoing(true)
+                .setPriority(Notification.PRIORITY_HIGH)
+                .setSound(null)
+                .setVibrate(null);
+
+        //builder.setSmallIcon(xx);
+        builder.setDefaults(Notification.DEFAULT_LIGHTS);
+
+        Notification not = builder.build();
+        not.flags = Notification.FLAG_FOREGROUND_SERVICE;
+
+        return not;
+    }
+
+    /**
+     *
+     */
+    private void acquireWakeLocks() {
+        if(_wakeLock == null) {
+            PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+            _wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "BlockchainServiceLockTag");
+        }
+
+        if (_wifiLock == null) {
+            WifiManager wm = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+            _wifiLock = wm.createWifiLock(WifiManager.WIFI_MODE_FULL, "BlockchainServiceWifiLockTag");
+        }
+
+        if (!_wakeLock.isHeld())
+            _wakeLock.acquire();
+
+        if (!_wifiLock.isHeld())
+            _wifiLock.acquire();
+    }
+
+    /**
+     *
+     */
+    private void releaseWakeLocks() {
+        if (_wakeLock.isHeld())
+            _wakeLock.release();
+
+        if (_wifiLock.isHeld())
+            _wifiLock.release();
     }
 }

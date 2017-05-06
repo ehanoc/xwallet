@@ -1,6 +1,7 @@
 package com.bytetobyte.xwallet.ui.fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,8 +16,6 @@ import com.codetroopers.betterpickers.calendardatepicker.MonthAdapter;
 import com.codetroopers.betterpickers.numberpicker.NumberPickerBuilder;
 import com.codetroopers.betterpickers.numberpicker.NumberPickerDialogFragment;
 import com.codetroopers.betterpickers.radialtimepicker.RadialTimePickerDialogFragment;
-import com.codetroopers.betterpickers.timepicker.TimePickerBuilder;
-import com.codetroopers.betterpickers.timepicker.TimePickerDialogFragment;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -155,7 +154,15 @@ public class RecoverFragment extends BaseDialogFragment implements CalendarDateP
                     @Override
                     public void onClick(SweetAlertDialog sDialog) {
                         getBaseActivity().recoverWallet(CoinManagerFactory.BITCOIN, seed, _lastDateSet);
-                       // getBaseActivity().showMenuSelection(0);
+
+                        Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                getBaseActivity().showMenuSelection(0);
+                            }
+                        }, 500);
+
                         sDialog.dismissWithAnimation();
                     }
                 })

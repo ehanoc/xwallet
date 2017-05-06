@@ -87,11 +87,6 @@ public class BitcoinSetupAction extends DownloadProgressListener implements Coin
                 if (wallet().getKeyChainGroupSize() < 1)
                     wallet().importKey(new ECKey());
 
-                _walletKit.peerGroup().setBloomFilterFalsePositiveRate(0.0001);
-
-                Wallet wallet = _walletKit.wallet();
-                System.out.println("Setup wallet : " + wallet);
-
 //                wallet.removeCoinsReceivedEventListener(_bitcoinManger);
 //                wallet.addCoinsReceivedEventListener(_bitcoinManger);
 

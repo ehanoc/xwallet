@@ -11,6 +11,7 @@ import com.bytetobyte.xwallet.service.utils.ServiceConsts;
 import com.google.common.util.concurrent.Service;
 
 import org.bitcoinj.core.Block;
+import org.bitcoinj.core.ECKey;
 import org.bitcoinj.core.FilteredBlock;
 import org.bitcoinj.core.Peer;
 import org.bitcoinj.crypto.MnemonicCode;
@@ -89,7 +90,9 @@ public class BitcoinRecoverAction extends DownloadProgressListener implements Co
             @Override
             protected void onSetupCompleted() {
                 super.onSetupCompleted();
-               // wallet().allowSpendingUnconfirmedTransactions();
+
+                peerGroup().setFastCatchupTimeSecs(_creationDate.getTime() / 1000);
+                wallet().allowSpendingUnconfirmedTransactions();
             }
         };
 
@@ -152,20 +155,6 @@ public class BitcoinRecoverAction extends DownloadProgressListener implements Co
             for (CoinActionCallback<CurrencyCoin> callback : _callbacks) {
                 callback.onBlocksDownloaded(_bitcoinManager.getCurrencyCoin(), this.lastPercent, blocksLeft, this.lastBlockDate);
             }
-        }
-    }
-
-    /**
-     *
-     */
-    private class RecoverListener extends Service.Listener {
-        /**
-         *
-         * @param from
-         */
-        @Override
-        public void terminated(Service.State from) {
-            super.terminated(from);
         }
     }
 }
