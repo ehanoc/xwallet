@@ -23,6 +23,6 @@ public interface CurrencyCoin<W> {
      *
      * @param wallet
      */
-    public void setWallet(W wallet);
+    public void setWalletManager(W wallet);
     public W getWalletManager();
 }

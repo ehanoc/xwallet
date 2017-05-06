@@ -71,7 +71,7 @@ public class Bitcoin implements CurrencyCoin<WalletAppKit> {
      * @param wallet
      */
     @Override
-    public void setWallet(WalletAppKit wallet) {
+    public void setWalletManager(WalletAppKit wallet) {
         this._walletKit = wallet;
     }
 

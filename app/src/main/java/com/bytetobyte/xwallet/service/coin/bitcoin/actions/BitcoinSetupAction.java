@@ -15,7 +15,6 @@ import org.bitcoinj.core.FilteredBlock;
 import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.core.Peer;
 import org.bitcoinj.kits.WalletAppKit;
-import org.bitcoinj.wallet.Wallet;
 
 import javax.annotation.Nullable;
 
@@ -90,7 +89,7 @@ public class BitcoinSetupAction extends DownloadProgressListener implements Coin
 //                wallet.removeCoinsReceivedEventListener(_bitcoinManger);
 //                wallet.addCoinsReceivedEventListener(_bitcoinManger);
 
-                _bitcoin.setWallet(_walletKit);
+                _bitcoin.setWalletManager(_walletKit);
             }
         };
     }

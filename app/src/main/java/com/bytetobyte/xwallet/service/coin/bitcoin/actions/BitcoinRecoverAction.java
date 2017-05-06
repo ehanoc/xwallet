@@ -11,7 +11,6 @@ import com.bytetobyte.xwallet.service.utils.ServiceConsts;
 import com.google.common.util.concurrent.Service;
 
 import org.bitcoinj.core.Block;
-import org.bitcoinj.core.ECKey;
 import org.bitcoinj.core.FilteredBlock;
 import org.bitcoinj.core.Peer;
 import org.bitcoinj.crypto.MnemonicCode;
@@ -71,7 +70,7 @@ public class BitcoinRecoverAction extends DownloadProgressListener implements Co
                         .setUserAgent(ServiceConsts.SERVICE_APP_NAME, "0.1")
                         .restoreWalletFromSeed(seed);
 
-                _bitcoinManager.getCurrencyCoin().setWallet(appKit);
+                _bitcoinManager.getCurrencyCoin().setWalletManager(appKit);
                 _bitcoinManager.getCurrencyCoin().getWalletManager().startAsync();
             }
         }, Executors.newSingleThreadExecutor());
