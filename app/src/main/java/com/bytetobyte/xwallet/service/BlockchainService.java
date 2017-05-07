@@ -311,12 +311,12 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
      */
     private void acquireWakeLocks() {
         if(_wakeLock == null) {
-            PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+            PowerManager powerManager = (PowerManager) getApplicationContext().getSystemService(POWER_SERVICE);
             _wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "BlockchainServiceLockTag");
         }
 
         if (_wifiLock == null) {
-            WifiManager wm = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+            WifiManager wm = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
             _wifiLock = wm.createWifiLock(WifiManager.WIFI_MODE_FULL, "BlockchainServiceWifiLockTag");
         }
 
