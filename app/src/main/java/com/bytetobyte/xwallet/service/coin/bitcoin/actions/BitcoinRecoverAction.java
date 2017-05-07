@@ -22,6 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.concurrent.Executors;
 
 import javax.annotation.Nullable;
@@ -90,8 +91,8 @@ public class BitcoinRecoverAction extends DownloadProgressListener implements Co
             protected void onSetupCompleted() {
                 super.onSetupCompleted();
 
-                peerGroup().setFastCatchupTimeSecs(_creationDate.getTime() / 1000);
-                wallet().allowSpendingUnconfirmedTransactions();
+                peerGroup().setFastCatchupTimeSecs(wallet().getEarliestKeyCreationTime());
+               // wallet().allowSpendingUnconfirmedTransactions();
             }
         };
 
@@ -121,9 +122,11 @@ public class BitcoinRecoverAction extends DownloadProgressListener implements Co
             }
         }
 
-        System.out.println("earliest date  :" + _creationDate.getTime() / 1000);
+        long creationTimeSecs = _creationDate.getTime() / 1000;
+        System.out.println("earliest date  :" + creationTimeSecs + " date :" +_creationDate.toString());
+        System.out.println("Seed with words : " + wordList);
 
-        final DeterministicSeed deterministicSeed = new DeterministicSeed(MnemonicCode.toSeed(wordList, ""), wordList, _creationDate.getTime() / 1000);
+        final DeterministicSeed deterministicSeed = new DeterministicSeed(MnemonicCode.toSeed(wordList, ""), wordList, creationTimeSecs);
         return deterministicSeed;
     }
 

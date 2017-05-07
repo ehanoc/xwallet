@@ -86,6 +86,8 @@ public class BitcoinSetupAction extends DownloadProgressListener implements Coin
                 if (wallet().getKeyChainGroupSize() < 1)
                     wallet().importKey(new ECKey());
 
+                peerGroup().setFastCatchupTimeSecs(wallet().getEarliestKeyCreationTime());
+
 //                wallet.removeCoinsReceivedEventListener(_bitcoinManger);
 //                wallet.addCoinsReceivedEventListener(_bitcoinManger);
 

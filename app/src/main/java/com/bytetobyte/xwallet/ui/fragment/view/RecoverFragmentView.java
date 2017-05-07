@@ -70,7 +70,7 @@ public class RecoverFragmentView implements RecoverFragmentViewContract, View.On
                 break;
 
             case R.id.recover_button:
-                String seed = _seedInput.getText().toString();
+                String seed = _seedInput.getText().toString().trim();
                 if (isValidMnemonicSeed(seed)) {
                     _recoverFrag.promptWalletRecovery(seed);
                 }

@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
@@ -66,15 +67,15 @@ public class RecoverFragment extends BaseDialogFragment implements CalendarDateP
         _calendar = Calendar.getInstance();
 
         Calendar dateStart = Calendar.getInstance();
-        //dateStart.setTimeZone(TimeZone.getTimeZone("UTC"));
-        dateStart.set(2010, 01, 01);
+        dateStart.setTimeZone(TimeZone.getTimeZone("GMT"));
+        dateStart.set(2010, 5, 1);
 
         MonthAdapter.CalendarDay calendarStartDay = new MonthAdapter.CalendarDay(dateStart);
 
         CalendarDatePickerDialogFragment cdp = new CalendarDatePickerDialogFragment()
                 .setOnDateSetListener(this)
                 .setFirstDayOfWeek(Calendar.SUNDAY)
-                .setPreselectedDate(2017, 01, 01)
+                .setPreselectedDate(2017, 1, 1)
                 .setDateRange(calendarStartDay, null)
                 .setDoneText("Yay")
                 .setCancelText("Nop")
@@ -93,11 +94,11 @@ public class RecoverFragment extends BaseDialogFragment implements CalendarDateP
     public void onDateSet(CalendarDatePickerDialogFragment dialog, final int year, final int monthOfYear, final int dayOfMonth) {
         //TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
 
-        _calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
+       // _calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
         _calendar.set(year, monthOfYear, dayOfMonth, 0, 0, 0);
 
         _lastDateSet = _calendar.getTime();
-        System.out.println("Last date : " + _lastDateSet.getTime() / 1000);
+        System.out.println("Last date : " + _lastDateSet.getTime() / 1000 + " dt :" + _lastDateSet);
         _rView.setDate(_lastDateSet);
 
       //  long timeSinceEpoch = Date.UTC(year, monthOfYear, dayOfMonth, 0, 0, 0);
