@@ -6,12 +6,13 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:colorControlNormal">@color/colorAccent</item>
+        <!--<item name="android:colorControlNormal">@color/colorAccent</item>-->
+        <item name="android:scrollViewStyle">@android:style/Widget.DeviceDefault.Light.ScrollView</item>
 
         <item name="android:textViewStyle">@android:style/TextAppearance</item>
         <item name="android:textColorHighlight">@color/colorAccent</item>
         <item name="android:textColorHint">@color/colorContentBackgrounds</item>
-        <item name="android:textColorLink">@color/colorPrimaryDark</item>
+        <item name="android:textColorLink">@color/colorSecondary</item>
         <item name="android:textColorPrimary">@android:color/white</item>
 
         <item name="windowActionBar">false</item>

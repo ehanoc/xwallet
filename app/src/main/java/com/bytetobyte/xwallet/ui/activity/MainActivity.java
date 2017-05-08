@@ -38,6 +38,7 @@ public class MainActivity extends XWalletBaseActivity implements TwitterAuthApi.
     // setting boom
     public static final int BACKUP_BOOM_INDEX = 0;
     public static final int RECOVER_BOOM_INDEX = 1;
+    public static final int INFO_CREDITS_INDEX = 2;
 
     public static final int BACKUP_UNLOCK_REQUEST_CODE = 0x7;
 
@@ -85,8 +86,15 @@ public class MainActivity extends XWalletBaseActivity implements TwitterAuthApi.
     @Override
     protected void onResume() {
         super.onResume();
-        if (!hasSyncedBefore()) {
+
+        if (getPreferencesLastSyncedMsg() == null) {
             _mainView.startTutorial();
+        } else {
+            _lastSyncedMessage = getPreferencesLastSyncedMsg();
+            BlockchainClientListener chainListener = (BlockchainClientListener) getSupportFragmentManager().findFragmentById(R.id.xwallet_content_layout);
+            if (chainListener != null) {
+                chainListener.onSyncReady(_lastSyncedMessage);
+            }
         }
     }
 
@@ -113,11 +121,11 @@ public class MainActivity extends XWalletBaseActivity implements TwitterAuthApi.
 
         _lastSyncedMessage = syncedMessage;
 
-        _walletFragment.setBalance(syncedMessage.getAmount());
-        _walletFragment.setAddress(syncedMessage.getAddresses());
-
         SharedPreferences prefs = getSharedPreferences(getString(R.string.app_name), MODE_PRIVATE);
         prefs.edit().putString(PREFS_KEY_LAST_SYNCED_MESSAGE, new Gson().toJson(_lastSyncedMessage)).apply();
+
+        BlockchainClientListener frag = (BlockchainClientListener) getSupportFragmentManager().findFragmentById(R.id.xwallet_content_layout);
+        frag.onSyncReady(syncedMessage);
     }
 
     /**
@@ -255,9 +263,16 @@ public class MainActivity extends XWalletBaseActivity implements TwitterAuthApi.
      *
      * @return
      */
-    private boolean hasSyncedBefore() {
+    private SyncedMessage getPreferencesLastSyncedMsg() {
         SharedPreferences prefs = getSharedPreferences(getString(R.string.app_name), MODE_PRIVATE);
         String lastSyncMsgStr = prefs.getString(PREFS_KEY_LAST_SYNCED_MESSAGE, null);
-        return lastSyncMsgStr != null;
+
+        SyncedMessage lastSyncMsg = null;
+
+        if (lastSyncMsgStr != null) {
+            lastSyncMsg = new Gson().fromJson(lastSyncMsgStr, SyncedMessage.class);
+        }
+
+        return lastSyncMsg;
     }
 }

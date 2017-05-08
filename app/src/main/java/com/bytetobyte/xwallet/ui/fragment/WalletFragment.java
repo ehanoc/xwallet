@@ -10,31 +10,35 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bytetobyte.xwallet.BaseFragment;
 import com.bytetobyte.xwallet.R;
+import com.bytetobyte.xwallet.network.api.CexChartAPI;
+import com.bytetobyte.xwallet.network.api.models.CexCharItem;
 import com.bytetobyte.xwallet.service.BlockchainService;
 import com.bytetobyte.xwallet.service.coin.CoinManagerFactory;
-import com.github.mikephil.charting.charts.LineChart;
+import com.bytetobyte.xwallet.service.ipcmodel.SyncedMessage;
+import com.bytetobyte.xwallet.ui.fragment.view.WalletFragmentView;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.utils.EntryXComparator;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by bruno on 08.04.17.
  */
-public class WalletFragment extends BaseFragment implements View.OnClickListener {
+public class WalletFragment extends BaseFragment implements CexChartAPI.CexChartCallback {
 
-    private LineChart _priceChart;
-    private TextView _balanceTxt;
-    private TextView _addressTxt;
-    private ImageView _addressCopyIc;
+    private List<Entry> _btcChartEntries;
+
+    private WalletFragmentView _walletFragView;
+    private String _lastBalance;
 
     /**
      *
@@ -57,13 +61,14 @@ public class WalletFragment extends BaseFragment implements View.OnClickListener
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_wallet, container, false);
 
-        //_priceChart = (LineChart) rootView.findViewById(R.id.line_price_chart);
-        _addressCopyIc = (ImageView) rootView.findViewById(R.id.wallet_address_copy_ic);
-        _addressCopyIc.setOnClickListener(this);
-
-        _balanceTxt = (TextView) rootView.findViewById(R.id.wallet_balance);
-        _addressTxt = (TextView) rootView.findViewById(R.id.wallet_address);
+        _walletFragView = new WalletFragmentView(this);
         return rootView;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        _walletFragView.initViews();
     }
 
     /**
@@ -72,11 +77,10 @@ public class WalletFragment extends BaseFragment implements View.OnClickListener
     @Override
     public void onResume() {
         super.onResume();
-
-        //initGraph();
-
         Message sendMsg = Message.obtain(null, BlockchainService.IPC_MSG_WALLET_SYNC, CoinManagerFactory.BITCOIN, 0);
         getBaseActivity().sendMessage(sendMsg);
+
+        new CexChartAPI(this).execute();
     }
 
     /**
@@ -85,16 +89,36 @@ public class WalletFragment extends BaseFragment implements View.OnClickListener
     @Override
     public void onServiceReady() {
         getBaseActivity().syncChain(CoinManagerFactory.BITCOIN);
-//        Message sendMsg = Message.obtain(null, BlockchainService.IPC_MSG_WALLET_SYNC, CoinManagerFactory.BITCOIN, 0);
-//        getBaseActivity().sendMessage(sendMsg);
+    }
+
+    /**
+     *
+     * @param syncedMessage
+     */
+    @Override
+    public void onSyncReady(SyncedMessage syncedMessage) {
+        super.onSyncReady(syncedMessage);
+
+        updateBalance(syncedMessage.getAmount());
+        setAddress(syncedMessage.getAddresses());
     }
 
     /**
      *
      * @param balance
      */
-    public void setBalance(String balance) {
-        _balanceTxt.setText(balance);
+    public void updateBalance(String balance) {
+       // _balanceTxt.setText(balance);
+        _lastBalance = balance;
+        _walletFragView.updateBalance(balance);
+
+        if(_btcChartEntries != null && !_btcChartEntries.isEmpty()) {
+            Entry latestValue = _btcChartEntries.get(_btcChartEntries.size() - 1);
+            Double actualBalance = Double.parseDouble(balance);
+            String subBalance = String.format(Locale.getDefault(), "(%.2f$)", actualBalance * latestValue.getY());
+            //_subBalanceTxt.setText(subBalance);
+            _walletFragView.updateConversion(subBalance);
+        }
     }
 
     /**
@@ -102,74 +126,52 @@ public class WalletFragment extends BaseFragment implements View.OnClickListener
      * @param addresses
      */
     public void setAddress(List<String> addresses) {
-        _addressTxt.setText(addresses.get(addresses.size() - 1));
+        _walletFragView.updateAddress(addresses.get(addresses.size() - 1));
     }
 
     /**
      *
      */
-    private void initGraph() {
-        List<Entry> entries = new ArrayList<Entry>();
-        entries.add(new Entry(1.0f, 2.0f));
-        entries.add(new Entry(2.0f, 3.0f));
-        entries.add(new Entry(2.0f, 4.0f));
-        entries.add(new Entry(3.0f, 2.0f));
-        entries.add(new Entry(5.0f, 6.0f));
-
+    private void updateGraph(List<Entry> entries) {
         LineDataSet dataSet = new LineDataSet(entries, "Label");
 
         dataSet.setDrawValues(false);
         dataSet.setLineWidth(2f);
         dataSet.setDrawCircles(true);
-
         dataSet.setDrawCircles(false);
 
-//        dataSet.setColor(...);
-//        dataSet.setValueTextColor(...); // styling, ...
-
         LineData lineData = new LineData(dataSet);
-
-        _priceChart.setAutoScaleMinMaxEnabled(true);
-
-        _priceChart.setDrawGridBackground(false);
-        _priceChart.setDrawingCacheEnabled(false);
-        _priceChart.setDrawMarkers(false);
-        _priceChart.setDrawBorders(false);
-        _priceChart.setDrawMarkers(false);
-
-        _priceChart.getAxisLeft().setEnabled(false);
-        _priceChart.getAxisRight().setEnabled(false);
-
-        _priceChart.getXAxis().setDrawAxisLine(false);
-        _priceChart.getXAxis().setDrawGridLines(false);
-
-        _priceChart.getXAxis().setEnabled(false);
-
-        _priceChart.getLegend().setEnabled(false);
-        _priceChart.setTouchEnabled(false);
-
-        _priceChart.setDescription(null);
-
-        _priceChart.setData(lineData);
+        _walletFragView.updateChartPriceData(lineData);
     }
 
     /**
      *
-     * @param v
+     * @param items
      */
     @Override
-    public void onClick(View v) {
-       switch (v.getId()) {
-           case R.id.wallet_address_copy_ic:
-               ClipboardManager clipboard = (ClipboardManager) getBaseActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-               ClipData addData = ClipData.newPlainText("btc_addr_copied", _addressTxt.getText());
-               clipboard.setPrimaryClip(addData);
+    public void onChartResult(List<CexCharItem> items) {
+        _btcChartEntries = new ArrayList<Entry>();
 
-               Toast.makeText(getBaseActivity(), "Added to clipboard!", Toast.LENGTH_SHORT).show();
-               break;
+        for (int i = 0; i < items.size(); i ++) {
+            Float price = Float.parseFloat(items.get(i).getPrice());
+            Long timestamp = Long.parseLong(items.get(i).getTmsp());
+            _btcChartEntries.add(new Entry(timestamp, price));
+        }
 
-           default:
-               break;
-       }
+        Collections.sort(_btcChartEntries, new EntryXComparator());
+        updateGraph(_btcChartEntries);
+        updateBalance(_lastBalance);
+    }
+
+    /**
+     *
+     * @param text
+     */
+    public void toClipboard(CharSequence text) {
+        ClipboardManager clipboard = (ClipboardManager) getBaseActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData addData = ClipData.newPlainText("btc_addr_copied", text);
+        clipboard.setPrimaryClip(addData);
+
+        Toast.makeText(getBaseActivity(), "Added to clipboard!", Toast.LENGTH_SHORT).show();
     }
 }

@@ -8,4 +8,29 @@
         <item name="android:colorControlNormal">@color/colorAccent</item>
     </style>
 
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:colorControlNormal">@color/colorAccent</item>
+        <item name="android:scrollViewStyle">@android:style/Widget.DeviceDefault.Light.ScrollView
+        </item>
+
+        <item name="android:textViewStyle">@android:style/TextAppearance</item>
+        <item name="android:textColorHighlight">@color/colorAccent</item>
+        <item name="android:textColorHint">@color/colorContentBackgrounds</item>
+        <item name="android:textColorLink">@color/colorPrimaryDark</item>
+        <item name="android:textColorPrimary">@android:color/white</item>
+
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+
+        <item name="android:editTextStyle">@android:style/TextAppearance.Holo.Widget.EditText</item>
+        <item name="android:editTextBackground">@android:style/TextAppearance.Holo.Widget.EditText
+        </item>
+
+        <item name="android:datePickerStyle">@android:style/Widget.DatePicker</item>
+    </style>
+
 </resources>

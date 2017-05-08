@@ -34,7 +34,7 @@
 
     <!-- MAIN -->
     <dimen name="main_top_title_height">88dp</dimen>
-    <dimen name="main_coin_row_background">102dp</dimen>
+    <dimen name="main_coin_row_background">122dp</dimen>
     <dimen name="main_ic_address_size">14dp</dimen>
     <dimen name="main_background_wheel">150dp</dimen>
     <dimen name="main_footer_wheel_bg_bar">150dp</dimen>
@@ -72,6 +72,10 @@
     <dimen name="recover_set_date_text_size">18sp</dimen>
     <dimen name="recover_dialog_size">280dp</dimen>
     <dimen name="recover_seed_input_text_size">12sp</dimen>
+    <dimen name="wallet_chart_width">150dp</dimen>
+    <dimen name="wallet_coin_sub_balance_size">16sp</dimen>
+    <dimen name="wallet_coin_balance_size">24sp</dimen>
+    <dimen name="text_title_size">26sp</dimen>
 
 
 </resources>

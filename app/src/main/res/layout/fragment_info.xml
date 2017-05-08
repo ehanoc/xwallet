@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="8dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autoLink="web"
+                android:textSize="@dimen/text_title_size"
+                android:textStyle="bold"
+                android:text="@string/app_name"
+                />
+
+            <TextView
+                android:layout_margin="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autoLink="web"
+                android:text="@string/wallet_info_description"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autoLink="web"
+                android:textSize="@dimen/text_title_size"
+                android:textStyle="bold"
+                android:text="Contributions"
+                />
+
+            <TextView
+                android:layout_margin="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autoLink="web"
+                android:textColorLink="@color/colorSecondary"
+                android:text="@string/wallet_contributions_description"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autoLink="web"
+                android:textSize="@dimen/text_title_size"
+                android:textStyle="bold"
+                android:text="Credits"
+                />
+
+            <TextView
+                android:layout_margin="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autoLink="web"
+                android:textSize="12sp"
+                android:textColorLink="@color/colorSecondary"
+                android:text="\n    https://github.com/bitcoinj
+                \n    https://github.com/lzyzsd/CircleProgress
+                \n    https://github.com/Nightonke/BoomMenu
+                \n    https://github.com/hdodenhof/CircleImageView
+                \n    https://github.com/PhilJay/MPAndroidChart
+                \n    https://github.com/bumptech/glide
+                \n    https://github.com/pedant/sweet-alert-dialog
+                \n    https://github.com/zxing/zxing
+                \n    https://github.com/nisrulz/qreader
+"
+                />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

@@ -93,8 +93,8 @@ public class MainActivityView implements MainViewContract {
      *
      */
     private void initSettingsBoom() {
-        int[] settingsBtns = {R.drawable.ic_backup_black, R.drawable.ic_settings_backup_restore};
-        String[] settingsStrs = { "Backup Wallet" , "Recover Wallet" };
+        int[] settingsBtns = {R.drawable.ic_backup_black, R.drawable.ic_settings_backup_restore, android.R.drawable.ic_menu_info_details};
+        String[] settingsStrs = { "Backup Wallet" , "Recover Wallet", "Info & Credits" };
 
 
         _settingsBmb = (BoomMenuButton) _act.findViewById(R.id.main_settings_boom);
@@ -138,7 +138,8 @@ public class MainActivityView implements MainViewContract {
      */
     @Override
     public void setSyncProgress(int progress) {
-        _chainArcProgress.setProgress(progress);
+        if (progress > _chainArcProgress.getProgress())
+            _chainArcProgress.setProgress(progress);
     }
 
     public View getWheelMiddleLense() {

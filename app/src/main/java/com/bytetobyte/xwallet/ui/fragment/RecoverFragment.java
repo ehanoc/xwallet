@@ -149,7 +149,7 @@ public class RecoverFragment extends BaseDialogFragment implements CalendarDateP
     public void promptWalletRecovery(final String seed) {
         new SweetAlertDialog(getBaseActivity(), SweetAlertDialog.NORMAL_TYPE)
                 .setTitleText("Recovery")
-                .setContentText("You sure you want to recover wallet from the seed : " + seed)
+                .setContentText("You sure you want to recover wallet from the seed : " + seed + " ? \n\n This might take some time, please keep your phone plugged in!")
                 .setConfirmText("Yes, Recover!")
                 .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                     @Override

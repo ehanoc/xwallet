@@ -11,4 +11,6 @@
     <string name="recover_enter_seed_and_date">Please enter your recovery seed and the wallet\'s creation date (helps with faster chain sync)</string>
     <string name="backup_wallet_seed_description">Keep this next set of words secret. Without it you won\'t be able to recover your wallet!</string>
     <string name="service_notification_title">Syncing Blockchain</string>
+    <string name="wallet_info_description">Open source wallet app with no third - party servers to manage your wallet. Other currencies planned to be added...</string>
+    <string name="wallet_contributions_description">If you would like to contribute or create your own flavour of the wallet... You can find repository here : https://github.com/ehanoc/xwallet</string>
 </resources>
