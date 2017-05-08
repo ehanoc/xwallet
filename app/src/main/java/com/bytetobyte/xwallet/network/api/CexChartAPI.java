@@ -45,7 +45,7 @@ public class CexChartAPI extends AsyncTask<Void, Void, String> {
         OkHttpClient client = new OkHttpClient();
 
         HttpUrl httpUrl = HttpUrl.parse(COIN_DESK_API_URL);
-        System.out.println("Requesting : " + httpUrl.toString());
+        //System.out.println("Requesting : " + httpUrl.toString());
 
         FormEncodingBuilder formBody = new FormEncodingBuilder();
         formBody.add("lastHours", "24");
@@ -83,7 +83,7 @@ public class CexChartAPI extends AsyncTask<Void, Void, String> {
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
 
-        System.out.println("CexChartApi result : " + s);
+        //System.out.println("CexChartApi result : " + s);
 
         try {
             Gson gson = new Gson();

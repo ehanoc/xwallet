@@ -62,11 +62,11 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         holder.mTextView.setText(searchResult.getText());
 
         TwitterEntities entities = searchResult.getEntities();
-        System.out.println("entities : " + entities);
+       // System.out.println("entities : " + entities);
         if (entities == null) return;
 
         TwitterMedia photo = entities.findPhoto();
-        System.out.println("photo : " + photo);
+        //System.out.println("photo : " + photo);
         if (photo == null) return;
 
         //Resources res = mContext.getResources();

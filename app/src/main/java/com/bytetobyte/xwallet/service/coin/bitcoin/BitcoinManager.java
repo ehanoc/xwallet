@@ -194,8 +194,9 @@ public class BitcoinManager implements CoinManager, CoinAction.CoinActionCallbac
         String seedStr = Joiner.on(" ").join(seed.getMnemonicCode());
 
        // seedStr += " @" + seed.getCreationTimeSeconds();
-        System.out.println("Seed words are: " + Joiner.on(" ").join(seed.getMnemonicCode()));
-        System.out.println("Seed birthday is: " + seed.getCreationTimeSeconds());
+
+        //System.out.println("Seed words are: " + Joiner.on(" ").join(seed.getMnemonicCode()));
+        //System.out.println("Seed birthday is: " + seed.getCreationTimeSeconds());
 
         return seedStr;
     }

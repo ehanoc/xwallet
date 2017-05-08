@@ -130,19 +130,19 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
         System.out.println("BlockchainService CurrencyCoin SYNCED!!");
 
         List<String> addrs = _coinManager.getCurrentAddresses();
-        for (String addr : addrs) {
-            System.out.println("Address : " + addr);
-        }
+//        for (String addr : addrs) {
+//            System.out.println("Address : " + addr);
+//        }
 
-        System.out.println("Wallet seed : " + _coinManager.getMnemonicSeed());
+        //System.out.println("Wallet seed : " + _coinManager.getMnemonicSeed());
 
-        Set<Map.Entry<String, String>> addrKeyEntrySet = _coinManager.getAddressesKeys().entrySet();
-        for (Map.Entry<String, String> entry : addrKeyEntrySet) {
-            System.out.println("Addr : " + entry.getKey() + ", Key :" + entry.getValue());
-        }
+ //       Set<Map.Entry<String, String>> addrKeyEntrySet = _coinManager.getAddressesKeys().entrySet();
+//        for (Map.Entry<String, String> entry : addrKeyEntrySet) {
+//            System.out.println("Addr : " + entry.getKey() + ", Key :" + entry.getValue());
+//        }
 
-        System.out.println("Bitcoin balance : " + _coinManager.getBalanceFriendlyStr());
-        System.out.println("Bitcoin balance value : " + _coinManager.getBalanceValue());
+ //       System.out.println("Bitcoin balance : " + _coinManager.getBalanceFriendlyStr());
+ //       System.out.println("Bitcoin balance value : " + _coinManager.getBalanceValue());
 
         SyncedMessage syncedMessage = new SyncedMessage(_coinManager.getCurrencyCoin().getCoinId(), _coinManager.getBalanceFriendlyStr(), addrs);
         Message toReply = Message.obtain(null, IPC_MSG_WALLET_SYNC);
@@ -204,7 +204,7 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
         public void handleMessage(Message msg) {
             _replyTo = msg.replyTo;
 
-            System.out.println("isSyncing coinManager : " + _coinManager);
+           // System.out.println("isSyncing coinManager : " + _coinManager);
 
             if (_coinManager == null)
                 _coinManager = CoinManagerFactory.getCoinManagerBy(getBaseContext(), msg.arg1);

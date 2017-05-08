@@ -57,7 +57,7 @@ public class NewsFragment extends BaseFragment implements TwitterSearchApi.Twitt
      */
     @Override
     public void onSearchResult(TwitterSearchStatuses result) {
-        System.out.println("Twitter News result : " + result);
+        //System.out.println("Twitter News result : " + result);
 
         List<TwitterSearchResult> statuses = result.getStatuses();
 
