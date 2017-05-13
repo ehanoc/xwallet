@@ -138,8 +138,9 @@ public class MainActivityView implements MainViewContract {
      */
     @Override
     public void setSyncProgress(int progress) {
-        if (progress > _chainArcProgress.getProgress())
-            _chainArcProgress.setProgress(progress);
+        if (progress == 0) return;
+
+        _chainArcProgress.setProgress(progress);
     }
 
     public View getWheelMiddleLense() {

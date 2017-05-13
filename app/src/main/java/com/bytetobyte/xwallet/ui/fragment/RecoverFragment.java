@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.bytetobyte.xwallet.BaseDialogFragment;
 import com.bytetobyte.xwallet.R;
@@ -155,6 +156,7 @@ public class RecoverFragment extends BaseDialogFragment implements CalendarDateP
                     @Override
                     public void onClick(SweetAlertDialog sDialog) {
                         getBaseActivity().recoverWallet(CoinManagerFactory.BITCOIN, seed, _lastDateSet);
+                        Toast.makeText(RecoverFragment.this.getBaseActivity(), "Initiating recovery... Please wait!", Toast.LENGTH_SHORT).show();
 
                         Handler handler = new Handler();
                         handler.postDelayed(new Runnable() {

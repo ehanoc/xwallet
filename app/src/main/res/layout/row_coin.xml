@@ -102,15 +102,13 @@
 
             <com.github.mikephil.charting.charts.LineChart
                 android:id="@+id/wallet_coin_chart"
-                android:layout_marginLeft="4dp"
-                android:layout_marginStart="4dp"
-                android:layout_toRightOf="@+id/wallet_balance_sub_currency"
-                android:layout_toEndOf="@+id/wallet_balance_sub_currency"
+                android:layout_marginLeft="44dp"
+                android:layout_marginStart="44dp"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:gravity="center_vertical"
                 android:visibility="invisible"
-                android:layout_width="match_parent"
+                android:layout_width="@dimen/wallet_chart_width"
                 android:layout_height="match_parent"/>
         </RelativeLayout>
 
