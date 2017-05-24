@@ -3,6 +3,7 @@ package com.bytetobyte.xwallet.service;
 import com.google.common.io.BaseEncoding;
 
 import org.bitcoinj.core.NetworkParameters;
+import org.bitcoinj.params.MainNetParams;
 import org.bitcoinj.params.TestNet3Params;
 import org.bitcoinj.utils.MonetaryFormat;
 
@@ -11,6 +12,7 @@ import org.bitcoinj.utils.MonetaryFormat;
  */
 public class Constants {
     public static final org.bitcoinj.core.NetworkParameters NETWORK_PARAMETERS = TestNet3Params.get();
+   // public static final org.bitcoinj.core.NetworkParameters NETWORK_PARAMETERS = MainNetParams.get();
 
     public static final char CHAR_HAIR_SPACE = '\u200a';
     public static final char CHAR_THIN_SPACE = '\u2009';
