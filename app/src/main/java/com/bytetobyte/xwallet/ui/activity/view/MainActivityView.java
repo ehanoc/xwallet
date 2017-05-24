@@ -1,6 +1,7 @@
 package com.bytetobyte.xwallet.ui.activity.view;
 
 import android.app.Activity;
+import android.graphics.Rect;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -93,7 +94,7 @@ public class MainActivityView implements MainViewContract {
      *
      */
     private void initSettingsBoom() {
-        int[] settingsBtns = {R.drawable.ic_backup_black, R.drawable.ic_settings_backup_restore, android.R.drawable.ic_menu_info_details};
+        int[] settingsBtns = {R.drawable.ic_backup, R.drawable.ic_recover_wallet, R.drawable.ic_info};
         String[] settingsStrs = { "Backup Wallet" , "Recover Wallet", "Info & Credits" };
 
 
@@ -101,6 +102,7 @@ public class MainActivityView implements MainViewContract {
         for (int i = 0; i < _settingsBmb.getButtonPlaceEnum().buttonNumber(); i++) {
             _settingsBmb.addBuilder(new HamButton.Builder()
                     .normalImageRes(settingsBtns[i])
+                    .imagePadding(new Rect(10, 10, 10, 10))
                     .normalText(settingsStrs[i])
             );
         }

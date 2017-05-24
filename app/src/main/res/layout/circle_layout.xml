@@ -12,7 +12,7 @@
                 android:layout_width="@dimen/wheel_menu_icon_size"
                 android:layout_height="@dimen/wheel_menu_icon_size"
                 android:rotation="240"
-                android:src="@drawable/ic_clock"
+                android:src="@drawable/ic_news"
                 android:background="@android:color/transparent" />
         </RelativeLayout>
 
@@ -35,7 +35,7 @@
                 android:rotation="120"
                 android:layout_width="@dimen/wheel_menu_icon_size"
                 android:layout_height="@dimen/wheel_menu_icon_size"
-                android:src="@drawable/ic_news"
+                android:src="@drawable/ic_txs"
                 android:background="@android:color/transparent" />
         </RelativeLayout>
 

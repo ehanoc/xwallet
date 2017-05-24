@@ -35,11 +35,6 @@
         android:layout_width="match_parent"
         android:layout_height="60dp">
 
-        <ImageView
-            android:src="@drawable/app_x"
-            android:layout_width="@dimen/splash_app_name_x_size"
-            android:layout_height="@dimen/splash_app_name_x_size"/>
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -60,7 +55,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Cryptocurrency Wallet"
+            android:text="Bitcoin Wallet"
             android:textColor="@color/colorAccent"
             android:textSize="20sp"
             />

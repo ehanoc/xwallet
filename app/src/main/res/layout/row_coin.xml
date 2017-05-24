@@ -77,28 +77,35 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/wallet_balance"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+            <LinearLayout
+                android:orientation="vertical"
                 android:gravity="center_vertical"
-                android:textColor="@android:color/white"
-                android:text="--"
-                android:textSize="@dimen/wallet_coin_balance_size"
-                android:textStyle="bold"
-                />
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent">
 
-            <TextView
-                android:layout_toRightOf="@+id/wallet_balance"
-                android:layout_toEndOf="@+id/wallet_balance"
-                android:layout_marginLeft="4dp"
-                android:id="@+id/wallet_balance_sub_currency"
-                android:textColor="@color/colorSecondary"
-                android:gravity="center_vertical"
-                android:layout_width="wrap_content"
-                android:text="(-$)"
-                android:textSize="@dimen/wallet_coin_sub_balance_size"
-                android:layout_height="match_parent" />
+                <TextView
+                    android:id="@+id/wallet_balance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:textColor="@android:color/white"
+                    android:text="--"
+                    android:textSize="@dimen/wallet_coin_balance_size"
+                    android:textStyle="bold"
+                    />
+
+                <TextView
+                    android:layout_below="@+id/wallet_balance"
+                    android:id="@+id/wallet_balance_sub_currency"
+                    android:textColor="@color/colorSecondary"
+                    android:gravity="center_vertical"
+                    android:layout_width="wrap_content"
+                    android:text="(-$)"
+                    android:textSize="@dimen/wallet_coin_sub_balance_size"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+
 
             <com.github.mikephil.charting.charts.LineChart
                 android:id="@+id/wallet_coin_chart"
