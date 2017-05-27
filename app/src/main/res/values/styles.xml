@@ -18,8 +18,8 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
 
-        <item name="android:editTextStyle">@android:style/TextAppearance.Holo.Widget.EditText</item>
-        <item name="android:editTextBackground">@android:style/TextAppearance.Holo.Widget.EditText</item>
+        <!--<item name="android:editTextStyle">@android:style/TextAppearance.DeviceDefault.Widget.EditText</item>-->
+        <!--<item name="android:editTextBackground">@android:style/TextAppearance.DeviceDefault.Widget.EditText</item>-->
 
         <item name="android:datePickerStyle">@android:style/Widget.DatePicker</item>
     </style>

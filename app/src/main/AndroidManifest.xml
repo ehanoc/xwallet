@@ -6,7 +6,7 @@
     <application
         android:allowBackup="true"
         android:name=".App"
-        android:icon="@drawable/logo"
+        android:icon="@drawable/urchin_logo_main"
         tools:replace="android:icon, android:theme"
         tools:node="replace"
         android:label="@string/app_name"

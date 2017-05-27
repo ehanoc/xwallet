@@ -6,6 +6,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <TextView
+        android:id="@+id/transactions_empty_list_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Empty Transaction List"
+        android:visibility="gone"
+        android:gravity="center_horizontal"
+        />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/transactions_list"
         android:layout_width="match_parent"

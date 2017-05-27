@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.bytetobyte.xwallet.BaseFragment;
 import com.bytetobyte.xwallet.R;
@@ -27,6 +28,7 @@ public class TransactionFragment extends BaseFragment {
     private LinearLayoutManager _layoutManager;
     private List<CoinTransaction> _txs;
     private TxsAdapter _txsAdapter;
+    private TextView _emptyTxsListText;
 
     /**
      *
@@ -40,6 +42,7 @@ public class TransactionFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_transactions, container, false);
 
+        _emptyTxsListText = (TextView) rootView.findViewById(R.id.transactions_empty_list_text);
         _recyclerView = (RecyclerView) rootView.findViewById(R.id.transactions_list);
 
         _txs = new ArrayList<>();
@@ -75,7 +78,9 @@ public class TransactionFragment extends BaseFragment {
      */
     @Override
     public void onTransactions(List<CoinTransaction> txs) {
-        System.out.println(" TXS ! : " + txs);
+        if (txs.isEmpty()) {
+            _emptyTxsListText.setVisibility(View.VISIBLE);
+        }
 
         _txs.clear();
         _txs.addAll(txs);

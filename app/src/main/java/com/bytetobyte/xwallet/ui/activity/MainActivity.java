@@ -125,7 +125,9 @@ public class MainActivity extends XWalletBaseActivity implements TwitterAuthApi.
         prefs.edit().putString(PREFS_KEY_LAST_SYNCED_MESSAGE, new Gson().toJson(_lastSyncedMessage)).apply();
 
         BlockchainClientListener frag = (BlockchainClientListener) getSupportFragmentManager().findFragmentById(R.id.xwallet_content_layout);
-        frag.onSyncReady(syncedMessage);
+        if (frag != null) {
+            frag.onSyncReady(syncedMessage);
+        }
     }
 
     /**

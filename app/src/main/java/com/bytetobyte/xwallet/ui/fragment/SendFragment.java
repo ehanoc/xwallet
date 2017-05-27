@@ -105,7 +105,21 @@ public class SendFragment extends BaseDialogFragment {
                 getBaseActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        _sendViewContract.getAddressField().setText(data);
+                        // check if data includes address + amount + currency (i.e, bitcoin : [addr] ? amount = [amount])
+                        String addr = _latestDetectedData;
+                        if (_latestDetectedData.contains(":")) {
+                            String[] tokens = _latestDetectedData.split(":");
+                            if (tokens.length > 1) {
+                                if (isBitcoinAddress(tokens[1])) {
+                                    addr = tokens[1];
+                                } else if (tokens[1].contains("?")) {
+                                    String[] addrAmountTokens = tokens[1].split("\\?");
+                                    addr = addrAmountTokens[0];
+                                }
+                            }
+                        }
+
+                        _sendViewContract.getAddressField().setText(addr);
                     }
                 });
             }
