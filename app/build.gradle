@@ -9,8 +9,8 @@ android {
         applicationId "com.bytetobyte.xwallet"
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 9
-        versionName "0.2.6-beta"
+        versionCode 10
+        versionName "0.2.7-beta"
         multiDexEnabled true
 //
 //        jackOptions {

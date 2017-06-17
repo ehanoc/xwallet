@@ -3,6 +3,7 @@ package com.bytetobyte.xwallet.service.coin.bitcoin.actions;
 import com.bytetobyte.xwallet.service.coin.CoinAction;
 import com.bytetobyte.xwallet.service.coin.CurrencyCoin;
 import com.bytetobyte.xwallet.service.coin.bitcoin.Bitcoin;
+import com.bytetobyte.xwallet.service.coin.bitcoin.BitcoinManager;
 
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Coin;
@@ -47,10 +48,23 @@ public class BitcoinSendAction implements CoinAction<CoinAction.CoinActionCallba
         this._callbacks = callbacks;
         this._bitcoin.getWalletManager().wallet().addCoinsSentEventListener(this);
 
+        Coin balance = _bitcoin.getWalletManager().wallet().getBalance();
         Coin amountCoin = Coin.parseCoin(_amount);
-        Address addr = Address.fromBase58(_bitcoin.getWalletManager().wallet().getParams(), _address);
 
+        Address addr = Address.fromBase58(_bitcoin.getWalletManager().wallet().getParams(), _address);
         SendRequest sendRequest = SendRequest.to(addr, amountCoin);
+
+        Coin feeCoin = BitcoinManager.CalculateFeeTxSizeBytes(sendRequest.tx, sendRequest.feePerKb.getValue());
+
+        long balValue = balance.getValue();
+        long amountValue = amountCoin.getValue();
+        long txFeeValue = feeCoin.getValue();
+
+        if (amountValue + txFeeValue > balValue) {
+            amountCoin = Coin.valueOf(balValue - txFeeValue);
+            sendRequest = SendRequest.to(addr, amountCoin);
+        }
+
         try {
             _bitcoin.getWalletManager().wallet().sendCoins(sendRequest);
         } catch (InsufficientMoneyException e) {

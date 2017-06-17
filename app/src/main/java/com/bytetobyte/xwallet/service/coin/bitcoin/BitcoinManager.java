@@ -119,12 +119,31 @@ public class BitcoinManager implements CoinManager, CoinAction.CoinActionCallbac
         Address addr = Address.fromBase58(_coin.getWalletManager().wallet().getParams(), valueMessage.getAddress());
         SendRequest sendRequest = SendRequest.to(addr, amountCoin);
 
-        valueMessage.setTxFee(sendRequest.feePerKb.toPlainString());
+        Coin txValue = CalculateFeeTxSizeBytes(sendRequest.tx, sendRequest.feePerKb.getValue());
+        valueMessage.setTxFee(txValue.toPlainString());
 
-        long amountWithFee = amountCoin.getValue() - sendRequest.feePerKb.getValue();
-        valueMessage.setAmount(Coin.valueOf(amountWithFee).toPlainString());
+        String amountStr = amountCoin.toPlainString();
+        valueMessage.setAmount(amountStr);
 
         return valueMessage;
+    }
+
+    /**
+     *
+     *  @see { https://bitcoin.stackexchange.com/questions/1195/how-to-calculate-transaction-size-before-sending }
+     *
+     * @param tx
+     * @return
+     */
+    public static Coin CalculateFeeTxSizeBytes(Transaction tx, long feePerKb) {
+        int nrInputs = tx.getInputs().size();
+        int nrOutputs = tx.getOutputs().size();
+
+        long txSizeKb = nrInputs * 148 + nrOutputs * 34 + 10 +- nrInputs;
+        float feeV = feePerKb / (float) txSizeKb;
+        Coin txValue = Coin.valueOf((long) (feeV * 10));
+
+        return txValue;
     }
 
     /**
