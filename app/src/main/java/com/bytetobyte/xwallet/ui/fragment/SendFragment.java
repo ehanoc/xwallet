@@ -219,7 +219,7 @@ public class SendFragment extends BaseDialogFragment {
 
         new SweetAlertDialog(getBaseActivity(), SweetAlertDialog.NORMAL_TYPE)
                 .setTitleText("Confirm Send?")
-                .setContentText("You want to send " + amount + " (Fee: "+txFee+") \n to : " + address)
+                .setContentText("You want to send " + amount + " (Estimated Fee: "+txFee+") \n to : " + address)
                 .setConfirmText("Yes, Send!")
                 .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                     @Override
