@@ -15,6 +15,7 @@ import org.bitcoinj.core.FilteredBlock;
 import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.core.Peer;
 import org.bitcoinj.kits.WalletAppKit;
+import org.bitcoinj.net.discovery.DnsDiscovery;
 
 import javax.annotation.Nullable;
 
@@ -63,7 +64,7 @@ public class BitcoinSetupAction extends DownloadProgressListener implements Coin
     /**
      *
      */
-    private void initWallet(NetworkParameters netParams) {
+    private void initWallet(final NetworkParameters netParams) {
         //File dataDir = getDir("consensus_folder", Context.MODE_PRIVATE);
 
       //  _bitcoinJContext = new org.bitcoinj.core.Context(netParams);
@@ -87,6 +88,7 @@ public class BitcoinSetupAction extends DownloadProgressListener implements Coin
                     wallet().importKey(new ECKey());
 
                 peerGroup().setFastCatchupTimeSecs(wallet().getEarliestKeyCreationTime());
+                peerGroup().addPeerDiscovery(new DnsDiscovery(netParams));
 
 //                wallet.removeCoinsReceivedEventListener(_bitcoinManger);
 //                wallet.addCoinsReceivedEventListener(_bitcoinManger);
