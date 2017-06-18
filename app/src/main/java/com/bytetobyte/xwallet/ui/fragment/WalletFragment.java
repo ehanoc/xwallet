@@ -25,6 +25,7 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.utils.EntryXComparator;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -115,7 +116,11 @@ public class WalletFragment extends BaseFragment implements CexChartAPI.CexChart
         if(_btcChartEntries != null && !_btcChartEntries.isEmpty()) {
             Entry latestValue = _btcChartEntries.get(_btcChartEntries.size() - 1);
             Double actualBalance = Double.parseDouble(balance);
-            String subBalance = String.format(Locale.getDefault(), "(%.2f$)", actualBalance * latestValue.getY());
+            Locale locale = new Locale("en", "US");
+            NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(locale);
+
+            double conversionValue = actualBalance * latestValue.getY();
+            String subBalance = String.format(Locale.getDefault(), "(%s$)", currencyFormatter.format(conversionValue));
             //_subBalanceTxt.setText(subBalance);
             _walletFragView.updateConversion(subBalance);
         }
