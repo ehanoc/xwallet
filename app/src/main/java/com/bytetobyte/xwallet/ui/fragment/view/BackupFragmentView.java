@@ -1,5 +1,6 @@
 package com.bytetobyte.xwallet.ui.fragment.view;
 
+import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -8,6 +9,9 @@ import com.bytetobyte.xwallet.R;
 import com.bytetobyte.xwallet.service.ipcmodel.MnemonicSeedBackup;
 import com.bytetobyte.xwallet.ui.BackupFragmentViewContract;
 import com.bytetobyte.xwallet.ui.fragment.BackupFragment;
+
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by bruno on 27.04.17.
@@ -40,6 +44,8 @@ public class BackupFragmentView implements BackupFragmentViewContract, View.OnCl
         _copyImg = (ImageView) v.findViewById(R.id.backup_copy_seed);
 
         _copyImg.setOnClickListener(this);
+
+        _backupText.setMovementMethod(new ScrollingMovementMethod());
     }
 
     /**
@@ -64,6 +70,15 @@ public class BackupFragmentView implements BackupFragmentViewContract, View.OnCl
      */
     public void displayBackup(MnemonicSeedBackup seedBackup) {
         //TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
-        _backupText.setText(String.format("%s\n \n Creation Date : %s", seedBackup.getMnemonicSeed(), seedBackup.getCreationDate()));
+//        String listaddp = "";
+//        Set<Map.Entry<String, String>> addrKeyEntrySet = seedBackup.getAddrsKeys().entrySet();
+//        for (Map.Entry<String, String> entry : addrKeyEntrySet) {
+//            listaddp = listaddp + "\n Addr : " + entry.getKey() + ", Key :" + entry.getValue();
+//        }
+
+        _backupText.setText(String.format("%s\n \n Creation Date : %s",
+                seedBackup.getMnemonicSeed(),
+                seedBackup.getCreationDate()
+                ));
     }
 }

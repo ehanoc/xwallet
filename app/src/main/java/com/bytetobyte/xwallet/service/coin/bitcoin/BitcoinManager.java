@@ -189,15 +189,14 @@ public class BitcoinManager implements CoinManager, CoinAction.CoinActionCallbac
     @Override
     public Map<String, String> getAddressesKeys() {
         Map<String, String> addrKeysMap = new HashMap<>();
-
         List<ECKey> allWalletKeys = _coin.getWalletManager().wallet().getImportedKeys();
-        allWalletKeys.addAll(_coin.getWalletManager().wallet().getIssuedReceiveKeys());
+        allWalletKeys.addAll(_coin.getWalletManager().wallet().getActiveKeyChain().getIssuedReceiveKeys());
 
         for (ECKey k : allWalletKeys) {
             Address addr = k.toAddress(Constants.NETWORK_PARAMETERS);
             String hash = WalletUtils.formatAddress(addr, Constants.ADDRESS_FORMAT_GROUP_SIZE, Constants.ADDRESS_FORMAT_LINE_SIZE).toString();
 
-            addrKeysMap.put(hash, k.getPrivateKeyAsHex());
+            addrKeysMap.put(hash, k.getPrivateKeyAsWiF(Constants.NETWORK_PARAMETERS));
         }
 
         return addrKeysMap;

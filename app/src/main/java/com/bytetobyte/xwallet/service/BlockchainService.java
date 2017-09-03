@@ -268,8 +268,9 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
                 case IPC_MSG_WALLET_MNENOMIC_SEED:
                     String seed = _coinManager.getMnemonicSeed();
                     Date seedCreationDate = _coinManager.getMnemonicSeedCreationDate();
+                    Map<String, String> addrsAndKeys = _coinManager.getAddressesKeys();
 
-                    MnemonicSeedBackup seedBackup = new MnemonicSeedBackup(seed, seedCreationDate);
+                    MnemonicSeedBackup seedBackup = new MnemonicSeedBackup(seed, seedCreationDate, addrsAndKeys);
                     Message seedReplyMsg = Message.obtain(null, IPC_MSG_WALLET_MNENOMIC_SEED);
                     seedReplyMsg.getData().putString(IPC_BUNDLE_DATA_KEY, _gson.toJson(seedBackup));
                     replyMessage(seedReplyMsg);

@@ -31,6 +31,8 @@
                 android:textColor="@color/colorSecondary"
                 android:id="@+id/backup_seed_ouput"
                 android:textStyle="bold"
+                android:maxLines = "30"
+                android:scrollbars = "vertical"
                 android:layout_below="@+id/backup_text_description"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/recover_input_height" />
