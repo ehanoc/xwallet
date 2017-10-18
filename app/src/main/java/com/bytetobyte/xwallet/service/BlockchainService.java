@@ -17,6 +17,7 @@ import com.bytetobyte.xwallet.service.coin.CoinAction;
 import com.bytetobyte.xwallet.service.coin.CoinManager;
 import com.bytetobyte.xwallet.service.coin.CoinManagerFactory;
 import com.bytetobyte.xwallet.service.coin.CurrencyCoin;
+import com.bytetobyte.xwallet.service.coin.monero.MoneroWallet;
 import com.bytetobyte.xwallet.service.ipcmodel.BlockDownloaded;
 import com.bytetobyte.xwallet.service.ipcmodel.CoinTransaction;
 import com.bytetobyte.xwallet.service.ipcmodel.MnemonicSeedBackup;
@@ -24,6 +25,8 @@ import com.bytetobyte.xwallet.service.ipcmodel.RecoverWalletMessage;
 import com.bytetobyte.xwallet.service.ipcmodel.SpentValueMessage;
 import com.bytetobyte.xwallet.service.ipcmodel.SyncedMessage;
 import com.google.gson.Gson;
+import com.m2049r.xmrwallet.model.Wallet;
+import com.m2049r.xmrwallet.model.WalletManager;
 
 import java.util.Date;
 import java.util.List;
@@ -127,7 +130,11 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
         stopForeground(true);
         releaseWakeLocks();
 
-        System.out.println("BlockchainService CurrencyCoin SYNCED!!");
+       // WalletManager manager = WalletManager.getInstance();
+        //manager.setDaemon();
+      //  Wallet w = manager.createWallet(getBaseContext().getFilesDir(), "", "");
+
+        System.out.println("BlockchainService CurrencyCoin SYNCED!! ");
 
         List<String> addrs = _coinManager.getCurrentAddresses();
 //        for (String addr : addrs) {

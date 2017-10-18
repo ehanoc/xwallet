@@ -1,4 +1,11 @@
 apply plugin: 'com.android.application'
+
+repositories {
+    flatDir{
+        dirs 'libs'
+    }
+}
+
 apply plugin: 'com.getkeepsafe.dexcount'
 
 android {
@@ -7,15 +14,25 @@ android {
 
     defaultConfig {
         applicationId "com.bytetobyte.xwallet"
-        minSdkVersion 16
+        minSdkVersion 21
         targetSdkVersion 25
-        versionCode 13
-        versionName "0.3.0-beta"
+        versionCode 15
+        versionName "0.3.2-beta"
         multiDexEnabled true
 //
 //        jackOptions {
 //            enabled true
 //        }
+
+        externalNativeBuild {
+            cmake {
+                cppFlags "-std=c++11"
+                arguments '-DANDROID_STL=c++_shared'
+            }
+        }
+        ndk {
+            abiFilters 'armeabi-v7a'
+        }
     }
 
     buildTypes {
@@ -31,6 +48,12 @@ android {
 
     lintOptions {
         abortOnError false
+    }
+
+    externalNativeBuild {
+        cmake {
+            path "../monerujo/CMakeLists.txt"
+        }
     }
 
 //    compileOptions {
@@ -67,14 +90,24 @@ dependencies {
     compile 'com.google.code.gson:gson:2.4'
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.2'
     compile 'com.github.simbiose:Encryption:2.0.0'
-    compile 'com.android.support:recyclerview-v7:25.3.0'
-   // compile 'me.grantland:autofittextview:0.2.1'
+
+    compile 'com.android.support:recyclerview-v7:25.3.1'
+    // compile 'me.grantland:autofittextview:0.2.1'
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'cn.pedant.sweetalert:library:1.3'
-
     compile 'com.google.zxing:core:3.2.0'
     compile 'com.github.nisrulz:qreader:2.0.0'
     compile 'com.code-troopers.betterpickers:library:3.1.0'
 
     compile 'com.getkeepsafe.taptargetview:taptargetview:1.9.1'
+    
+    //compile 'com.android.support:appcompat-v7:25.4.0'
+    compile 'com.android.support:design:25.3.1'
+    compile 'com.android.support:support-v4:25.3.1'
+    //compile 'com.android.support:recyclerview-v7:25.4.0'
+    compile 'com.android.support:cardview-v7:25.3.1'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'me.dm7.barcodescanner:zxing:1.9.8'
+    //compile project(path: ':monerujo')
+    compile project(path: ':monerujo')
 }

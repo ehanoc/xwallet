@@ -1,0 +1,246 @@
+
+{
+	"buildFiles" : [ "/home/bruno/workspace/xwallet/monerujo/CMakeLists.txt" ],
+	"cleanCommands" : 
+	[
+		"/home/bruno/Android/Sdk/cmake/3.6.3155560/bin/cmake --build /home/bruno/workspace/xwallet/app/.externalNativeBuild/cmake/release/armeabi-v7a --target clean"
+	],
+	"cppFileExtensions" : [ "cpp" ],
+	"libraries" : 
+	{
+		"blockchain_db-Release-armeabi-v7a" : 
+		{
+			"abi" : "armeabi-v7a",
+			"artifactName" : "blockchain_db",
+			"buildType" : "release",
+			"output" : "/home/bruno/workspace/xwallet/monerujo/../external-libs/monero/lib/armeabi-v7a/libblockchain_db.a",
+			"toolchain" : "1581775303916585929"
+		},
+		"blocks-Release-armeabi-v7a" : 
+		{
+			"abi" : "armeabi-v7a",
+			"artifactName" : "blocks",
+			"buildType" : "release",
+			"output" : "/home/bruno/workspace/xwallet/monerujo/../external-libs/monero/lib/armeabi-v7a/libblocks.a",
+			"toolchain" : "1581775303916585929"
+		},
+		"boost_chrono-Release-armeabi-v7a" : 
+		{
+			"abi" : "armeabi-v7a",
+			"artifactName" : "boost_chrono",
+			"buildType" : "release",
+			"output" : "/home/bruno/workspace/xwallet/monerujo/../external-libs/boost/lib/armeabi-v7a/libboost_chrono.a",
+			"toolchain" : "1581775303916585929"
+		},
+		"boost_date_time-Release-armeabi-v7a" : 
+		{
+			"abi" : "armeabi-v7a",
+			"artifactName" : "boost_date_time",
+			"buildType" : "release",
+			"output" : "/home/bruno/workspace/xwallet/monerujo/../external-libs/boost/lib/armeabi-v7a/libboost_date_time.a",
+			"toolchain" : "1581775303916585929"
+		},
+		"boost_filesystem-Release-armeabi-v7a" : 
+		{
+			"abi" : "armeabi-v7a",
+			"artifactName" : "boost_filesystem",
+			"buildType" : "release",
+			"output" : "/home/bruno/workspace/xwallet/monerujo/../external-libs/boost/lib/armeabi-v7a/libboost_filesystem.a",
+			"toolchain" : "1581775303916585929"
+		},
+		"boost_program_options-Release-armeabi-v7a" : 
+		{
+			"abi" : "armeabi-v7a",
+			"artifactName" : "boost_program_options",
+			"buildType" : "release",
+			"output" : "/home/bruno/workspace/xwallet/monerujo/../external-libs/boost/lib/armeabi-v7a/libboost_program_options.a",
+			"toolchain" : "1581775303916585929"
+		},
+		"boost_regex-Release-armeabi-v7a" : 
+		{
+			"abi" : "armeabi-v7a",
+			"artifactName" : "boost_regex",
+			"buildType" : "release",
+			"output" : "/home/bruno/workspace/xwallet/monerujo/../external-libs/boost/lib/armeabi-v7a/libboost_regex.a",
+			"toolchain" : "1581775303916585929"
+		},
+		"boost_serialization-Release-armeabi-v7a" : 
+		{
+			"abi" : "armeabi-v7a",
+			"artifactName" : "boost_serialization",
+			"buildType" : "release",
+			"output" : "/home/bruno/workspace/xwallet/monerujo/../external-libs/boost/lib/armeabi-v7a/libboost_serialization.a",
+			"toolchain" : "1581775303916585929"
+		},
+		"boost_system-Release-armeabi-v7a" : 
+		{
+			"abi" : "armeabi-v7a",
+			"artifactName" : "boost_system",
+			"buildType" : "release",
+			"output" : "/home/bruno/workspace/xwallet/monerujo/../external-libs/boost/lib/armeabi-v7a/libboost_system.a",
+			"toolchain" : "1581775303916585929"
+		},
+		"boost_thread-Release-armeabi-v7a" : 
+		{
+			"abi" : "armeabi-v7a",
+			"artifactName" : "boost_thread",
+			"buildType" : "release",
+			"output" : "/home/bruno/workspace/xwallet/monerujo/../external-libs/boost/lib/armeabi-v7a/libboost_thread.a",
+			"toolchain" : "1581775303916585929"
+		},
+		"boost_wserialization-Release-armeabi-v7a" : 
+		{
+			"abi" : "armeabi-v7a",
+			"artifactName" : "boost_wserialization",
+			"buildType" : "release",
+			"output" : "/home/bruno/workspace/xwallet/monerujo/../external-libs/boost/lib/armeabi-v7a/libboost_wserialization.a",
+			"toolchain" : "1581775303916585929"
+		},
+		"cncrypto-Release-armeabi-v7a" : 
+		{
+			"abi" : "armeabi-v7a",
+			"artifactName" : "cncrypto",
+			"buildType" : "release",
+			"output" : "/home/bruno/workspace/xwallet/monerujo/../external-libs/monero/lib/armeabi-v7a/libcncrypto.a",
+			"toolchain" : "1581775303916585929"
+		},
+		"common-Release-armeabi-v7a" : 
+		{
+			"abi" : "armeabi-v7a",
+			"artifactName" : "common",
+			"buildType" : "release",
+			"output" : "/home/bruno/workspace/xwallet/monerujo/../external-libs/monero/lib/armeabi-v7a/libcommon.a",
+			"toolchain" : "1581775303916585929"
+		},
+		"crypto-Release-armeabi-v7a" : 
+		{
+			"abi" : "armeabi-v7a",
+			"artifactName" : "crypto",
+			"buildType" : "release",
+			"output" : "/home/bruno/workspace/xwallet/monerujo/../external-libs/openssl/lib/armeabi-v7a/libcrypto.a",
+			"toolchain" : "1581775303916585929"
+		},
+		"cryptonote_basic-Release-armeabi-v7a" : 
+		{
+			"abi" : "armeabi-v7a",
+			"artifactName" : "cryptonote_basic",
+			"buildType" : "release",
+			"output" : "/home/bruno/workspace/xwallet/monerujo/../external-libs/monero/lib/armeabi-v7a/libcryptonote_basic.a",
+			"toolchain" : "1581775303916585929"
+		},
+		"cryptonote_core-Release-armeabi-v7a" : 
+		{
+			"abi" : "armeabi-v7a",
+			"artifactName" : "cryptonote_core",
+			"buildType" : "release",
+			"output" : "/home/bruno/workspace/xwallet/monerujo/../external-libs/monero/lib/armeabi-v7a/libcryptonote_core.a",
+			"toolchain" : "1581775303916585929"
+		},
+		"easylogging-Release-armeabi-v7a" : 
+		{
+			"abi" : "armeabi-v7a",
+			"artifactName" : "easylogging",
+			"buildType" : "release",
+			"output" : "/home/bruno/workspace/xwallet/monerujo/../external-libs/monero/lib/armeabi-v7a/libeasylogging.a",
+			"toolchain" : "1581775303916585929"
+		},
+		"epee-Release-armeabi-v7a" : 
+		{
+			"abi" : "armeabi-v7a",
+			"artifactName" : "epee",
+			"buildType" : "release",
+			"output" : "/home/bruno/workspace/xwallet/monerujo/../external-libs/monero/lib/armeabi-v7a/libepee.a",
+			"toolchain" : "1581775303916585929"
+		},
+		"lmdb-Release-armeabi-v7a" : 
+		{
+			"abi" : "armeabi-v7a",
+			"artifactName" : "lmdb",
+			"buildType" : "release",
+			"output" : "/home/bruno/workspace/xwallet/monerujo/../external-libs/monero/lib/armeabi-v7a/liblmdb.a",
+			"toolchain" : "1581775303916585929"
+		},
+		"miniupnpc-Release-armeabi-v7a" : 
+		{
+			"abi" : "armeabi-v7a",
+			"artifactName" : "miniupnpc",
+			"buildType" : "release",
+			"output" : "/home/bruno/workspace/xwallet/monerujo/../external-libs/monero/lib/armeabi-v7a/libminiupnpc.a",
+			"toolchain" : "1581775303916585929"
+		},
+		"mnemonics-Release-armeabi-v7a" : 
+		{
+			"abi" : "armeabi-v7a",
+			"artifactName" : "mnemonics",
+			"buildType" : "release",
+			"output" : "/home/bruno/workspace/xwallet/monerujo/../external-libs/monero/lib/armeabi-v7a/libmnemonics.a",
+			"toolchain" : "1581775303916585929"
+		},
+		"monerujo-Release-armeabi-v7a" : 
+		{
+			"abi" : "armeabi-v7a",
+			"artifactName" : "monerujo",
+			"buildCommand" : "/home/bruno/Android/Sdk/cmake/3.6.3155560/bin/cmake --build /home/bruno/workspace/xwallet/app/.externalNativeBuild/cmake/release/armeabi-v7a --target monerujo",
+			"buildType" : "release",
+			"files" : 
+			[
+				
+				{
+					"flags" : "  --target=armv7-none-linux-androideabi --gcc-toolchain=/home/bruno/Android/Sdk/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64 --sysroot=/home/bruno/Android/Sdk/ndk-bundle/platforms/android-21/arch-arm  -Dmonerujo_EXPORTS -I/home/bruno/workspace/xwallet/monerujo/../external-libs/monero/include -isystem /home/bruno/Android/Sdk/ndk-bundle/sources/cxx-stl/llvm-libc++/include -isystem /home/bruno/Android/Sdk/ndk-bundle/sources/android/support/include -isystem /home/bruno/Android/Sdk/ndk-bundle/sources/cxx-stl/llvm-libc++abi/include  -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -march=armv7-a -mfloat-abi=softfp -mfpu=vfpv3-d16 -fno-integrated-as -mthumb -Wa,--noexecstack -Wformat -Werror=format-security -std=c++11 -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -march=armv7-a -mfloat-abi=softfp -mfpu=vfpv3-d16 -fno-integrated-as -mthumb -Wa,--noexecstack -Wformat -Werror=format-security -std=c++11 -std=c++11 -Os -DNDEBUG -Os -DNDEBUG  -fPIC    -c ",
+					"src" : "/home/bruno/workspace/xwallet/monerujo/src/main/cpp/monerujo.cpp",
+					"workingDirectory" : "/home/bruno/workspace/xwallet/app/.externalNativeBuild/cmake/release/armeabi-v7a"
+				}
+			],
+			"output" : "/home/bruno/workspace/xwallet/app/build/intermediates/cmake/release/obj/armeabi-v7a/libmonerujo.so",
+			"toolchain" : "1581775303916585929"
+		},
+		"p2p-Release-armeabi-v7a" : 
+		{
+			"abi" : "armeabi-v7a",
+			"artifactName" : "p2p",
+			"buildType" : "release",
+			"output" : "/home/bruno/workspace/xwallet/monerujo/../external-libs/monero/lib/armeabi-v7a/libp2p.a",
+			"toolchain" : "1581775303916585929"
+		},
+		"ringct-Release-armeabi-v7a" : 
+		{
+			"abi" : "armeabi-v7a",
+			"artifactName" : "ringct",
+			"buildType" : "release",
+			"output" : "/home/bruno/workspace/xwallet/monerujo/../external-libs/monero/lib/armeabi-v7a/libringct.a",
+			"toolchain" : "1581775303916585929"
+		},
+		"ssl-Release-armeabi-v7a" : 
+		{
+			"abi" : "armeabi-v7a",
+			"artifactName" : "ssl",
+			"buildType" : "release",
+			"output" : "/home/bruno/workspace/xwallet/monerujo/../external-libs/openssl/lib/armeabi-v7a/libssl.a",
+			"toolchain" : "1581775303916585929"
+		},
+		"unbound-Release-armeabi-v7a" : 
+		{
+			"abi" : "armeabi-v7a",
+			"artifactName" : "unbound",
+			"buildType" : "release",
+			"output" : "/home/bruno/workspace/xwallet/monerujo/../external-libs/monero/lib/armeabi-v7a/libunbound.a",
+			"toolchain" : "1581775303916585929"
+		},
+		"wallet-Release-armeabi-v7a" : 
+		{
+			"abi" : "armeabi-v7a",
+			"artifactName" : "wallet",
+			"buildType" : "release",
+			"output" : "/home/bruno/workspace/xwallet/monerujo/../external-libs/monero/lib/armeabi-v7a/libwallet.a",
+			"toolchain" : "1581775303916585929"
+		}
+	},
+	"toolchains" : 
+	{
+		"1581775303916585929" : 
+		{
+			"cCompilerExecutable" : "/home/bruno/Android/Sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/bin/clang",
+			"cppCompilerExecutable" : "/home/bruno/Android/Sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++"
+		}
+	}
+}

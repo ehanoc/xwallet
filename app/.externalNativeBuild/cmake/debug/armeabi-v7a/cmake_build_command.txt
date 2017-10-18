@@ -1,0 +1,16 @@
+Executable : /home/bruno/Android/Sdk/cmake/3.6.3155560/bin/cmake
+arguments : 
+-H/home/bruno/workspace/xwallet/monerujo
+-B/home/bruno/workspace/xwallet/app/.externalNativeBuild/cmake/debug/armeabi-v7a
+-GAndroid Gradle - Ninja
+-DANDROID_ABI=armeabi-v7a
+-DANDROID_NDK=/home/bruno/Android/Sdk/ndk-bundle
+-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=/home/bruno/workspace/xwallet/app/build/intermediates/cmake/debug/obj/armeabi-v7a
+-DCMAKE_BUILD_TYPE=Debug
+-DCMAKE_MAKE_PROGRAM=/home/bruno/Android/Sdk/cmake/3.6.3155560/bin/ninja
+-DCMAKE_TOOLCHAIN_FILE=/home/bruno/Android/Sdk/ndk-bundle/build/cmake/android.toolchain.cmake
+-DANDROID_PLATFORM=android-21
+-DCMAKE_CXX_FLAGS=-std=c++11
+-DANDROID_STL=c++_shared
+jvmArgs : 
+
