@@ -72,8 +72,8 @@ public class BackupFragment extends BaseDialogFragment {
      *
      */
     @Override
-    public void onServiceReady() {
-        super.onServiceReady();
+    public void onServiceReady(int coinId) {
+        super.onServiceReady(coinId);
     }
 
     /**

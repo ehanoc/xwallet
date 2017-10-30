@@ -13,6 +13,7 @@ import com.bytetobyte.xwallet.BaseFragment;
 import com.bytetobyte.xwallet.R;
 import com.bytetobyte.xwallet.service.coin.CoinManagerFactory;
 import com.bytetobyte.xwallet.service.ipcmodel.CoinTransaction;
+import com.bytetobyte.xwallet.service.ipcmodel.SyncedMessage;
 import com.bytetobyte.xwallet.ui.adapters.TxsAdapter;
 
 import java.util.ArrayList;
@@ -29,6 +30,8 @@ public class TransactionFragment extends BaseFragment {
     private List<CoinTransaction> _txs;
     private TxsAdapter _txsAdapter;
     private TextView _emptyTxsListText;
+
+    private int _coinId = 0x1;
 
     /**
      *
@@ -55,7 +58,7 @@ public class TransactionFragment extends BaseFragment {
         _layoutManager = new LinearLayoutManager(getBaseActivity());
         _recyclerView.setLayoutManager(_layoutManager);
 
-        _recyclerView.addItemDecoration(new RecyclerViewItemDecorator(10, 1));
+        _recyclerView.addItemDecoration(new RecyclerViewItemDecorator(1, 1));
 
         _txsAdapter = new TxsAdapter(getBaseActivity(), _txs);
         _recyclerView.setAdapter(_txsAdapter);
@@ -69,7 +72,7 @@ public class TransactionFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
 
-        getBaseActivity().requestTxList(CoinManagerFactory.BITCOIN);
+        getBaseActivity().requestTxList(this._coinId);
     }
 
     /**
@@ -78,14 +81,38 @@ public class TransactionFragment extends BaseFragment {
      */
     @Override
     public void onTransactions(List<CoinTransaction> txs) {
+        if (txs == null) return;
+
         if (txs.isEmpty()) {
             _emptyTxsListText.setVisibility(View.VISIBLE);
+            return;
         }
+
+        if (this._coinId != txs.get(0).getCoinId()) return;
 
         _txs.clear();
         _txs.addAll(txs);
         Collections.sort(_txs);
         Collections.reverse(_txs);  //descending
         _txsAdapter.notifyDataSetChanged();
+    }
+
+    /**
+     *
+     * @param coinId
+     */
+    public void setCoin(int coinId) {
+        this._coinId = coinId;
+    }
+
+    @Override
+    public void onSyncReady(SyncedMessage syncedMessage) {
+        super.onSyncReady(syncedMessage);
+
+        if (syncedMessage.getCoinId() != this._coinId) return;
+
+        System.out.println("TransactionFrag: onSyncReady()");
+
+        getBaseActivity().requestTxList(this._coinId);
     }
 }

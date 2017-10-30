@@ -4,7 +4,7 @@
     android:background="@drawable/bar_blue"
     android:elevation="2dp"
     android:padding="@dimen/appbar_padding_top"
-    android:layout_margin="@dimen/txs_row_margin"
+
     android:layout_width="match_parent"
     android:layout_height="@dimen/txs_row_height">
 

@@ -15,6 +15,6 @@ public interface CoinAction <T> {
         void onChainSynced(R coin);
         void onCoinsReceived(String addressStr, long value, R coin);
 
-        void onBlocksDownloaded(R coin, double pct, int blocksSoFar, Date date);
+        void onBlocksDownloaded(CurrencyCoin coin, double pct, long blocksLeft, Date date);
     }
 }

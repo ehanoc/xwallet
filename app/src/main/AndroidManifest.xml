@@ -46,6 +46,12 @@
             android:name=".service.BlockchainService"
             android:process=":BlockChainService" />
 
+        <service android:name=".service.MoneroBlockchainService"
+            android:process=":MoneroBlockchainService" />
+
+        <!--<service android:name="com.m2049r.xmrwallet.service.WalletService"-->
+            <!--android:process=":MoneroWalletService" />-->
+
         <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
 
     </application>

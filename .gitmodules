@@ -1,0 +1,4 @@
+[submodule "xmrwallet"]
+	path = xmrwallet
+	url = https://github.com/m2049r/xmrwallet.git
+	branch = master

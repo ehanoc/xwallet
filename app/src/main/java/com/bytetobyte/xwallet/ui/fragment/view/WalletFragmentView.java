@@ -1,14 +1,18 @@
 package com.bytetobyte.xwallet.ui.fragment.view;
 
+import android.graphics.Color;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bytetobyte.xwallet.R;
+import com.bytetobyte.xwallet.service.coin.CoinManagerFactory;
 import com.bytetobyte.xwallet.ui.WalletFragmentViewContract;
 import com.bytetobyte.xwallet.ui.fragment.WalletFragment;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.LineData;
+
+import org.w3c.dom.Text;
 
 /**
  * Created by bruno on 08.05.17.
@@ -22,6 +26,7 @@ public class WalletFragmentView implements WalletFragmentViewContract, View.OnCl
     private TextView _subBalanceTxt;
     private TextView _addressTxt;
     private LineChart _priceChart;
+    private TextView _coinLabel;
 
     /**
      *
@@ -46,6 +51,22 @@ public class WalletFragmentView implements WalletFragmentViewContract, View.OnCl
         _subBalanceTxt = (TextView) fragView.findViewById(R.id.wallet_balance_sub_currency);
         _addressTxt = (TextView) fragView.findViewById(R.id.wallet_address);
         _priceChart = (LineChart) fragView.findViewById(R.id.wallet_coin_chart);
+        _coinLabel = (TextView) fragView.findViewById(R.id.wallet_coin_label);
+    }
+
+    /**
+     *
+     * @param coinId
+     */
+    public void setCoinLabel(int coinId) {
+        if (coinId == CoinManagerFactory.BITCOIN) {
+            _coinLabel.setText("BTC");
+            _coinLabel.setTextColor(_walletFrag.getBaseActivity().getResources().getColor(R.color.colorPrimary,
+                    _walletFrag.getBaseActivity().getTheme()));
+        } else if (coinId == CoinManagerFactory.MONERO) {
+            _coinLabel.setText("XMR");
+            _coinLabel.setTextColor(Color.RED);
+        }
     }
 
     /**

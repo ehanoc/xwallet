@@ -12,7 +12,7 @@ import java.util.List;
  * Created by bruno on 18.04.17.
  */
 public interface BlockchainClientListener {
-      void onServiceReady();
+      void onServiceReady(int coinId);
       void onSyncReady(SyncedMessage syncedMessage);
       void onBlockDownloaded(BlockDownloaded block);
       void onFeeCalculated(SpentValueMessage feeSpentcal);

@@ -60,7 +60,7 @@
     <dimen name="txs_row_coin_right_margin">4dp</dimen>
     <dimen name="txs_label_hash_size">12sp</dimen>
     <dimen name="txs_row_max_hash_text_width">200dp</dimen>
-    <dimen name="txs_row_margin">4dp</dimen>
+    <dimen name="txs_row_margin">1dp</dimen>
 
     <!-- RECEIVE -->
     <dimen name="receive_qr_size">130dp</dimen>

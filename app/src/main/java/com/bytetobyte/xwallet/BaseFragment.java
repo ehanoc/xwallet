@@ -3,6 +3,7 @@ package com.bytetobyte.xwallet;
 import android.content.Context;
 import android.support.v4.app.Fragment;
 
+import com.bytetobyte.xwallet.service.coin.CoinManagerFactory;
 import com.bytetobyte.xwallet.service.ipcmodel.BlockDownloaded;
 import com.bytetobyte.xwallet.service.ipcmodel.CoinTransaction;
 import com.bytetobyte.xwallet.service.ipcmodel.MnemonicSeedBackup;
@@ -38,8 +39,12 @@ public abstract class BaseFragment extends Fragment implements BlockchainClientL
         super.onResume();
 
         // in case service has crashed
-        if (!getBaseActivity().getIsBound()) {
-            getBaseActivity().bind();
+        if (!getBaseActivity().isBitcoinServiceBound()) {
+            getBaseActivity().bindService(CoinManagerFactory.BITCOIN);
+        }
+
+        if (!getBaseActivity().isMoneroServiceBound()) {
+            getBaseActivity().bindService(CoinManagerFactory.MONERO);
         }
     }
 
@@ -60,7 +65,7 @@ public abstract class BaseFragment extends Fragment implements BlockchainClientL
      *
      */
     @Override
-    public void onServiceReady() {
+    public void onServiceReady(int coinId) {
 
     }
 

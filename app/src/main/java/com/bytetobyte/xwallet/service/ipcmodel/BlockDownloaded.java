@@ -11,7 +11,7 @@ public class BlockDownloaded {
 
     private final int _coin;
     private final double _pct;
-    private final int _blocksLeft;
+    private final long _blocksLeft;
     private final Date _lastBlockDate;
 
     /**
@@ -21,7 +21,7 @@ public class BlockDownloaded {
      * @param blocksSoFar
      * @param date
      */
-    public BlockDownloaded(CurrencyCoin coin, double pct, int blocksSoFar, Date date) {
+    public BlockDownloaded(CurrencyCoin coin, double pct, long blocksSoFar, Date date) {
         this._coin = coin.getCoinId();
         this._pct = pct;
         this._blocksLeft = blocksSoFar;
@@ -36,7 +36,7 @@ public class BlockDownloaded {
         return _pct;
     }
 
-    public int getBlocksLeft() {
+    public long getBlocksLeft() {
         return _blocksLeft;
     }
 

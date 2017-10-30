@@ -2,8 +2,9 @@
 <com.bytetobyte.xwallet.views.CircleLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/circle_layout_id"
         android:layout_gravity="center"
-        android:layout_width="140dp"
-        android:layout_height="140dp">
+        android:rotation="90"
+        android:layout_width="150dp"
+        android:layout_height="150dp">
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -11,8 +12,8 @@
             <ImageView
                 android:layout_width="@dimen/wheel_menu_icon_size"
                 android:layout_height="@dimen/wheel_menu_icon_size"
-                android:rotation="240"
-                android:src="@drawable/ic_news"
+                android:rotation="270"
+                android:src="@drawable/btc_logo"
                 android:background="@android:color/transparent" />
         </RelativeLayout>
 
@@ -21,23 +22,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
             <ImageView
-                android:rotation="0"
+                android:rotation="90"
                 android:layout_width="@dimen/wheel_menu_icon_size"
                 android:layout_height="@dimen/wheel_menu_icon_size"
-                android:src="@drawable/ic_wallet"
+                android:src="@drawable/xmr_logo"
                 android:background="@android:color/transparent" />
         </RelativeLayout>
 
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <ImageView
-                android:rotation="120"
-                android:layout_width="@dimen/wheel_menu_icon_size"
-                android:layout_height="@dimen/wheel_menu_icon_size"
-                android:src="@drawable/ic_txs"
-                android:background="@android:color/transparent" />
-        </RelativeLayout>
+        <!--<RelativeLayout-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content">-->
+            <!--<ImageView-->
+                <!--android:rotation="120"-->
+                <!--android:layout_width="@dimen/wheel_menu_icon_size"-->
+                <!--android:layout_height="@dimen/wheel_menu_icon_size"-->
+                <!--android:src="@drawable/ic_txs"-->
+                <!--android:background="@android:color/transparent" />-->
+        <!--</RelativeLayout>-->
 
 
 

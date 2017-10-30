@@ -11,13 +11,13 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.PowerManager;
+import android.util.Log;
 
 import com.bytetobyte.xwallet.R;
 import com.bytetobyte.xwallet.service.coin.CoinAction;
 import com.bytetobyte.xwallet.service.coin.CoinManager;
 import com.bytetobyte.xwallet.service.coin.CoinManagerFactory;
 import com.bytetobyte.xwallet.service.coin.CurrencyCoin;
-import com.bytetobyte.xwallet.service.coin.monero.MoneroWallet;
 import com.bytetobyte.xwallet.service.ipcmodel.BlockDownloaded;
 import com.bytetobyte.xwallet.service.ipcmodel.CoinTransaction;
 import com.bytetobyte.xwallet.service.ipcmodel.MnemonicSeedBackup;
@@ -25,8 +25,6 @@ import com.bytetobyte.xwallet.service.ipcmodel.RecoverWalletMessage;
 import com.bytetobyte.xwallet.service.ipcmodel.SpentValueMessage;
 import com.bytetobyte.xwallet.service.ipcmodel.SyncedMessage;
 import com.google.gson.Gson;
-import com.m2049r.xmrwallet.model.Wallet;
-import com.m2049r.xmrwallet.model.WalletManager;
 
 import java.util.Date;
 import java.util.List;
@@ -37,6 +35,8 @@ import java.util.Set;
  * Created by bruno on 21.03.17.
  */
 public class BlockchainService extends Service implements CoinAction.CoinActionCallback<CurrencyCoin> {
+
+    private static final String TAG = "BlockchainService";
 
     // ###############################
     // Attributes
@@ -64,7 +64,7 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
 
     private final Gson _gson;
 
-    private static CoinManager _coinManager;
+    //private static CoinManager _coinManager;
 
     /**
      * Target we publish for clients to send messages to IncomingHandler.
@@ -130,28 +130,27 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
         stopForeground(true);
         releaseWakeLocks();
 
-       // WalletManager manager = WalletManager.getInstance();
-        //manager.setDaemon();
       //  Wallet w = manager.createWallet(getBaseContext().getFilesDir(), "", "");
 
         System.out.println("BlockchainService CurrencyCoin SYNCED!! ");
 
-        List<String> addrs = _coinManager.getCurrentAddresses();
-//        for (String addr : addrs) {
-//            System.out.println("Address : " + addr);
-//        }
+        CoinManager coinManager = CoinManagerFactory.getCoinManagerBy(getBaseContext(), coin.getCoinId());
+        List<String> addrs = coinManager.getCurrentAddresses();
+        for (String addr : addrs) {
+            System.out.println("Address : " + addr);
+        }
 
-        //System.out.println("Wallet seed : " + _coinManager.getMnemonicSeed());
+        System.out.println("Wallet seed : " + coinManager.getMnemonicSeed());
 
- //       Set<Map.Entry<String, String>> addrKeyEntrySet = _coinManager.getAddressesKeys().entrySet();
-//        for (Map.Entry<String, String> entry : addrKeyEntrySet) {
-//            System.out.println("Addr : " + entry.getKey() + ", Key :" + entry.getValue());
-//        }
+        Set<Map.Entry<String, String>> addrKeyEntrySet = coinManager.getAddressesKeys().entrySet();
+        for (Map.Entry<String, String> entry : addrKeyEntrySet) {
+            System.out.println("Addr : " + entry.getKey() + ", Key :" + entry.getValue());
+        }
 
- //       System.out.println("Bitcoin balance : " + _coinManager.getBalanceFriendlyStr());
- //       System.out.println("Bitcoin balance value : " + _coinManager.getBalanceValue());
+        System.out.println("Bitcoin balance : " + coinManager.getBalanceFriendlyStr());
+        System.out.println("Bitcoin balance value : " + coinManager.getBalanceValue());
 
-        SyncedMessage syncedMessage = new SyncedMessage(_coinManager.getCurrencyCoin().getCoinId(), _coinManager.getBalanceFriendlyStr(), addrs);
+        SyncedMessage syncedMessage = new SyncedMessage(coinManager.getCurrencyCoin().getCoinId(), coinManager.getBalanceFriendlyStr(), addrs);
         Message toReply = Message.obtain(null, IPC_MSG_WALLET_SYNC);
         toReply.getData().putString(IPC_BUNDLE_DATA_KEY, _gson.toJson(syncedMessage));
 
@@ -170,21 +169,20 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
     }
 
     /**
-     *
-     * @param coin
+     *  @param coin
      * @param pct
-     * @param blocksSoFar
+     * @param blocksLeft
      * @param date
      */
     @Override
-    public void onBlocksDownloaded(CurrencyCoin coin, double pct, int blocksSoFar, Date date) {
+    public void onBlocksDownloaded(CurrencyCoin coin, double pct, long blocksLeft, Date date) {
         String text = "Syncing : " + pct + " %";
 
         Notification notification = getServiceNotification(text);
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(NOTIFICATION_SYNC_ID, notification);
 
-        BlockDownloaded blockDownloaded = new BlockDownloaded(coin, pct, blocksSoFar, date);
+        BlockDownloaded blockDownloaded = new BlockDownloaded(coin, pct, blocksLeft, date);
         Message toReply = Message.obtain(null, IPC_MSG_WALLET_BLOCK_DOWNLOADED);
         toReply.getData().putString(IPC_BUNDLE_DATA_KEY, _gson.toJson(blockDownloaded));
         replyMessage(toReply);
@@ -202,7 +200,6 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
         }
     }
 
-
     /**
      * Handler of incoming messages from clients.
      */
@@ -213,27 +210,28 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
 
            // System.out.println("isSyncing coinManager : " + _coinManager);
 
-            if (_coinManager == null)
-                _coinManager = CoinManagerFactory.getCoinManagerBy(getBaseContext(), msg.arg1);
+            CoinManager coinManager = CoinManagerFactory.getCoinManagerBy(getBaseContext(), msg.arg1);
 
-            System.out.println("BlockchainService handling message! isSyncing : " + _coinManager.isSyncing());
-
-            if (_coinManager.isSyncing())
+            System.out.println("BlockchainService handling message! " + msg.arg1 + " isSyncing : " + coinManager.isSyncing());
+            Log.d(getClass().getSimpleName(), "#1");
+            if (coinManager.isSyncing())
                 return;
 
+            System.out.println("#1");
             switch (msg.what) {
                 case IPC_MSG_WALLET_SYNC:
                     // Just return info to client
-                    if (_coinManager.isSynced()) {
-                        onChainSynced(_coinManager.getCurrencyCoin());
+                    if (coinManager.isSynced()) {
+                        onChainSynced(coinManager.getCurrencyCoin());
                         return;
                     }
-
-                   acquireWakeLocks();
-
-                    System.out.println("service setup! : " + _coinManager);
+                    System.out.println("#1");
+                    acquireWakeLocks();
+                    System.out.println("#1");
+                    System.out.println("service setup! : " + coinManager);
                     startForeground(NOTIFICATION_SYNC_ID, getServiceNotification("Starting"));
-                    _coinManager.setup(BlockchainService.this);
+                    coinManager.setup(BlockchainService.this);
+                    System.out.println("#2");
                     break;
 
                 case IPC_MSG_WALLET_RECOVER:
@@ -243,21 +241,21 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
                     //wakeLock.acquire(1000 * 360 * 5);
                     startForeground(NOTIFICATION_SYNC_ID, getServiceNotification("Starting"));
                     // illness bulk jewel deer chaos swing goose fetch patch blood acid call creation
-                    System.out.println("service recover! : " + _coinManager);
-                    _coinManager.recoverWalletBy(BlockchainService.this, recoverMsg.getSeed(), recoverMsg.getDate());
+                    System.out.println("service recover! : " + coinManager);
+                    coinManager.recoverWalletBy(BlockchainService.this, recoverMsg.getSeed(), recoverMsg.getDate());
                     break;
 
                 case IPC_MSG_WALLET_SEND_AMOUNT:
                     String spentJson = msg.getData().getString(IPC_BUNDLE_DATA_KEY);
                     SpentValueMessage spentValueMsg = _gson.fromJson(spentJson, SpentValueMessage.class);
-                    _coinManager.sendCoins(spentValueMsg.getAddress(), spentValueMsg.getAmount(), BlockchainService.this);
+                    coinManager.sendCoins(spentValueMsg.getAddress(), spentValueMsg.getAmount(), BlockchainService.this);
                     break;
 
                 case IPC_MSG_WALLET_CALCULATE_FEE:
                     String spentToCalculateFee = msg.getData().getString(IPC_BUNDLE_DATA_KEY);
 
                     SpentValueMessage spentMsgForFee = _gson.fromJson(spentToCalculateFee, SpentValueMessage.class);
-                    spentMsgForFee = _coinManager.applyTxFee(spentMsgForFee);
+                    spentMsgForFee = coinManager.applyTxFee(spentMsgForFee);
 
                     Message toReply = Message.obtain(null, IPC_MSG_WALLET_CALCULATE_FEE);
                     toReply.getData().putString(IPC_BUNDLE_DATA_KEY, _gson.toJson(spentMsgForFee));
@@ -265,7 +263,7 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
                     break;
 
                 case IPC_MSG_WALLET_TRANSACTION_LIST:
-                    List<CoinTransaction> txs = _coinManager.getTransactionList();
+                    List<CoinTransaction> txs = coinManager.getTransactionList();
 
                     Message txReply = Message.obtain(null, IPC_MSG_WALLET_TRANSACTION_LIST);
                     txReply.getData().putString(IPC_BUNDLE_DATA_KEY, _gson.toJson(txs));
@@ -273,9 +271,9 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
                     break;
 
                 case IPC_MSG_WALLET_MNENOMIC_SEED:
-                    String seed = _coinManager.getMnemonicSeed();
-                    Date seedCreationDate = _coinManager.getMnemonicSeedCreationDate();
-                    Map<String, String> addrsAndKeys = _coinManager.getAddressesKeys();
+                    String seed = coinManager.getMnemonicSeed();
+                    Date seedCreationDate = coinManager.getMnemonicSeedCreationDate();
+                    Map<String, String> addrsAndKeys = coinManager.getAddressesKeys();
 
                     MnemonicSeedBackup seedBackup = new MnemonicSeedBackup(seed, seedCreationDate, addrsAndKeys);
                     Message seedReplyMsg = Message.obtain(null, IPC_MSG_WALLET_MNENOMIC_SEED);
@@ -285,6 +283,7 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
 
                 default:
                     super.handleMessage(msg);
+
             }
         }
     }

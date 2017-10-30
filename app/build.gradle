@@ -24,15 +24,15 @@ android {
 //            enabled true
 //        }
 
-        externalNativeBuild {
-            cmake {
-                cppFlags "-std=c++11"
-                arguments '-DANDROID_STL=c++_shared'
-            }
-        }
-        ndk {
-            abiFilters 'armeabi-v7a'
-        }
+//        externalNativeBuild {
+//            cmake {
+//                cppFlags "-std=c++11"
+//                arguments '-DANDROID_STL=c++_shared'
+//            }
+//        }
+//        ndk {
+//            abiFilters 'armeabi-v7a'
+//        }
     }
 
     buildTypes {
@@ -50,11 +50,11 @@ android {
         abortOnError false
     }
 
-    externalNativeBuild {
-        cmake {
-            path "../monerujo/CMakeLists.txt"
-        }
-    }
+//    externalNativeBuild {
+//        cmake {
+//            path "../xmrwallet/app/CMakeLists.txt"
+//        }
+//    }
 
 //    compileOptions {
 //        sourceCompatibility JavaVersion.VERSION_1_8
@@ -84,10 +84,10 @@ dependencies {
     compile 'org.bitcoinj:bitcoinj-core:0.14.4'
     compile 'com.github.lzyzsd:circleprogress:1.2.1'
     compile 'com.nightonke:boommenu:2.0.9'
-    compile 'com.android.support:appcompat-v7:25.3.0'
+    compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.github.elevenetc:badgeview:v1.0.0'
     compile 'de.hdodenhof:circleimageview:2.1.0'
-    compile 'com.google.code.gson:gson:2.4'
+    compile 'com.google.code.gson:gson:2.7'
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.2'
     compile 'com.github.simbiose:Encryption:2.0.0'
 
@@ -96,11 +96,11 @@ dependencies {
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'cn.pedant.sweetalert:library:1.3'
     compile 'com.google.zxing:core:3.2.0'
-    compile 'com.github.nisrulz:qreader:2.0.0'
+    compile 'com.github.nisrulz:qreader:2.1.2'
     compile 'com.code-troopers.betterpickers:library:3.1.0'
 
     compile 'com.getkeepsafe.taptargetview:taptargetview:1.9.1'
-    
+
     //compile 'com.android.support:appcompat-v7:25.4.0'
     compile 'com.android.support:design:25.3.1'
     compile 'com.android.support:support-v4:25.3.1'
@@ -109,5 +109,5 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'me.dm7.barcodescanner:zxing:1.9.8'
     //compile project(path: ':monerujo')
-    compile project(path: ':monerujo')
+    compile project(path: ':xmrwallet/app')
 }

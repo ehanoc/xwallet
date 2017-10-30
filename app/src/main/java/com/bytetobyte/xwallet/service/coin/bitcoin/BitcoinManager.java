@@ -16,6 +16,7 @@ import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.ECKey;
 import org.bitcoinj.core.Transaction;
 import org.bitcoinj.core.TransactionConfidence;
+import org.bitcoinj.kits.WalletAppKit;
 import org.bitcoinj.wallet.DeterministicSeed;
 import org.bitcoinj.wallet.SendRequest;
 import org.bitcoinj.wallet.Wallet;
@@ -96,7 +97,13 @@ public class BitcoinManager implements CoinManager, CoinAction.CoinActionCallbac
     public String getBalanceFriendlyStr() {
         //send test coins back to : mwCwTceJvYV27KXBc3NJZys6CjsgsoeHmf
 
-        Coin balance = _coin.getWalletManager().wallet().getBalance(Wallet.BalanceType.ESTIMATED);
+        WalletAppKit walletManager = _coin.getWalletManager();
+        if (walletManager == null) return null;
+
+        Wallet wallet = walletManager.wallet();
+        if (wallet == null) return null;
+
+        Coin balance = wallet.getBalance(Wallet.BalanceType.ESTIMATED);
 
         String balanceStatus =
                 "Friendly balance : " + balance.toFriendlyString()
@@ -173,10 +180,16 @@ public class BitcoinManager implements CoinManager, CoinAction.CoinActionCallbac
     public List<String> getCurrentAddresses() {
         List<String> addrHash160List = new ArrayList<>();
 
-        List<Address> walletAddresses = _coin.getWalletManager().wallet().getIssuedReceiveAddresses();
-        for (Address aAddr : walletAddresses) {
-            String hash = WalletUtils.formatAddress(aAddr, Constants.ADDRESS_FORMAT_GROUP_SIZE, Constants.ADDRESS_FORMAT_LINE_SIZE).toString();
-            addrHash160List.add(hash);
+        WalletAppKit walletManager = _coin.getWalletManager();
+        if (walletManager != null) {
+            Wallet wallet = _coin.getWalletManager().wallet();
+            if (wallet != null) {
+                List<Address> walletAddresses = wallet.getIssuedReceiveAddresses();
+                for (Address aAddr : walletAddresses) {
+                    String hash = WalletUtils.formatAddress(aAddr, Constants.ADDRESS_FORMAT_GROUP_SIZE, Constants.ADDRESS_FORMAT_LINE_SIZE).toString();
+                    addrHash160List.add(hash);
+                }
+            }
         }
 
         return addrHash160List;
@@ -327,14 +340,13 @@ public class BitcoinManager implements CoinManager, CoinAction.CoinActionCallbac
     }
 
     /**
-     *
-     * @param coin
+     *  @param coin
      * @param pct
      * @param blocksLeft
      * @param date
      */
     @Override
-    public void onBlocksDownloaded(Object coin, double pct, int blocksLeft, Date date) {
+    public void onBlocksDownloaded(CurrencyCoin coin, double pct, long blocksLeft, Date date) {
 
     }
 
@@ -365,7 +377,7 @@ public class BitcoinManager implements CoinManager, CoinAction.CoinActionCallbac
 
             TransactionConfidence.ConfidenceType cType = confidence.getConfidenceType();
 
-            CoinTransaction coinTransaction = new CoinTransaction(fee, hash, amountStr, confirmationStr, tx.getUpdateTime());
+            CoinTransaction coinTransaction = new CoinTransaction(_coin.getCoinId(), fee, hash, amountStr, confirmationStr, tx.getUpdateTime());
             transactions.add(coinTransaction);
         }
 

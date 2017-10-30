@@ -2,11 +2,12 @@ package com.bytetobyte.xwallet.ui.listeners;
 
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentTransaction;
 
 import com.bytetobyte.xwallet.ui.activity.MainActivity;
 import com.bytetobyte.xwallet.R;
+import com.bytetobyte.xwallet.ui.fragment.BackupFragment;
 import com.bytetobyte.xwallet.ui.fragment.ReceiveFragment;
+import com.bytetobyte.xwallet.ui.fragment.RecoverFragment;
 import com.bytetobyte.xwallet.ui.fragment.SendFragment;
 import com.nightonke.boommenu.BoomButtons.BoomButton;
 import com.nightonke.boommenu.OnBoomListener;
@@ -57,14 +58,25 @@ public class MainBoomListener implements OnBoomListener {
                 }
                 break;
 
+            case MainActivity.BACKUP_BOOM_INDEX:
+                //newContent = new BackupFragment();
+                _mainAct.toLock(MainActivity.BACKUP_UNLOCK_REQUEST_CODE);
+                return;
+
+            case MainActivity.RECOVER_BOOM_INDEX:
+                newContent = new RecoverFragment();
+                //_mainAct.replaceContent(newContent, R.id.xwallet_main_content_layout);
+                break;
+
             default:
                 break;
         }
 
-        FragmentTransaction ft = _mainAct.getSupportFragmentManager().beginTransaction();
-        ft.setCustomAnimations(R.anim.fade_in, R.anim.fade_out);
-        ft.replace(R.id.xwallet_content_layout, newContent);
-        ft.commit();
+        this._mainAct.replaceContent(newContent, R.id.xwallet_main_content_layout);
+//        FragmentTransaction ft = _mainAct.getSupportFragmentManager().beginTransaction();
+//        ft.setCustomAnimations(R.anim.fade_in, R.anim.fade_out);
+//        ft.replace(R.id.xwallet_content_layout, newContent);
+//        ft.commit();
     }
 
     /**

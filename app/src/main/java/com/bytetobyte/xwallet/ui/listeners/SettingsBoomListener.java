@@ -2,9 +2,9 @@ package com.bytetobyte.xwallet.ui.listeners;
 
 import android.support.v4.app.DialogFragment;
 
+import com.bytetobyte.xwallet.R;
 import com.bytetobyte.xwallet.ui.activity.MainActivity;
 import com.bytetobyte.xwallet.ui.fragment.InfoFragment;
-import com.bytetobyte.xwallet.ui.fragment.RecoverFragment;
 import com.nightonke.boommenu.BoomButtons.BoomButton;
 import com.nightonke.boommenu.OnBoomListener;
 
@@ -33,19 +33,19 @@ public class SettingsBoomListener implements OnBoomListener {
         DialogFragment newContent = null;
 
         switch (index) {
-            case MainActivity.BACKUP_BOOM_INDEX:
-                //newContent = new BackupFragment();
-                _mainAct.toLock(MainActivity.BACKUP_UNLOCK_REQUEST_CODE);
-                break;
-
-            case MainActivity.RECOVER_BOOM_INDEX:
-                newContent = new RecoverFragment();
-                _mainAct.replaceContent(newContent);
-                break;
+//            case MainActivity.BACKUP_BOOM_INDEX:
+//                //newContent = new BackupFragment();
+//                _mainAct.toLock(MainActivity.BACKUP_UNLOCK_REQUEST_CODE);
+//                break;
+//
+//            case MainActivity.RECOVER_BOOM_INDEX:
+//                newContent = new RecoverFragment();
+//                _mainAct.replaceContent(newContent, R.id.xwallet_content_layout);
+//                break;
 
             case MainActivity.INFO_CREDITS_INDEX:
                 newContent = new InfoFragment();
-                _mainAct.replaceContent(newContent);
+                _mainAct.replaceContent(newContent, R.id.xwallet_main_content_layout);
                 break;
 
             default:

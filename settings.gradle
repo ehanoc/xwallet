@@ -1,1 +1,1 @@
-include ':app', ':monerujo'
+include ':app', ':xmrwallet/app'

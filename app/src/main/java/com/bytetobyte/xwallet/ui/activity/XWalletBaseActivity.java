@@ -16,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.bytetobyte.xwallet.R;
 import com.bytetobyte.xwallet.service.BlockchainService;
+import com.bytetobyte.xwallet.service.MoneroBlockchainService;
 import com.bytetobyte.xwallet.service.coin.CoinManagerFactory;
 import com.bytetobyte.xwallet.service.ipcmodel.BlockDownloaded;
 import com.bytetobyte.xwallet.service.ipcmodel.CoinTransaction;
@@ -42,18 +43,73 @@ public abstract class XWalletBaseActivity extends AppCompatActivity {
 
     private Gson _gson;
 
+    Messenger _bitcoinServiceMessenger = null;
+    boolean _isBitcoinServiceBound;
+
+    private ServiceConnection _bitcoinServiceConnection = new ServiceConnection() {
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            // This is called when the connection with the service has been
+            // established, giving us the object we can use to
+            // interact with the service.  We are communicating with the
+            // service using a Messenger, so here we get a client-side
+            // representation of that from the raw IBinder object.
+            _bitcoinServiceMessenger = new Messenger(service);
+            _isBitcoinServiceBound = true;
+
+            onServiceReady(CoinManagerFactory.BITCOIN);
+            // notify fragments too
+        }
+
+        public void onServiceDisconnected(ComponentName className) {
+            // This is called when the connection with the service has been
+            // unexpectedly disconnected -- that is, its process crashed.
+            _bitcoinServiceMessenger = null;
+            _isBitcoinServiceBound = false;
+        }
+    };
+
+    Messenger _moneroServiceMessenger = null;
+    boolean _isMoneroServiceBound;
+    private ServiceConnection _moneroServiceConnection = new ServiceConnection() {
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            // This is called when the connection with the service has been
+            // established, giving us the object we can use to
+            // interact with the service.  We are communicating with the
+            // service using a Messenger, so here we get a client-side
+            // representation of that from the raw IBinder object.
+            _moneroServiceMessenger = new Messenger(service);
+            _isMoneroServiceBound = true;
+
+            onServiceReady(CoinManagerFactory.MONERO);
+            // notify fragments too
+        }
+
+        public void onServiceDisconnected(ComponentName className) {
+            // This is called when the connection with the service has been
+            // unexpectedly disconnected -- that is, its process crashed.
+            _moneroServiceMessenger = null;
+            _isMoneroServiceBound = false;
+        }
+    };
+
     /**
      *
      * @param msg
      */
     public void sendMessage(Message msg) {
-        if (!mBound) return;
+        if (msg.arg1 == CoinManagerFactory.BITCOIN && !_isBitcoinServiceBound) return;
+
+        if (msg.arg1 == CoinManagerFactory.MONERO && !_isMoneroServiceBound) return;
 //        // Create and send a message to the service, using a supported 'what' value
 //        Message msg = Message.obtain(null, BlockchainService.MSG_SAY_HELLO, 0, 0);
         try {
             msg.replyTo = new Messenger(new ResponseHandler());
 
-            mService.send(msg);
+            if (msg.arg1 == CoinManagerFactory.BITCOIN)
+                _bitcoinServiceMessenger.send(msg);
+
+            if (msg.arg1 == CoinManagerFactory.MONERO)
+                _moneroServiceMessenger.send(msg);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -65,7 +121,8 @@ public abstract class XWalletBaseActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        bind();
+        bindService(CoinManagerFactory.BITCOIN);
+        bindService(CoinManagerFactory.MONERO);
     }
 
     /**
@@ -75,9 +132,14 @@ public abstract class XWalletBaseActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         // Unbind from the service
-        if (mBound) {
-            unbindService(mConnection);
-            mBound = false;
+        if (_isBitcoinServiceBound) {
+            unbindService(_bitcoinServiceConnection);
+            _isBitcoinServiceBound = false;
+        }
+
+        if (_isMoneroServiceBound) {
+            unbindService(_moneroServiceConnection);
+            _isMoneroServiceBound = false;
         }
     }
 
@@ -88,8 +150,6 @@ public abstract class XWalletBaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
         if (_gson == null) {
             _gson = new Gson();
         }
@@ -107,14 +167,24 @@ public abstract class XWalletBaseActivity extends AppCompatActivity {
     /**
      *
      */
-    public void bind() {
-        if (mBound) return;
+    public void bindService(int coinId) {
+        if (coinId == CoinManagerFactory.BITCOIN) {
+            if (_isBitcoinServiceBound) return;
+            bindService(new Intent(this, BlockchainService.class), _bitcoinServiceConnection, Context.BIND_AUTO_CREATE);
+        }
 
-        bindService(new Intent(this, BlockchainService.class), mConnection, Context.BIND_AUTO_CREATE);
+        if (coinId == CoinManagerFactory.MONERO) {
+            if (_isMoneroServiceBound) return;
+            bindService(new Intent(this, MoneroBlockchainService.class), _moneroServiceConnection, Context.BIND_AUTO_CREATE);
+        }
     }
 
-    public boolean getIsBound() {
-        return mBound;
+    public boolean isBitcoinServiceBound() {
+        return _isBitcoinServiceBound;
+    }
+
+    public boolean isMoneroServiceBound() {
+        return _isMoneroServiceBound;
     }
 
     /**
@@ -173,6 +243,7 @@ public abstract class XWalletBaseActivity extends AppCompatActivity {
      */
     public void syncChain(int coinId) {
         System.out.println("syncChain : coinId " + coinId);
+        //if (CoinManagerFactory.MONERO == coinId) return; // skip
 
         Message sendMsg = Message.obtain(null, BlockchainService.IPC_MSG_WALLET_SYNC, coinId, 0);
         sendMessage(sendMsg);
@@ -207,7 +278,7 @@ public abstract class XWalletBaseActivity extends AppCompatActivity {
             int respCode = msg.what;
             String bundledData = null;
 
-            //System.out.println("XWalletBaseActivity#ResponseHandler::handleMessage msg : " + respCode);
+            System.out.println("XWalletBaseActivity#ResponseHandler::handleMessage msg : " + respCode);
 
             switch (respCode) {
 
@@ -249,39 +320,9 @@ public abstract class XWalletBaseActivity extends AppCompatActivity {
 
     }
 
-    /** Messenger for communicating with the service. */
-    Messenger mService = null;
-
-    /** Flag indicating whether we have called bind on the service. */
-    boolean mBound;
-
-    /**
-     * Class for interacting with the main interface of the service.
-     */
-    private ServiceConnection mConnection = new ServiceConnection() {
-        public void onServiceConnected(ComponentName className, IBinder service) {
-            // This is called when the connection with the service has been
-            // established, giving us the object we can use to
-            // interact with the service.  We are communicating with the
-            // service using a Messenger, so here we get a client-side
-            // representation of that from the raw IBinder object.
-            mService = new Messenger(service);
-            mBound = true;
-
-            onServiceReady();
-            // notify fragments too
-        }
-
-        public void onServiceDisconnected(ComponentName className) {
-            // This is called when the connection with the service has been
-            // unexpectedly disconnected -- that is, its process crashed.
-            mService = null;
-            mBound = false;
-        }
-    };
-
-    protected void onServiceReady() {
-        syncChain(CoinManagerFactory.BITCOIN);
+    protected void onServiceReady(int coinId) {
+       // syncChain(CoinManagerFactory.BITCOIN);
+       // syncChain(CoinManagerFactory.MONERO);
     }
 
     protected void onSyncReady(SyncedMessage syncedMessage) {}

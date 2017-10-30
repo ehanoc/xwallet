@@ -69,7 +69,7 @@ public class NewsFragment extends BaseFragment implements TwitterSearchApi.Twitt
         _layoutManager = new LinearLayoutManager(getBaseActivity());
         _recyclerView.setLayoutManager(_layoutManager);
 
-        _recyclerView.addItemDecoration(new RecyclerViewItemDecorator(5, 1));
+        _recyclerView.addItemDecoration(new RecyclerViewItemDecorator(1, 1));
 
         _newsAdapter = new NewsAdapter(getBaseActivity(), statuses);
         _recyclerView.setAdapter(_newsAdapter);

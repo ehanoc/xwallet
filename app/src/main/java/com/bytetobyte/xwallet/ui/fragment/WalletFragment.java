@@ -41,6 +41,9 @@ public class WalletFragment extends BaseFragment implements CexChartAPI.CexChart
     private WalletFragmentView _walletFragView;
     private String _lastBalance;
 
+    // bitcoin as default
+    private int _coinId = CoinManagerFactory.BITCOIN;
+
     /**
      *
      * @param savedInstanceState
@@ -70,6 +73,7 @@ public class WalletFragment extends BaseFragment implements CexChartAPI.CexChart
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         _walletFragView.initViews();
+        _walletFragView.setCoinLabel(this._coinId);
     }
 
     /**
@@ -78,7 +82,7 @@ public class WalletFragment extends BaseFragment implements CexChartAPI.CexChart
     @Override
     public void onResume() {
         super.onResume();
-        Message sendMsg = Message.obtain(null, BlockchainService.IPC_MSG_WALLET_SYNC, CoinManagerFactory.BITCOIN, 0);
+        Message sendMsg = Message.obtain(null, BlockchainService.IPC_MSG_WALLET_SYNC, this._coinId, 0);
         getBaseActivity().sendMessage(sendMsg);
 
         new CexChartAPI(this).execute();
@@ -88,8 +92,8 @@ public class WalletFragment extends BaseFragment implements CexChartAPI.CexChart
      *
      */
     @Override
-    public void onServiceReady() {
-        getBaseActivity().syncChain(CoinManagerFactory.BITCOIN);
+    public void onServiceReady(int coinId) {
+        getBaseActivity().syncChain(this._coinId);
     }
 
     /**
@@ -100,6 +104,8 @@ public class WalletFragment extends BaseFragment implements CexChartAPI.CexChart
     public void onSyncReady(SyncedMessage syncedMessage) {
         super.onSyncReady(syncedMessage);
 
+        if (syncedMessage.getCoinId() != this._coinId) return;
+
         updateBalance(syncedMessage.getAmount());
         setAddress(syncedMessage.getAddresses());
     }
@@ -109,6 +115,8 @@ public class WalletFragment extends BaseFragment implements CexChartAPI.CexChart
      * @param balance
      */
     public void updateBalance(String balance) {
+        if (balance == null) return;
+
        // _balanceTxt.setText(balance);
         _lastBalance = balance;
         _walletFragView.updateBalance(balance);
@@ -131,6 +139,8 @@ public class WalletFragment extends BaseFragment implements CexChartAPI.CexChart
      * @param addresses
      */
     public void setAddress(List<String> addresses) {
+        if (addresses.isEmpty()) return;
+
         _walletFragView.updateAddress(addresses.get(addresses.size() - 1));
     }
 
@@ -178,5 +188,13 @@ public class WalletFragment extends BaseFragment implements CexChartAPI.CexChart
         clipboard.setPrimaryClip(addData);
 
         Toast.makeText(getBaseActivity(), "Added to clipboard!", Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     *
+     * @param coinId
+     */
+    public void setCoin(int coinId) {
+        this._coinId = coinId;
     }
 }

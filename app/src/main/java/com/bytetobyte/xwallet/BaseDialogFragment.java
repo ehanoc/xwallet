@@ -39,7 +39,7 @@ public class BaseDialogFragment extends DialogFragment implements BlockchainClie
     }
 
     @Override
-    public void onServiceReady() {
+    public void onServiceReady(int coinId) {
 
     }
 

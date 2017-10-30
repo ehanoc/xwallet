@@ -3,7 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/monerujo/monerujo.iml" filepath="$PROJECT_DIR$/monerujo/monerujo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/xmrwallet/app/xmrwallet_app.iml" filepath="$PROJECT_DIR$/xmrwallet/app/xmrwallet_app.iml" />
       <module fileurl="file://$PROJECT_DIR$/xwallet.iml" filepath="$PROJECT_DIR$/xwallet.iml" />
     </modules>
   </component>

@@ -5,8 +5,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,10 +64,7 @@ public class SendFragment extends BaseDialogFragment {
     @Override
     public void onResume() {
         super.onResume();
-
-        // Init and Start with SurfaceView
-        // -------------------------------
-        qrEader.initAndStart(_sendViewContract.getCameraSurfaceView());
+        startCameraCapture();
     }
 
     /**
@@ -237,6 +232,13 @@ public class SendFragment extends BaseDialogFragment {
                     }
                 })
                 .show();
+    }
+
+    /**
+     *
+     */
+    public void startCameraCapture() {
+        qrEader.initAndStart(_sendViewContract.getCameraSurfaceView());
     }
 
 }

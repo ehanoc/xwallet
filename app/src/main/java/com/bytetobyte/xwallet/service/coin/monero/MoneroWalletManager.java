@@ -6,13 +6,13 @@ import com.m2049r.xmrwallet.model.Wallet;
  * Created by bruno on 16.10.17.
  */
 
-public class MoneroWallet extends Wallet {
+public class MoneroWalletManager extends Wallet {
 
     /**
      *
      * @param handle
      */
-    public MoneroWallet() {
+    public MoneroWalletManager() {
         super(0);
     }
 }

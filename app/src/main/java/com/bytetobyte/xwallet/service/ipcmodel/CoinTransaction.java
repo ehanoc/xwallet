@@ -7,6 +7,7 @@ import java.util.Date;
  */
 public class CoinTransaction implements Comparable<CoinTransaction> {
 
+    private int _coinId;
     private String _txFee;
     private String _txHash;
     private String _txAmount;
@@ -19,7 +20,8 @@ public class CoinTransaction implements Comparable<CoinTransaction> {
      * @param hash
      * @param amount
      */
-    public CoinTransaction(String fee, String hash, String amount, String confirmations, Date updateTime) {
+    public CoinTransaction(int coinId, String fee, String hash, String amount, String confirmations, Date updateTime) {
+        this._coinId = coinId;
         this._txFee = fee;
         this._txHash = hash;
         this._txAmount = amount;
@@ -64,6 +66,9 @@ public class CoinTransaction implements Comparable<CoinTransaction> {
         return _txHash;
     }
 
+    public int getCoinId() {
+        return _coinId;
+    }
     /**
      *
      * @param o
