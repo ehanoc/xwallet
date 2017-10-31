@@ -7,6 +7,8 @@ import com.bytetobyte.xwallet.service.coin.CoinManager;
 import com.bytetobyte.xwallet.service.coin.CurrencyCoin;
 import com.bytetobyte.xwallet.service.ipcmodel.CoinTransaction;
 import com.bytetobyte.xwallet.service.ipcmodel.SpentValueMessage;
+import com.bytetobyte.xwallet.util.EncryptUtils;
+import com.m2049r.xmrwallet.model.TransactionInfo;
 import com.m2049r.xmrwallet.model.Wallet;
 import com.m2049r.xmrwallet.model.WalletListener;
 import com.m2049r.xmrwallet.model.WalletManager;
@@ -23,7 +25,7 @@ import java.util.Map;
  * Created by bruno on 18.10.17.
  */
 
-public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback {
+public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback, WalletListener {
 
     private static final String TAG = "MoneroManager";
 
@@ -33,19 +35,10 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
     private WalletManager moneroManagerXmrLib;
     private boolean _isSynced;
     private boolean _isSyncing;
-    private boolean _mIsBound;
 
-    private WalletService mBoundService;
-
-    public static final String REQUEST_ID = "id";
-    public static final String REQUEST_PW = "pw";
     private static Wallet _wallet;
 
-
-    private long lastDaemonStatusUpdate = 0;
-    private long daemonHeight = 0;
-    private Wallet.ConnectionStatus connectionStatus = Wallet.ConnectionStatus.ConnectionStatus_Disconnected;
-    private static final long STATUS_UPDATE_INTERVAL = 120000; // 120s (blocktime)
+    private CoinAction.CoinActionCallback _callback;
 
     /**
      *
@@ -62,24 +55,26 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
      */
     @Override
     public void setup(final CoinAction.CoinActionCallback callback) {
+        _callback = callback;
+
         System.out.println("#1");
         moneroManagerXmrLib = WalletManager.getInstance();
-        moneroManagerXmrLib.setDaemon("node.moneroworld.com:18089", false, "", "");
+        moneroManagerXmrLib.setDaemon("node.moneroworld.com:18089", Monero.IS_TEST_NETWORK, "", "");
         System.out.println("#2");
 
         _isSyncing = true;
         _isSynced = false;
 
-        File newWalletFile = new File(_coin.getDataDir().getAbsoluteFile() + "/monerowallet");
+        File newWalletFile = new File(_coin.getDataDir().getAbsoluteFile() + "/monerowallet_" + Monero.IS_TEST_NETWORK);
 
         boolean hasWallet = moneroManagerXmrLib.walletExists(newWalletFile.getAbsoluteFile());
         System.out.println("has wallet : " + hasWallet);
 
         if (_wallet == null) {
             if (hasWallet) {
-                _wallet = moneroManagerXmrLib.openWallet(newWalletFile.getAbsolutePath(), "");
+                _wallet = moneroManagerXmrLib.openWallet(newWalletFile.getAbsolutePath(), EncryptUtils.KSEED);
             } else {
-                _wallet = moneroManagerXmrLib.createWallet(newWalletFile, "", "English");
+                _wallet = moneroManagerXmrLib.createWallet(newWalletFile, EncryptUtils.KSEED, "English");
                 boolean rc = _wallet.store();
                 System.out.println("wallet stored: " + _wallet.getName() + " with rc=" + rc);
                 if (!rc) {
@@ -96,110 +91,10 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
 
         System.out.println("#3");
 
-        _wallet.setListener(new WalletListener() {
-            public int lastTxCount;
-            public long lastBlockTime;
-
-            @Override
-            public void moneySpent(String s, long l) {}
-
-            @Override
-            public void moneyReceived(String s, long l) {}
-
-            @Override
-            public void unconfirmedMoneyReceived(String s, long l) {}
-
-            @Override
-            public void newBlock(long height) {
-                System.out.println("new block : " + height + " / " + moneroManagerXmrLib.getBlockchainTargetHeight());
-
-                long target = moneroManagerXmrLib.getBlockchainTargetHeight();
-                double pct = ((double) height / target) * 100.f;
-                callback.onBlocksDownloaded(_coin, pct, target - height, null);
-
-             //   boolean fullRefresh = false;
-
-               // System.out.println("is Synced : " + _wallet.isSynchronized());
-                //updateDaemonState(_wallet, _wallet.isSynchronized() ? height : 0);
-
-//                if (!_wallet.isSynchronized()) {
-//                    //updated = true;
-//                    // we want to see our transactions as they come in
-//                    _wallet.getHistory().refresh();
-//                    int txCount = _wallet.getHistory().getCount();
-//                    if (txCount > lastTxCount) {
-//                        // update the transaction list only if we have more than before
-//                        lastTxCount = txCount;
-//                        fullRefresh = true;
-//                        _wallet.store();
-//                        _wallet.close();
-//                    }
-//                }
-            }
-
-            @Override
-            public void updated() {
-                System.out.println("updated()");
-            }
-
-            @Override
-            public void refreshed() {
-                System.out.println("refreshed()");
-
-                if(!_isSynced && _wallet.isSynchronized()) {
-                    System.out.println("storing");
-                    _isSynced = true;
-                    _isSyncing = false;
-                    _wallet.store();
-                    callback.onChainSynced(_coin);
-                   // _wallet.close();
-                }
-
-                //updateDaemonState(_wallet, 0);
-
-                _wallet.getHistory().refresh();
-
-                String seed = _wallet.getSeed();
-                System.out.println("seed : " + seed);
-
-                Wallet.Status status = _wallet.getStatus();
-                System.out.println("status : " + status);
-
-                //daemon info
-
-                System.out.println("daemon addr : " + moneroManagerXmrLib.getDaemonAddress());
-
-                System.out.println("daemon ver : " + moneroManagerXmrLib.getDaemonVersion());
-
-                System.out.println("blockchain height : " + moneroManagerXmrLib.getBlockchainHeight());
-            }
-        });
+        _wallet.setListener(this);
 
         _wallet.init(0);
         _wallet.refresh();
-    }
-
-    private void updateDaemonState(Wallet wallet, long height) {
-        long t = System.currentTimeMillis();
-        if (height > 0) { // if we get a height, we are connected
-            daemonHeight = height;
-            connectionStatus = Wallet.ConnectionStatus.ConnectionStatus_Connected;
-            lastDaemonStatusUpdate = t;
-        } else {
-            if (t - lastDaemonStatusUpdate > STATUS_UPDATE_INTERVAL) {
-                lastDaemonStatusUpdate = t;
-                // these calls really connect to the daemon - wasting time
-                daemonHeight = wallet.getDaemonBlockChainHeight();
-                if (daemonHeight > 0) {
-                    // if we get a valid height, then obviously we are connected
-                    connectionStatus = Wallet.ConnectionStatus.ConnectionStatus_Connected;
-                } else {
-                    connectionStatus = Wallet.ConnectionStatus.ConnectionStatus_Disconnected;
-                }
-            }
-        }
-
-        System.out.println("updated daemon status: " + daemonHeight + "/" + connectionStatus.toString());
     }
 
     /**
@@ -228,7 +123,23 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
 
     @Override
     public List<CoinTransaction> getTransactionList() {
-        return null;
+        // Map monero model Txs to generic CoinTransaction
+        List<CoinTransaction> allTxs = new ArrayList<>();
+
+        List<TransactionInfo> moneroTxs = _wallet.getHistory().getAll();
+        for (TransactionInfo tx: moneroTxs) {
+            CoinTransaction aNewCoinTx = new CoinTransaction(_coin.getCoinId(),
+                    Long.toString(tx.fee),
+                    tx.hash,
+                    Long.toString(tx.amount),
+                    Long.toString(tx.confirmations),
+                    new Date(tx.timestamp)
+                    );
+
+            allTxs.add(aNewCoinTx);
+        }
+
+        return allTxs;
     }
 
     @Override
@@ -238,7 +149,7 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
 
     @Override
     public long getBalanceValue() {
-        return 0;
+        return _wallet.getBalance();
     }
 
     /**
@@ -362,8 +273,10 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
     @Override
     public void onCoinsReceived(String addressStr, long value, Object coin) {
         System.out.println("isSyncing :: onCoinsReceived");
-
         _isSyncing = false;
+
+        if (_callback == null) return;
+        _callback.onCoinsReceived(addressStr, value, coin);
     }
 
     /**
@@ -375,5 +288,65 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
     @Override
     public void onBlocksDownloaded(CurrencyCoin coin, double pct, long blocksLeft, Date date) {
 
+    }
+
+    @Override
+    public void onCloseWallet() {
+
+    }
+
+    // =========================
+    // MONERO WALLET LISTENER
+    // =========================
+    @Override
+    public void moneySpent(String s, long l) {}
+
+    @Override
+    public void moneyReceived(String s, long l) {
+        onCoinsReceived(s, l, _coin);
+    }
+
+    @Override
+    public void unconfirmedMoneyReceived(String s, long l) {}
+
+    @Override
+    public void newBlock(long height) {
+        System.out.println("new block : " + height + " / " + moneroManagerXmrLib.getBlockchainTargetHeight());
+
+        long target = moneroManagerXmrLib.getBlockchainTargetHeight();
+        double pct = ((double) height / target) * 100.f;
+
+        if (_callback != null)
+            _callback.onBlocksDownloaded(_coin, pct, target - height, null);
+    }
+
+    @Override
+    public void updated() {
+        System.out.println("updated()");
+    }
+
+    @Override
+    public void refreshed() {
+        System.out.println("refreshed()");
+
+        if(!_isSynced && _wallet.isSynchronized()) {
+            System.out.println("storing");
+            _isSynced = true;
+            _isSyncing = false;
+            _wallet.store();
+
+            if (_callback != null)
+                _callback.onChainSynced(_coin);
+            // _wallet.close();
+        }
+
+        //updateDaemonState(_wallet, 0);
+
+        _wallet.getHistory().refresh();
+
+        //daemon info
+        System.out.println("daemon addr : " + moneroManagerXmrLib.getDaemonAddress());
+        System.out.println("daemon ver : " + moneroManagerXmrLib.getDaemonVersion());
+        System.out.println("blockchain height : " + moneroManagerXmrLib.getBlockchainHeight());
     }
 }

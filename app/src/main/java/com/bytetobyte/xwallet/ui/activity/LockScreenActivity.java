@@ -19,15 +19,24 @@ import com.bytetobyte.xwallet.views.WheelMenuLayout;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.spongycastle.crypto.engines.AESFastEngine;
+
 import java.lang.reflect.Type;
+import java.security.spec.KeySpec;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
+import javax.crypto.spec.SecretKeySpec;
+
 /**
  * Created by bruno on 05.04.17.
  */
-public class LockScreenActivity extends XWalletBaseActivity {
+public class LockScreenActivity extends AppCompatActivity {
 
     public static final String SET_PIN_ACTION = "android.intent.action.SET_PIN_ACTION";
     public static final String UNLOCK_PIN_ACTION = "android.intent.action.UNLOCK_PIN_ACTION";
@@ -62,6 +71,8 @@ public class LockScreenActivity extends XWalletBaseActivity {
             finish();
         }
 
+        updatePINSystem();
+
         _nextPinNrIndex = 0;
 
         _setFirstInput = new TreeMap<>();
@@ -71,6 +82,8 @@ public class LockScreenActivity extends XWalletBaseActivity {
         _pinNumbers.put(1, -1);
         _pinNumbers.put(2, -1);
         _pinNumbers.put(3, -1);
+        _pinNumbers.put(4, -1);
+        _pinNumbers.put(5, -1);
 
         initView();
     }
@@ -83,6 +96,8 @@ public class LockScreenActivity extends XWalletBaseActivity {
         _pinNumbers.put(1, -1);
         _pinNumbers.put(2, -1);
         _pinNumbers.put(3, -1);
+        _pinNumbers.put(4, -1);
+        _pinNumbers.put(5, -1);
 
         _nextPinNrIndex = 0;
     }
@@ -160,6 +175,8 @@ public class LockScreenActivity extends XWalletBaseActivity {
 
         try {
             pinSet = EncryptUtils.getEncryptor(getBaseContext()).decrypt(pinSet);
+            EncryptUtils.KSEED = EncryptUtils.cipher(pinSet, pinSet);
+            System.out.println("MY KEY! : " + EncryptUtils.KSEED);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -173,6 +190,30 @@ public class LockScreenActivity extends XWalletBaseActivity {
             finish();
         } else {
             Toast.makeText(LockScreenActivity.this, "Wrong PIN input!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * to 6 digits
+     */
+    private void updatePINSystem() {
+        SharedPreferences prefs = getSharedPreferences(getString(R.string.app_name), MODE_PRIVATE);
+        String pinSet = prefs.getString(PREFS_KEY_PIN, null);
+        if (pinSet == null) return;
+
+        try {
+            pinSet = EncryptUtils.getEncryptor(getBaseContext()).decrypt(pinSet);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        Gson gson = new Gson();
+        Type type = new TypeToken<TreeMap<Integer, Integer>>(){}.getType();
+        Map<Integer, Integer> pinNumbers = gson.fromJson(pinSet, type);
+
+        if (pinNumbers.values().size() < 6) {
+            prefs.edit().remove(PREFS_KEY_PIN).apply();
+            _action = SET_PIN_ACTION;
         }
     }
 
@@ -210,6 +251,8 @@ public class LockScreenActivity extends XWalletBaseActivity {
 
         try {
             savedJsonPin = EncryptUtils.getEncryptor(getBaseContext()).encrypt(savedJsonPin);
+            EncryptUtils.KSEED = EncryptUtils.cipher(savedJsonPin, savedJsonPin).intern();
+            System.out.println("MY KEY! : " + EncryptUtils.KSEED);
         } catch (Exception e) {
             e.printStackTrace();
         }

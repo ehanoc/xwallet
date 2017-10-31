@@ -52,6 +52,8 @@ public class WalletFragmentView implements WalletFragmentViewContract, View.OnCl
         _addressTxt = (TextView) fragView.findViewById(R.id.wallet_address);
         _priceChart = (LineChart) fragView.findViewById(R.id.wallet_coin_chart);
         _coinLabel = (TextView) fragView.findViewById(R.id.wallet_coin_label);
+
+        _priceChart.setVisibility(View.INVISIBLE);
     }
 
     /**
@@ -118,6 +120,8 @@ public class WalletFragmentView implements WalletFragmentViewContract, View.OnCl
      */
     @Override
     public void updateChartPriceData(LineData lineData) {
+        _priceChart.setVisibility(View.VISIBLE);
+
         _priceChart.setAutoScaleMinMaxEnabled(true);
 
         _priceChart.setDrawGridBackground(false);

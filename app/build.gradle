@@ -109,5 +109,5 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'me.dm7.barcodescanner:zxing:1.9.8'
     //compile project(path: ':monerujo')
-    compile project(path: ':xmrwallet/app')
+    compile project(path: ':xmrwallet')
 }

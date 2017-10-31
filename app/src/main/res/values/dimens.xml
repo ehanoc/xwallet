@@ -14,7 +14,7 @@
     <dimen name="inner_lense_size">77dp</dimen>
     <dimen name="inner_lense_text_width">50dp</dimen>
     <dimen name="lense_badge_text_size">12pt</dimen>
-    <dimen name="lense_badge_padding">20dp</dimen>
+    <dimen name="lense_badge_padding">4dp</dimen>
 
 
     <!-- SPLASH SCREEN -->
@@ -29,7 +29,7 @@
     <!-- LOCK DIALOG -->
     <dimen name="lock_circle_width">240dp</dimen>
     <dimen name="lock_inner_lense_size">100dp</dimen>
-    <dimen name="lock_lense_badge_text_size">10pt</dimen>
+    <dimen name="lock_lense_badge_text_size">6pt</dimen>
     <dimen name="lock_inner_lense_text_width">40dp</dimen>
 
     <!-- MAIN -->

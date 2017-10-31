@@ -11,8 +11,8 @@ import org.bitcoinj.utils.MonetaryFormat;
  * Created by bruno on 23.03.17.
  */
 public class Constants {
-   // public static final org.bitcoinj.core.NetworkParameters NETWORK_PARAMETERS = TestNet3Params.get();
-    public static final org.bitcoinj.core.NetworkParameters NETWORK_PARAMETERS = MainNetParams.get();
+    public static final org.bitcoinj.core.NetworkParameters NETWORK_PARAMETERS = TestNet3Params.get();
+  //  public static final org.bitcoinj.core.NetworkParameters NETWORK_PARAMETERS = MainNetParams.get();
 
     public static final char CHAR_HAIR_SPACE = '\u200a';
     public static final char CHAR_THIN_SPACE = '\u2009';

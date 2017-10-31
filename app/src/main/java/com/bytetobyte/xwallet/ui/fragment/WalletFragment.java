@@ -36,7 +36,7 @@ import java.util.Locale;
  */
 public class WalletFragment extends BaseFragment implements CexChartAPI.CexChartCallback {
 
-    private List<Entry> _btcChartEntries;
+    private List<Entry> _chartEntries;
 
     private WalletFragmentView _walletFragView;
     private String _lastBalance;
@@ -121,8 +121,8 @@ public class WalletFragment extends BaseFragment implements CexChartAPI.CexChart
         _lastBalance = balance;
         _walletFragView.updateBalance(balance);
 
-        if(_btcChartEntries != null && !_btcChartEntries.isEmpty()) {
-            Entry latestValue = _btcChartEntries.get(_btcChartEntries.size() - 1);
+        if(_chartEntries != null && !_chartEntries.isEmpty()) {
+            Entry latestValue = _chartEntries.get(_chartEntries.size() - 1);
             Double actualBalance = Double.parseDouble(balance);
             Locale locale = new Locale("en", "US");
             NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(locale);
@@ -165,16 +165,16 @@ public class WalletFragment extends BaseFragment implements CexChartAPI.CexChart
      */
     @Override
     public void onChartResult(List<CexCharItem> items) {
-        _btcChartEntries = new ArrayList<Entry>();
+        _chartEntries = new ArrayList<Entry>();
 
         for (int i = 0; i < items.size(); i ++) {
             Float price = Float.parseFloat(items.get(i).getPrice());
             Long timestamp = Long.parseLong(items.get(i).getTmsp());
-            _btcChartEntries.add(new Entry(timestamp, price));
+            _chartEntries.add(new Entry(timestamp, price));
         }
 
-        Collections.sort(_btcChartEntries, new EntryXComparator());
-        updateGraph(_btcChartEntries);
+        Collections.sort(_chartEntries, new EntryXComparator());
+        updateGraph(_chartEntries);
         updateBalance(_lastBalance);
     }
 

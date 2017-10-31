@@ -36,4 +36,6 @@ public interface CoinManager {
 
     boolean isSyncing();
     boolean isSynced();
+
+    void onCloseWallet();
 }

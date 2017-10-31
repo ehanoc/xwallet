@@ -7,6 +7,7 @@ import com.bytetobyte.xwallet.service.coin.bitcoin.Bitcoin;
 import com.bytetobyte.xwallet.service.coin.bitcoin.BitcoinManager;
 import com.bytetobyte.xwallet.service.coin.bitcoin.DownloadProgressListener;
 import com.bytetobyte.xwallet.service.utils.ServiceConsts;
+import com.bytetobyte.xwallet.util.EncryptUtils;
 
 import org.bitcoinj.core.Block;
 import org.bitcoinj.core.CheckpointManager;
@@ -80,6 +81,11 @@ public class BitcoinSetupAction extends DownloadProgressListener implements Coin
             @Override
             protected void onSetupCompleted() {
                 System.out.println("Setting up wallet : " + wallet().toString());
+                System.out.println("is wallet encrypted : " + wallet().isEncrypted());
+                if (wallet().isEncrypted()) {
+                    System.out.printf("wallet decrypting!");
+                    wallet().decrypt(EncryptUtils.KSEED);
+                }
 
                 // This is called in a background thread after startAndWait is called, as setting up various objects
                 // can do disk and network IO that may cause UI jank/stuttering in wallet apps if it were to be done

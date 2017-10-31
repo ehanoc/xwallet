@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Message;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -14,8 +15,7 @@ import android.widget.TextView;
 
 import com.bytetobyte.xwallet.BlockchainClientListener;
 import com.bytetobyte.xwallet.R;
-import com.bytetobyte.xwallet.network.api.TwitterAuthApi;
-import com.bytetobyte.xwallet.network.api.models.TwitterAuthToken;
+import com.bytetobyte.xwallet.service.BlockchainService;
 import com.bytetobyte.xwallet.service.coin.CoinManagerFactory;
 import com.bytetobyte.xwallet.service.ipcmodel.BlockDownloaded;
 import com.bytetobyte.xwallet.service.ipcmodel.CoinTransaction;
@@ -35,7 +35,7 @@ import java.util.List;
  *
  *
  */
-public class MainActivity extends XWalletBaseActivity implements TwitterAuthApi.AuthCallback {
+public class MainActivity extends XWalletBaseActivity {
 
     public static final int MY_PERMISSIONS_REQUEST_CAMERA = 0x77;
 
@@ -61,9 +61,6 @@ public class MainActivity extends XWalletBaseActivity implements TwitterAuthApi.
     private WalletFragment _moneroWalletFragment;
     private TransactionFragment _moneroTransactionFragment;
 
-    //private NewsFragment _newsFragment;
-    private TwitterAuthToken _twitterAuthToken;
-
     private SyncedMessage _lastSyncedMessage;
 
     /**
@@ -85,7 +82,7 @@ public class MainActivity extends XWalletBaseActivity implements TwitterAuthApi.
         _mainView = new MainActivityView(this);
         _mainView.initViews();
 
-        new TwitterAuthApi(getString(R.string.twitter_api_key), getString(R.string.twitter_api_secret), this).execute();
+        //new TwitterAuthApi(getString(R.string.twitter_api_key), getString(R.string.twitter_api_secret), this).execute();
 
         if (savedInstanceState == null) {
             _btcWalletFragment = new WalletFragment();
@@ -121,6 +118,17 @@ public class MainActivity extends XWalletBaseActivity implements TwitterAuthApi.
 //                chainListener.onSyncReady(_lastSyncedMessage);
 //            }
         }
+    }
+
+    /**
+     *
+     */
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        Message msgClose = Message.obtain(null, BlockchainService.IPC_MSG_WALLET_CLOSE,  CoinManagerFactory.BITCOIN, -1);
+        sendMessage(msgClose);
     }
 
     /**
@@ -269,15 +277,6 @@ public class MainActivity extends XWalletBaseActivity implements TwitterAuthApi.
 
     /**
      *
-     * @param response
-     */
-    @Override
-    public void onTwitterAuth(TwitterAuthToken response) {
-        _twitterAuthToken = response;
-    }
-
-    /**
-     *
      * @param requestCode
      * @param resultCode
      */
@@ -292,21 +291,6 @@ public class MainActivity extends XWalletBaseActivity implements TwitterAuthApi.
                 }
                 break;
         }
-    }
-
-    /**
-     *
-     * @return
-     */
-    @Override
-    public String getNewsAuthToken() {
-        String token = null;
-
-        if (_twitterAuthToken != null) {
-            token = _twitterAuthToken.getAccessToken();
-        }
-
-        return token;
     }
 
     /**

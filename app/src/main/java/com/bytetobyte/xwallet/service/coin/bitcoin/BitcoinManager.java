@@ -9,6 +9,7 @@ import com.bytetobyte.xwallet.service.coin.bitcoin.actions.BitcoinSendAction;
 import com.bytetobyte.xwallet.service.coin.bitcoin.actions.BitcoinSetupAction;
 import com.bytetobyte.xwallet.service.ipcmodel.CoinTransaction;
 import com.bytetobyte.xwallet.service.ipcmodel.SpentValueMessage;
+import com.bytetobyte.xwallet.util.EncryptUtils;
 import com.google.common.base.Joiner;
 
 import org.bitcoinj.core.Address;
@@ -16,11 +17,14 @@ import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.ECKey;
 import org.bitcoinj.core.Transaction;
 import org.bitcoinj.core.TransactionConfidence;
+import org.bitcoinj.crypto.KeyCrypter;
+import org.bitcoinj.crypto.KeyCrypterScrypt;
 import org.bitcoinj.kits.WalletAppKit;
 import org.bitcoinj.wallet.DeterministicSeed;
 import org.bitcoinj.wallet.SendRequest;
 import org.bitcoinj.wallet.Wallet;
 import org.bitcoinj.wallet.listeners.WalletCoinsReceivedEventListener;
+import org.spongycastle.crypto.params.KeyParameter;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -272,6 +276,19 @@ public class BitcoinManager implements CoinManager, CoinAction.CoinActionCallbac
     @Override
     public void stopSync() {
        // _coin.getWallet().stopAsync();
+    }
+
+    /**
+     *
+     */
+    @Override
+    public void onCloseWallet() {
+        System.out.println("wallet is encrypted : " + _coin.getWalletManager().wallet().isEncrypted());
+
+        if (!_coin.getWalletManager().wallet().isEncrypted()) {
+            System.out.printf("wallet encrypting!");
+            _coin.getWalletManager().wallet().encrypt(EncryptUtils.KSEED);
+        }
     }
 
     /**
