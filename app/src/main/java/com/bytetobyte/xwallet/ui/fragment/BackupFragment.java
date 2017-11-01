@@ -22,6 +22,7 @@ import com.bytetobyte.xwallet.ui.fragment.view.BackupFragmentView;
 public class BackupFragment extends BaseDialogFragment {
 
     private BackupFragmentView _backupView;
+    private int _coinId;
 
     /**
      *
@@ -56,7 +57,15 @@ public class BackupFragment extends BaseDialogFragment {
     @Override
     public void onResume() {
         super.onResume();
-        getBaseActivity().requestMnemonic(CoinManagerFactory.BITCOIN);
+        getBaseActivity().requestMnemonic(_coinId);
+    }
+
+    /**
+     *
+     * @param coinId
+     */
+    public void setCoinId(int coinId) {
+        _coinId = coinId;
     }
 
     /**

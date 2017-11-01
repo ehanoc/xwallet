@@ -119,7 +119,7 @@ public class WalletFragmentView implements WalletFragmentViewContract, View.OnCl
      * @param lineData
      */
     @Override
-    public void updateChartPriceData(LineData lineData) {
+    public void updateChartPriceData(LineData lineData, int coinId) {
         _priceChart.setVisibility(View.VISIBLE);
 
         _priceChart.setAutoScaleMinMaxEnabled(true);
@@ -133,7 +133,12 @@ public class WalletFragmentView implements WalletFragmentViewContract, View.OnCl
         _priceChart.getAxisRight().setEnabled(true);
 
         _priceChart.getAxisRight().setGranularityEnabled(true);
-        _priceChart.getAxisRight().setGranularity(100.0f);
+
+        float granularity = 100.0f;
+        if (coinId != CoinManagerFactory.BITCOIN)
+            granularity = 1.0f;
+
+        _priceChart.getAxisRight().setGranularity(granularity);
         _priceChart.getAxisRight().setTextColor(_walletFrag.getResources().getColor(R.color.colorAccent));
 
         _priceChart.getXAxis().setDrawAxisLine(true);

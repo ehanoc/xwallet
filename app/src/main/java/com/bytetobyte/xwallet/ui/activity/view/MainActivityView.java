@@ -139,7 +139,7 @@ public class MainActivityView implements MainViewContract {
      */
     @Override
     public void startTutorial() {
-        this._tutorialHandler.tutorialFocus();
+        //this._tutorialHandler.tutorialFocus();
     }
 
     /**

@@ -80,11 +80,11 @@ public class BitcoinSetupAction extends DownloadProgressListener implements Coin
              */
             @Override
             protected void onSetupCompleted() {
-                System.out.println("Setting up wallet : " + wallet().toString());
+                System.out.println("Setting up wallet : " + wallet().toString() + "pwd : " + _bitcoinManger.getWalletPwd());
                 System.out.println("is wallet encrypted : " + wallet().isEncrypted());
                 if (wallet().isEncrypted()) {
-                    System.out.printf("wallet decrypting!");
-                    wallet().decrypt(EncryptUtils.KSEED);
+                    System.out.println("wallet decrypting!");
+                    wallet().decrypt(_bitcoinManger.getWalletPwd());
                 }
 
                 // This is called in a background thread after startAndWait is called, as setting up various objects

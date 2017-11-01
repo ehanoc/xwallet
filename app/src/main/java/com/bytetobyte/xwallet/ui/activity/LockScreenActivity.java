@@ -144,6 +144,8 @@ public class LockScreenActivity extends AppCompatActivity {
                     displayPinCode();
                 }
             });
+
+            wheelMenuLayout.setOnClickListener(null);
         }
 
         _titleText = (TextView) findViewById(R.id.lock_title_text);
@@ -174,8 +176,8 @@ public class LockScreenActivity extends AppCompatActivity {
         if (pinSet == null) return;
 
         try {
-            pinSet = EncryptUtils.getEncryptor(getBaseContext()).decrypt(pinSet);
-            EncryptUtils.KSEED = EncryptUtils.cipher(pinSet, pinSet);
+            pinSet = EncryptUtils.decipher(EncryptUtils.getXorKey(), pinSet);
+            EncryptUtils.KSEED = EncryptUtils.cipher(EncryptUtils.getXorKey(), pinSet);
             System.out.println("MY KEY! : " + EncryptUtils.KSEED);
         } catch (Exception e) {
             e.printStackTrace();
@@ -202,7 +204,7 @@ public class LockScreenActivity extends AppCompatActivity {
         if (pinSet == null) return;
 
         try {
-            pinSet = EncryptUtils.getEncryptor(getBaseContext()).decrypt(pinSet);
+            pinSet = EncryptUtils.decipher(EncryptUtils.getXorKey(), pinSet);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -250,7 +252,7 @@ public class LockScreenActivity extends AppCompatActivity {
         String savedJsonPin = gson.toJson(_pinNumbers);
 
         try {
-            savedJsonPin = EncryptUtils.getEncryptor(getBaseContext()).encrypt(savedJsonPin);
+            savedJsonPin = EncryptUtils.cipher(EncryptUtils.getXorKey(), savedJsonPin);
             EncryptUtils.KSEED = EncryptUtils.cipher(savedJsonPin, savedJsonPin).intern();
             System.out.println("MY KEY! : " + EncryptUtils.KSEED);
         } catch (Exception e) {

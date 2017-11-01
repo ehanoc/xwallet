@@ -6,6 +6,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bytetobyte.xwallet.R;
+import com.bytetobyte.xwallet.service.coin.CoinManagerFactory;
 import com.bytetobyte.xwallet.service.ipcmodel.MnemonicSeedBackup;
 import com.bytetobyte.xwallet.ui.BackupFragmentViewContract;
 import com.bytetobyte.xwallet.ui.fragment.BackupFragment;
@@ -76,9 +77,16 @@ public class BackupFragmentView implements BackupFragmentViewContract, View.OnCl
 //            listaddp = listaddp + "\n Addr : " + entry.getKey() + ", Key :" + entry.getValue();
 //        }
 
-        _backupText.setText(String.format("%s\n \n Creation Date : %s",
+        String textToDisplay = String.format("%s\n \n Creation Date : %s",
                 seedBackup.getMnemonicSeed(),
                 seedBackup.getCreationDate()
-                ));
+        );
+
+        if (seedBackup.getCoindId() == CoinManagerFactory.MONERO) {
+            textToDisplay += "\n\n View key : " + seedBackup.getAddrsKeys().get("view");
+            textToDisplay += "\n\n Spend key : " + seedBackup.getAddrsKeys().get("spend");
+        }
+
+        _backupText.setText(textToDisplay);
     }
 }

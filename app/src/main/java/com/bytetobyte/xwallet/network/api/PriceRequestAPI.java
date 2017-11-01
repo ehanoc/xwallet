@@ -2,7 +2,8 @@ package com.bytetobyte.xwallet.network.api;
 
 import android.os.AsyncTask;
 
-import com.bytetobyte.xwallet.network.api.models.PriceItemResult;
+import com.bytetobyte.xwallet.network.api.models.MinApiResult;
+import com.bytetobyte.xwallet.service.coin.CoinManagerFactory;
 import com.google.gson.Gson;
 import com.squareup.okhttp.HttpUrl;
 import com.squareup.okhttp.OkHttpClient;
@@ -21,8 +22,8 @@ import okio.Okio;
 
 public class PriceRequestAPI extends AsyncTask<Void, Void, String> {
 
-    public static String MONERO_PRICE_REQUEST = "https://min-api.cryptocompare.com/data/price?fsym=XMR&tsyms=BTC,USD,EUR";
-    public static String BITCOIN_PRICE_REQUEST = "https://min-api.cryptocompare.com/data/price?fsym=BTC&tsyms=BTC,USD,EUR";
+    public static String MONERO_PRICE_REQUEST = "https://min-api.cryptocompare.com/data/histominute?fsym=XMR&tsym=USD&limit=360&aggregate=3&e=CCCAGG";
+    public static String BITCOIN_PRICE_REQUEST = "https://min-api.cryptocompare.com/data/histominute?fsym=BTC&tsym=USD&limit=360&aggregate=3&e=CCCAGG";
 
     /**
      *
@@ -72,7 +73,7 @@ public class PriceRequestAPI extends AsyncTask<Void, Void, String> {
 
         try {
             Gson gson = new Gson();
-            PriceItemResult resultItem = gson.fromJson(s, PriceItemResult.class);
+            MinApiResult resultItem = gson.fromJson(s, MinApiResult.class);
             _callback.onPriceResult(resultItem);
         } catch (Exception e) {
             e.printStackTrace();
@@ -97,7 +98,19 @@ public class PriceRequestAPI extends AsyncTask<Void, Void, String> {
         }
     }
 
+    /**
+     *
+     * @param coinId
+     * @return
+     */
+    public static String GetCoinUrl(int coinId) {
+        if (CoinManagerFactory.MONERO == coinId)
+            return MONERO_PRICE_REQUEST;
+
+        return BITCOIN_PRICE_REQUEST;
+    }
+
     public interface PriceAPICallback {
-       void onPriceResult(PriceItemResult result);
+       void onPriceResult(MinApiResult result);
     }
 }

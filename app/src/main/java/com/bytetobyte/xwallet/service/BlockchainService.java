@@ -6,12 +6,14 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.net.wifi.WifiManager;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.PowerManager;
 import android.util.Log;
+import android.widget.RemoteViews;
 
 import com.bytetobyte.xwallet.R;
 import com.bytetobyte.xwallet.service.coin.CoinAction;
@@ -177,9 +179,9 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
      */
     @Override
     public void onBlocksDownloaded(CurrencyCoin coin, double pct, long blocksLeft, Date date) {
-        String text = "Syncing : " + pct + " %";
+        String text = "Sync : " + pct + " %";
 
-        Notification notification = getServiceNotification(text);
+        Notification notification = getServiceNotification(text, coin.getCoinId());
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(NOTIFICATION_SYNC_ID + coin.getCoinId(), notification);
 
@@ -206,7 +208,9 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
      */
     @Override
     public void onDestroy() {
-        _coinManager.onCloseWallet();
+        if (_coinManager != null)
+            _coinManager.onCloseWallet();
+
         super.onDestroy();
     }
 
@@ -227,7 +231,7 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
             if (_coinManager.isSyncing())
                 return;
 
-            System.out.println("#1");
+            System.out.println("msg.what : " + msg.what);
             switch (msg.what) {
                 case IPC_MSG_WALLET_SYNC:
                     // Just return info to client
@@ -235,11 +239,15 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
                         onChainSynced(_coinManager.getCurrencyCoin());
                         return;
                     }
+
+                    Bundle bundle = (Bundle) msg.obj;
+                    _coinManager.setWalletPwd(bundle.getString("key"));
+
                     System.out.println("#1");
                     acquireWakeLocks();
                     System.out.println("#1");
                     System.out.println("service setup! : " + _coinManager);
-                    startForeground(NOTIFICATION_SYNC_ID + _coinManager.getCurrencyCoin().getCoinId(), getServiceNotification("Starting"));
+                    startForeground(NOTIFICATION_SYNC_ID + _coinManager.getCurrencyCoin().getCoinId(), getServiceNotification("Starting", _coinManager.getCurrencyCoin().getCoinId()));
                     _coinManager.setup(BlockchainService.this);
                     System.out.println("#2");
                     break;
@@ -249,7 +257,7 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
 
                     acquireWakeLocks();
                     //wakeLock.acquire(1000 * 360 * 5);
-                    startForeground(NOTIFICATION_SYNC_ID + _coinManager.getCurrencyCoin().getCoinId(), getServiceNotification("Starting"));
+                    startForeground(NOTIFICATION_SYNC_ID + _coinManager.getCurrencyCoin().getCoinId(), getServiceNotification("Starting", _coinManager.getCurrencyCoin().getCoinId()));
                     // illness bulk jewel deer chaos swing goose fetch patch blood acid call creation
                     System.out.println("service recover! : " + _coinManager);
                     _coinManager.recoverWalletBy(BlockchainService.this, recoverMsg.getSeed(), recoverMsg.getDate());
@@ -285,7 +293,7 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
                     Date seedCreationDate = _coinManager.getMnemonicSeedCreationDate();
                     Map<String, String> addrsAndKeys = _coinManager.getAddressesKeys();
 
-                    MnemonicSeedBackup seedBackup = new MnemonicSeedBackup(seed, seedCreationDate, addrsAndKeys);
+                    MnemonicSeedBackup seedBackup = new MnemonicSeedBackup(_coinManager.getCurrencyCoin().getCoinId(), seed, seedCreationDate, addrsAndKeys);
                     Message seedReplyMsg = Message.obtain(null, IPC_MSG_WALLET_MNENOMIC_SEED);
                     seedReplyMsg.getData().putString(IPC_BUNDLE_DATA_KEY, _gson.toJson(seedBackup));
                     replyMessage(seedReplyMsg);
@@ -306,13 +314,21 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
      *
      * @return
      */
-    private Notification getServiceNotification (String text) {
+    private Notification getServiceNotification (String text, int coinId) {
        // Bitmap logo = BitmapFactory.decodeResource(getResources(), R.drawable.logo);
+        int smallicon = R.drawable.btc_logo;
+        if (coinId == CoinManagerFactory.MONERO)
+            smallicon = R.drawable.xmr_logo;
+
+        RemoteViews rViews = new RemoteViews(getPackageName(), R.layout.notification_layout);
+        rViews.setImageViewResource(R.id.image, smallicon);
+        rViews.setTextViewText(R.id.title, getString(R.string.app_name));
+        rViews.setTextViewText(R.id.text, text);
 
         Notification.Builder builder = new Notification.Builder(this);
         builder.setContentTitle(getString(R.string.service_notification_title))
                 .setContentText(text)
-                .setSmallIcon(R.drawable.logo)
+                .setSmallIcon(smallicon)
                 .setOngoing(true)
                 .setPriority(Notification.PRIORITY_HIGH)
                 .setSound(null)
@@ -322,6 +338,8 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
         builder.setDefaults(Notification.DEFAULT_LIGHTS);
 
         Notification not = builder.build();
+        not.contentView = rViews;
+
         not.flags = Notification.FLAG_FOREGROUND_SERVICE;
 
         return not;

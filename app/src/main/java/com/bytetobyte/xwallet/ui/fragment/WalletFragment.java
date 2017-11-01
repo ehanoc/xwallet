@@ -15,7 +15,10 @@ import android.widget.Toast;
 import com.bytetobyte.xwallet.BaseFragment;
 import com.bytetobyte.xwallet.R;
 import com.bytetobyte.xwallet.network.api.CexChartAPI;
+import com.bytetobyte.xwallet.network.api.PriceRequestAPI;
 import com.bytetobyte.xwallet.network.api.models.CexCharItem;
+import com.bytetobyte.xwallet.network.api.models.MinApiDataItem;
+import com.bytetobyte.xwallet.network.api.models.MinApiResult;
 import com.bytetobyte.xwallet.service.BlockchainService;
 import com.bytetobyte.xwallet.service.coin.CoinManagerFactory;
 import com.bytetobyte.xwallet.service.ipcmodel.SyncedMessage;
@@ -34,7 +37,7 @@ import java.util.Locale;
 /**
  * Created by bruno on 08.04.17.
  */
-public class WalletFragment extends BaseFragment implements CexChartAPI.CexChartCallback {
+public class WalletFragment extends BaseFragment implements CexChartAPI.CexChartCallback, PriceRequestAPI.PriceAPICallback {
 
     private List<Entry> _chartEntries;
 
@@ -82,10 +85,10 @@ public class WalletFragment extends BaseFragment implements CexChartAPI.CexChart
     @Override
     public void onResume() {
         super.onResume();
-        Message sendMsg = Message.obtain(null, BlockchainService.IPC_MSG_WALLET_SYNC, this._coinId, 0);
-        getBaseActivity().sendMessage(sendMsg);
+        getBaseActivity().syncChain(this._coinId);
 
-        new CexChartAPI(this).execute();
+        //new CexChartAPI(this).execute();
+        new PriceRequestAPI(PriceRequestAPI.GetCoinUrl(_coinId), this).execute();
     }
 
     /**
@@ -156,7 +159,7 @@ public class WalletFragment extends BaseFragment implements CexChartAPI.CexChart
         dataSet.setDrawCircles(false);
 
         LineData lineData = new LineData(dataSet);
-        _walletFragView.updateChartPriceData(lineData);
+        _walletFragView.updateChartPriceData(lineData, _coinId);
     }
 
     /**
@@ -170,6 +173,27 @@ public class WalletFragment extends BaseFragment implements CexChartAPI.CexChart
         for (int i = 0; i < items.size(); i ++) {
             Float price = Float.parseFloat(items.get(i).getPrice());
             Long timestamp = Long.parseLong(items.get(i).getTmsp());
+            _chartEntries.add(new Entry(timestamp, price));
+        }
+
+        Collections.sort(_chartEntries, new EntryXComparator());
+        updateGraph(_chartEntries);
+        updateBalance(_lastBalance);
+    }
+
+    /**
+     *
+     * @param result
+     */
+    @Override
+    public void onPriceResult(MinApiResult result) {
+        List<MinApiDataItem> items = result.getData();
+
+        _chartEntries = new ArrayList<Entry>();
+
+        for (int i = 0; i < items.size(); i ++) {
+            Float price = items.get(i).getClose();
+            Long timestamp = items.get(i).getTime();
             _chartEntries.add(new Entry(timestamp, price));
         }
 

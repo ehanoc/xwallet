@@ -1,6 +1,7 @@
 package com.bytetobyte.xwallet.util;
 
 import android.content.Context;
+import android.util.Base64;
 
 import com.bytetobyte.xwallet.R;
 
@@ -27,26 +28,30 @@ public abstract class EncryptUtils {
 
     public static String KSEED = "";
 
-    /**
-     *
-     * @param context
-     * @return
-     */
-    public static Encryption getEncryptor(Context context) {
-        String key = context.getString(R.string.skey);
-        String salt = context.getString(R.string.ksalt);
-        byte[] iv = new byte[16];
-        Encryption encryptor = Encryption.getDefault(key, salt, iv);
-
-        return encryptor;
-    }
-
     private final static String algorithm = "PBKDF2WithHmacSHA1";
-
     private final static String HEX = "0123456789ABCDEF";
 
     private static final String CP_ALGORITH = "AES";
     private static final String CP_KEY = "PUTsomeKEYinHere";
+
+    private static String[] keyParts = { "ps6f8fhrj39bcN3BUcuQOg==", "03kfjeu76zbGRajT53pkyf==" };
+
+    /**
+     *
+     * @return
+     */
+    public static String getXorKey() {
+        byte[] xorParts0 = Base64.decode(keyParts[0],0);
+        byte[] xorParts1 = Base64.decode(keyParts[1], 0);
+
+        byte[] xorKey = new byte[xorParts0.length];
+        for(int i = 0; i < xorParts1.length; i++){
+            xorKey[i] = (byte) (xorParts0[i] ^ xorParts1[i]);
+        }
+
+        return new String(xorKey);
+    }
+
 
     public static String cipher(String cipherKey, String data) throws NoSuchAlgorithmException,
             InvalidKeySpecException, NoSuchPaddingException, InvalidKeyException,

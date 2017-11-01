@@ -305,12 +305,17 @@ public class WheelMenuLayout extends FrameLayout {
                         totalRotation = divAngle / 2;
                     }
 
+                    int newPosition;
                     //set the currently selected option
                     if (top == 0) {
-                        selectedPosition = divCount - 1;//loop around the array
+                        newPosition = divCount - 1;//loop around the array
                     } else {
-                        selectedPosition = top - 1;
+                        newPosition = top - 1;
                     }
+
+                    if (newPosition == selectedPosition) break;
+
+                    selectedPosition = newPosition;
 
                     if (wheelChangeListener != null) {
                         wheelChangeListener.onSelectionChange(getSelectedPosition());

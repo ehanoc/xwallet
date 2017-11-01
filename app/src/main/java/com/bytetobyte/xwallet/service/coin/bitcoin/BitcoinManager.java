@@ -47,6 +47,7 @@ public class BitcoinManager implements CoinManager, CoinAction.CoinActionCallbac
 
     private static BitcoinSetupAction _setupAction;
     private static BitcoinRecoverAction _recoverAction;
+    private String _walletPwd;
 
     /**
      *
@@ -286,8 +287,8 @@ public class BitcoinManager implements CoinManager, CoinAction.CoinActionCallbac
         System.out.println("wallet is encrypted : " + _coin.getWalletManager().wallet().isEncrypted());
 
         if (!_coin.getWalletManager().wallet().isEncrypted()) {
-            System.out.printf("wallet encrypting!");
-            _coin.getWalletManager().wallet().encrypt(EncryptUtils.KSEED);
+            System.out.println("wallet encrypting!");
+            _coin.getWalletManager().wallet().encrypt(_walletPwd);
         }
     }
 
@@ -426,5 +427,23 @@ public class BitcoinManager implements CoinManager, CoinAction.CoinActionCallbac
         if (amount.isPositive()) {
           //  wallet.freshReceiveAddress();
         }
+    }
+
+    /**
+     *
+     * @param walletPwd
+     */
+    @Override
+    public void setWalletPwd(String walletPwd) {
+        this._walletPwd = walletPwd;
+    }
+
+    /**
+     *
+     * @return
+     */
+    @Override
+    public String getWalletPwd() {
+        return _walletPwd;
     }
 }

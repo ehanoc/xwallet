@@ -10,16 +10,22 @@ public class MnemonicSeedBackup {
     private final Map<String, String> _addrsAndKeys;
     private Date _creationDate;
     private String _mnemonicSeed;
+    private int _coinId;
 
     /**
      *  @param seed
      * @param creationDate
      * @param addrsKeys
      */
-    public MnemonicSeedBackup(String seed, Date creationDate, Map<String, String> addrsKeys) {
+    public MnemonicSeedBackup(int coinId, String seed, Date creationDate, Map<String, String> addrsKeys) {
+        this._coinId = coinId;
         this._creationDate = creationDate;
         this._mnemonicSeed = seed;
         this._addrsAndKeys = addrsKeys;
+    }
+
+    public int getCoindId() {
+        return _coinId;
     }
 
     public Map<String, String> getAddrsKeys() {

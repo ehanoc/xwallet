@@ -47,6 +47,10 @@ public class SyncedMessage {
                 name = "bitcoin";
                 break;
 
+            case CoinManagerFactory.MONERO:
+                name = "monero";
+                break;
+
             default:
                 name = "U/A";
                 break;

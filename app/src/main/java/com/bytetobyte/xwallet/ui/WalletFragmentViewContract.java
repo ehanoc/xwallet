@@ -9,5 +9,5 @@ public interface WalletFragmentViewContract extends ViewContract {
     void updateBalance(String balance);
     void updateConversion(String conversion);
     void updateAddress(String addr);
-    void updateChartPriceData(LineData lineData);
+    void updateChartPriceData(LineData lineData, int coinId);
 }

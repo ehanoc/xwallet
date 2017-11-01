@@ -5,17 +5,17 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Message;
+import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bytetobyte.xwallet.BlockchainClientListener;
 import com.bytetobyte.xwallet.R;
-import com.bytetobyte.xwallet.service.BlockchainService;
 import com.bytetobyte.xwallet.service.coin.CoinManagerFactory;
 import com.bytetobyte.xwallet.service.ipcmodel.BlockDownloaded;
 import com.bytetobyte.xwallet.service.ipcmodel.CoinTransaction;
@@ -62,6 +62,8 @@ public class MainActivity extends XWalletBaseActivity {
     private TransactionFragment _moneroTransactionFragment;
 
     private SyncedMessage _lastSyncedMessage;
+    private int _selectedMenuIndex;
+    private boolean _doubleBackToExitPressedOnce;
 
     /**
      *
@@ -120,16 +122,16 @@ public class MainActivity extends XWalletBaseActivity {
         }
     }
 
-    /**
-     *
-     */
-    @Override
-    protected void onStop() {
-        super.onStop();
-
-        Message msgClose = Message.obtain(null, BlockchainService.IPC_MSG_WALLET_CLOSE,  CoinManagerFactory.BITCOIN, -1);
-        sendMessage(msgClose);
-    }
+//    /**
+//     *
+//     */
+//    @Override
+//    protected void onStop() {
+//        super.onStop();
+//
+//        Message msgClose = Message.obtain(null, BlockchainService.IPC_MSG_WALLET_CLOSE,  CoinManagerFactory.BITCOIN, -1);
+//        sendMessage(msgClose);
+//    }
 
     /**
      *
@@ -236,13 +238,15 @@ public class MainActivity extends XWalletBaseActivity {
      * @param menuIndex - 0 = bitcoin, 1 = monero
      */
     public void showMenuSelection(int menuIndex) {
+        _selectedMenuIndex = menuIndex;
+
         WalletFragment walletFragToShow = null;
         TransactionFragment txFragToShow = null;
 
-        if (menuIndex == 0) {
+        if (_selectedMenuIndex == 0) {
             walletFragToShow = _btcWalletFragment;
             txFragToShow = _btcTransactionsFragment;
-        } else if (menuIndex == 1) {
+        } else if (_selectedMenuIndex == 1) {
             walletFragToShow = _moneroWalletFragment;
             txFragToShow = _moneroTransactionFragment;
         }
@@ -287,10 +291,26 @@ public class MainActivity extends XWalletBaseActivity {
         switch (resultCode) {
             case RESULT_OK:
                 if (requestCode == BACKUP_UNLOCK_REQUEST_CODE) {
-                    replaceContent(new BackupFragment(), R.id.xwallet_main_content_layout);
+                    BackupFragment frag = new BackupFragment();
+                    frag.setCoinId(getSelectedCoin());
+
+                    replaceContent(frag, R.id.xwallet_main_content_layout);
                 }
                 break;
         }
+    }
+
+    /**
+     *
+     * @return
+     */
+    public int getSelectedCoin() {
+        int coinId = CoinManagerFactory.BITCOIN;
+        if (_selectedMenuIndex == 1) {
+            coinId = CoinManagerFactory.MONERO;
+        }
+
+        return coinId;
     }
 
     /**
@@ -343,5 +363,24 @@ public class MainActivity extends XWalletBaseActivity {
                 return;
             }
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (_doubleBackToExitPressedOnce) {
+            super.onBackPressed();
+            return;
+        }
+
+        this._doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                _doubleBackToExitPressedOnce =false;
+            }
+        }, 2000);
     }
 }

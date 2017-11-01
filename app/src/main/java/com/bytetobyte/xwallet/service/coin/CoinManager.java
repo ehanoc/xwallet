@@ -37,5 +37,7 @@ public interface CoinManager {
     boolean isSyncing();
     boolean isSynced();
 
+    void setWalletPwd(String walletPwd);
+    String getWalletPwd();
     void onCloseWallet();
 }

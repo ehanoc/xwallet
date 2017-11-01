@@ -38,6 +38,8 @@ public class RecoverFragment extends BaseDialogFragment implements CalendarDateP
     private Date _lastDateSet;
     private Calendar _calendar;
 
+    private int _coinId;
+
     /**
      *
      * @param inflater
@@ -177,5 +179,13 @@ public class RecoverFragment extends BaseDialogFragment implements CalendarDateP
                     }
                 })
                 .show();
+    }
+
+    /**
+     *
+     * @param coinId
+     */
+    public void setCoinId(int coinId) {
+        _coinId = coinId;
     }
 }

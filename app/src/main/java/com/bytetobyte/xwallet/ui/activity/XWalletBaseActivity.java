@@ -24,6 +24,7 @@ import com.bytetobyte.xwallet.service.ipcmodel.MnemonicSeedBackup;
 import com.bytetobyte.xwallet.service.ipcmodel.RecoverWalletMessage;
 import com.bytetobyte.xwallet.service.ipcmodel.SpentValueMessage;
 import com.bytetobyte.xwallet.service.ipcmodel.SyncedMessage;
+import com.bytetobyte.xwallet.util.EncryptUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -246,6 +247,10 @@ public abstract class XWalletBaseActivity extends AppCompatActivity {
         //if (CoinManagerFactory.MONERO == coinId) return; // skip
 
         Message sendMsg = Message.obtain(null, BlockchainService.IPC_MSG_WALLET_SYNC, coinId, 0);
+
+        Bundle data = new Bundle();
+        data.putString("key", EncryptUtils.KSEED);
+        sendMsg.obj = data;
         sendMessage(sendMsg);
     }
 

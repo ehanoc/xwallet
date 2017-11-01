@@ -64,7 +64,9 @@ public class MainBoomListener implements OnBoomListener {
                 return;
 
             case MainActivity.RECOVER_BOOM_INDEX:
-                newContent = new RecoverFragment();
+                RecoverFragment recoverFragment = new RecoverFragment();
+                recoverFragment.setCoinId(_mainAct.getSelectedCoin());
+                newContent = recoverFragment;
                 //_mainAct.replaceContent(newContent, R.id.xwallet_main_content_layout);
                 break;
 

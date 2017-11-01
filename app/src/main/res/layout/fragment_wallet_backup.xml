@@ -7,7 +7,7 @@
     <RelativeLayout
         android:padding="@dimen/title_padding"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/recover_dialog_size">
+        android:layout_height="match_parent">
 
         <TextView
             android:layout_alignParentTop="true"
@@ -30,12 +30,12 @@
                 android:layout_weight="6"
                 android:textColor="@color/colorSecondary"
                 android:id="@+id/backup_seed_ouput"
-                android:textStyle="bold"
-                android:maxLines = "30"
+                android:textStyle="italic"
+                android:singleLine="false"
                 android:scrollbars = "vertical"
                 android:layout_below="@+id/backup_text_description"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/recover_input_height" />
+                android:layout_height="match_parent" />
 
             <ImageView
                 android:layout_weight="4"
