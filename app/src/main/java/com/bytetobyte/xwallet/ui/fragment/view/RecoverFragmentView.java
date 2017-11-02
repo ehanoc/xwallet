@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bytetobyte.xwallet.R;
+import com.bytetobyte.xwallet.service.coin.CoinManagerFactory;
 import com.bytetobyte.xwallet.ui.RecoverFragmentViewContract;
 import com.bytetobyte.xwallet.ui.fragment.RecoverFragment;
 
@@ -48,6 +49,12 @@ public class RecoverFragmentView implements RecoverFragmentViewContract, View.On
         _seedInput.addTextChangedListener(this);
         _recoverBtn.setOnClickListener(this);
         _dateLabel.setOnClickListener(this);
+
+        if (_recoverFrag.getBaseActivity().getSelectedCoin() == CoinManagerFactory.MONERO) {
+            //not needed
+            _dateDisplay.setVisibility(View.INVISIBLE);
+            _dateLabel.setVisibility(View.INVISIBLE);
+        }
     }
 
     /**
@@ -90,6 +97,10 @@ public class RecoverFragmentView implements RecoverFragmentViewContract, View.On
         if (str == null) return false;
 
         int words = str.trim().split("\\s+").length;
+
+        if (_recoverFrag.getBaseActivity().getSelectedCoin() == CoinManagerFactory.MONERO)
+            return words == 25;
+
         return (words == 12 || words == 13 || words == 25);
     }
 

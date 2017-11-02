@@ -1,5 +1,6 @@
 package com.bytetobyte.xwallet.ui.fragment.view;
 
+import android.graphics.Color;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.SurfaceView;
@@ -8,6 +9,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.bytetobyte.xwallet.R;
+import com.bytetobyte.xwallet.service.coin.CoinManagerFactory;
 import com.bytetobyte.xwallet.ui.SendFragmentViewContract;
 import com.bytetobyte.xwallet.ui.fragment.SendFragment;
 
@@ -25,6 +27,7 @@ public class SendFragmentView implements SendFragmentViewContract, View.OnClickL
     private EditText _amountEdit;
     private CircleImageView _sendBtn;
     private SurfaceView _surfaceView;
+    private TextView _coinLabel;
 
     /**
      *
@@ -47,9 +50,15 @@ public class SendFragmentView implements SendFragmentViewContract, View.OnClickL
         _maxTextView = (TextView) fragView.findViewById(R.id.send_max_textview);
         _sendBtn = (CircleImageView) fragView.findViewById(R.id.send_btn_id);
         _surfaceView = (SurfaceView) fragView.findViewById(R.id.send_camera_preview);
+        _coinLabel = (TextView) fragView.findViewById(R.id.send_coin_label);
 
-        _maxTextView.setOnClickListener(this);
+        if (_sendFragment.getBaseActivity().getSelectedCoin() == CoinManagerFactory.MONERO) {
+            _coinLabel.setText("XMR");
+            _coinLabel.setTextColor(Color.RED);
+        }
+
         _sendBtn.setOnClickListener(this);
+        _maxTextView.setOnClickListener(this);
         _addressEdit.addTextChangedListener(this);
         _amountEdit.addTextChangedListener(this);
 
@@ -62,6 +71,7 @@ public class SendFragmentView implements SendFragmentViewContract, View.OnClickL
      */
     @Override
     public void onClick(View v) {
+        System.out.println("Clicking v : " + v);
         switch (v.getId()) {
             case R.id.send_max_textview:
                 _sendFragment.onMaxAmountSelected();

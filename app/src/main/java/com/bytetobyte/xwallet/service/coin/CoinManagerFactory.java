@@ -2,14 +2,19 @@ package com.bytetobyte.xwallet.service.coin;
 
 import android.content.Context;
 
+import com.bytetobyte.xwallet.service.Constants;
 import com.bytetobyte.xwallet.service.coin.bitcoin.Bitcoin;
 import com.bytetobyte.xwallet.service.coin.bitcoin.BitcoinManager;
 import com.bytetobyte.xwallet.service.coin.monero.Monero;
 import com.bytetobyte.xwallet.service.coin.monero.MoneroManager;
 
+import org.bitcoinj.params.TestNet3Params;
+
 import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by bruno on 22.03.17.
@@ -60,5 +65,33 @@ public abstract class CoinManagerFactory {
         coinManagerMap.put(coinInt, selected);
 
         return selected;
+    }
+
+    /**
+     *
+     * @param address
+     * @param coinId
+     * @return
+     */
+    public static boolean isCoinAddress(String address, int coinId) {
+        if (coinId == BITCOIN) {
+            Pattern p = null;
+
+            p = Pattern.compile("^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$");
+            if (Constants.NETWORK_PARAMETERS == TestNet3Params.get()) {
+                p = Pattern.compile("^[2mn][1-9A-HJ-NP-Za-km-z]{25,34}");
+            }
+
+            Matcher m = p.matcher(address);
+            return m.matches();
+        }
+
+        if (coinId == MONERO) {
+            Pattern p = Pattern.compile("4[0-9AB][123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{93}");
+            Matcher m = p.matcher(address);
+            return m.matches();
+        }
+
+        return false;
     }
 }

@@ -38,8 +38,6 @@ public class RecoverFragment extends BaseDialogFragment implements CalendarDateP
     private Date _lastDateSet;
     private Calendar _calendar;
 
-    private int _coinId;
-
     /**
      *
      * @param inflater
@@ -157,7 +155,7 @@ public class RecoverFragment extends BaseDialogFragment implements CalendarDateP
                 .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                     @Override
                     public void onClick(SweetAlertDialog sDialog) {
-                        getBaseActivity().recoverWallet(CoinManagerFactory.BITCOIN, seed, _lastDateSet);
+                        getBaseActivity().recoverWallet(getBaseActivity().getSelectedCoin(), seed, _lastDateSet);
                         Toast.makeText(RecoverFragment.this.getBaseActivity(), "Initiating recovery... Please wait!", Toast.LENGTH_SHORT).show();
 
                         Handler handler = new Handler();
@@ -179,13 +177,5 @@ public class RecoverFragment extends BaseDialogFragment implements CalendarDateP
                     }
                 })
                 .show();
-    }
-
-    /**
-     *
-     * @param coinId
-     */
-    public void setCoinId(int coinId) {
-        _coinId = coinId;
     }
 }

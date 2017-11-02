@@ -105,7 +105,7 @@ public class SendFragment extends BaseDialogFragment {
                         if (_latestDetectedData.contains(":")) {
                             String[] tokens = _latestDetectedData.split(":");
                             if (tokens.length > 1) {
-                                if (isBitcoinAddress(tokens[1])) {
+                                if (CoinManagerFactory.isCoinAddress(tokens[1], getBaseActivity().getSelectedCoin())) {
                                     addr = tokens[1];
                                 } else if (tokens[1].contains("?")) {
                                     String[] addrAmountTokens = tokens[1].split("\\?");
@@ -147,7 +147,7 @@ public class SendFragment extends BaseDialogFragment {
         super.onFeeCalculated(feeSpentcal);
 
         _feeToSpend = feeSpentcal;
-        _sendViewContract.getSendBtn().setEnabled(true);
+       // _sendViewContract.getSendBtn().setEnabled(true);
     }
 
     /**
@@ -160,12 +160,18 @@ public class SendFragment extends BaseDialogFragment {
                 // check if its not higher than the max
 
                 if (_sendViewContract.getAddressField().getText().length() > 0
-                        && _sendViewContract.getAmountEdit().getText().length() > 0 && isBitcoinAddress(_sendViewContract.getAddressField().getText())) {
+                        && _sendViewContract.getAmountEdit().getText().length() > 0) {
+
+                    boolean isAddressValid = CoinManagerFactory.isCoinAddress(
+                            _sendViewContract.getAddressField().getText().toString(),
+                            getBaseActivity().getSelectedCoin());
+
+                    if (!isAddressValid) return;
 
                     String address = _sendViewContract.getAddressField().getText().toString();
                     String amount = _sendViewContract.getAmountEdit().getText().toString();
 
-                    getBaseActivity().requestTxFee(address, amount, CoinManagerFactory.BITCOIN);
+                    getBaseActivity().requestTxFee(address, amount, getBaseActivity().getSelectedCoin());
                 }
             }
         };
@@ -178,7 +184,7 @@ public class SendFragment extends BaseDialogFragment {
      */
     public void dequeueRequestTxFee() {
         _handler.removeCallbacks(_textHandlerRunnable);
-        _sendViewContract.getSendBtn().setEnabled(false);
+        //_sendViewContract.getSendBtn().setEnabled(false);
     }
 
     /**
@@ -199,7 +205,7 @@ public class SendFragment extends BaseDialogFragment {
         if (_feeToSpend != null
                 &&_sendViewContract.getAddressField().getText().length() > 0
                 && _sendViewContract.getAmountEdit().getText().length() > 0
-                && isBitcoinAddress(_sendViewContract.getAddressField().getText())) {
+                && CoinManagerFactory.isCoinAddress(_sendViewContract.getAddressField().getText().toString(), getBaseActivity().getSelectedCoin())) {
             String address = _sendViewContract.getAddressField().getText().toString();
             //String amount = _amountEdit.getText().toString();
 
@@ -219,7 +225,7 @@ public class SendFragment extends BaseDialogFragment {
                 .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                     @Override
                     public void onClick(SweetAlertDialog sDialog) {
-                        getBaseActivity().sendCoins(address, amount, CoinManagerFactory.BITCOIN);
+                        getBaseActivity().sendCoins(address, amount, getBaseActivity().getSelectedCoin());
                         sDialog.dismissWithAnimation();
                         getBaseActivity().showMenuSelection(0);
                     }

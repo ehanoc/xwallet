@@ -195,7 +195,9 @@ public class MainActivity extends XWalletBaseActivity {
     @Override
     protected void onFeeCalculated(SpentValueMessage feeSpentcal) {
         BlockchainClientListener frag = (BlockchainClientListener) getSupportFragmentManager().findFragmentById(R.id.xwallet_main_content_layout);
-        frag.onFeeCalculated(feeSpentcal);
+        if (frag != null) {
+            frag.onFeeCalculated(feeSpentcal);
+        }
     }
 
     /**
@@ -365,6 +367,9 @@ public class MainActivity extends XWalletBaseActivity {
         }
     }
 
+    /**
+     *
+     */
     @Override
     public void onBackPressed() {
         if (_doubleBackToExitPressedOnce) {
