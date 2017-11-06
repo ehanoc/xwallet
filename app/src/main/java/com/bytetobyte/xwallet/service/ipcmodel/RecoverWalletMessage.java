@@ -9,15 +9,21 @@ public class RecoverWalletMessage {
 
     private String _seed;
     private Date _date;
+    private long _blockHeight;
 
     /**
      *
      * @param seed
      * @param date
      */
-    public RecoverWalletMessage(String seed, Date date) {
+    public RecoverWalletMessage(String seed, Date date, long blockHeight) {
         this._seed = seed;
         this._date = date;
+        this._blockHeight = blockHeight;
+    }
+
+    public long getBlockHeight() {
+        return _blockHeight;
     }
 
     /**

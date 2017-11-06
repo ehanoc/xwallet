@@ -40,10 +40,12 @@ public class MainActivity extends XWalletBaseActivity {
     public static final int MY_PERMISSIONS_REQUEST_CAMERA = 0x77;
 
     // main wheel boom
-    public static final int BACKUP_BOOM_INDEX = 0;
-    public static final int RECOVER_BOOM_INDEX = 1;
-    public static final int SEND_BOOM_INDEX = 2;
-    public static final int RECEIVE_BOOM_INDEX = 3;
+    public static final int SYNC_BOOM_INDEX = 0;
+    public static final int STOP_BOOM_INDEX = 1;
+    public static final int BACKUP_BOOM_INDEX = 2;
+    public static final int RECOVER_BOOM_INDEX = 3;
+    public static final int SEND_BOOM_INDEX = 4;
+    public static final int RECEIVE_BOOM_INDEX = 5;
     // setting boom
 
     public static final int INFO_CREDITS_INDEX = 0;

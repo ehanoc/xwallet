@@ -155,7 +155,7 @@ public class RecoverFragment extends BaseDialogFragment implements CalendarDateP
                 .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                     @Override
                     public void onClick(SweetAlertDialog sDialog) {
-                        getBaseActivity().recoverWallet(getBaseActivity().getSelectedCoin(), seed, _lastDateSet);
+                        getBaseActivity().recoverWallet(getBaseActivity().getSelectedCoin(), seed, _lastDateSet, 0);
                         Toast.makeText(RecoverFragment.this.getBaseActivity(), "Initiating recovery... Please wait!", Toast.LENGTH_SHORT).show();
 
                         Handler handler = new Handler();

@@ -81,7 +81,7 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-    compile 'org.bitcoinj:bitcoinj-core:0.14.4'
+    compile 'org.bitcoinj:bitcoinj-core:0.14.5'
     compile 'com.github.lzyzsd:circleprogress:1.2.1'
     compile 'com.nightonke:boommenu:2.0.9'
     compile 'com.android.support:appcompat-v7:25.3.1'

@@ -257,7 +257,7 @@ public class BitcoinManager implements CoinManager, CoinAction.CoinActionCallbac
      * @param seed
      */
     @Override
-    public void recoverWalletBy(CoinAction.CoinActionCallback callback, String seed, Date creationDate) {
+    public void recoverWalletBy(CoinAction.CoinActionCallback callback, String seed, Date creationDate, long blockheight) {
         System.out.println("recoverWallet with seed : " + seed);
         _isSyncing = true;
         _isSynced = false;

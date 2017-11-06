@@ -92,7 +92,9 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
 
         System.out.println("#3");
 
-        _wallet.init(0);
+        boolean hasInit = _wallet.init(0);
+        System.out.println("Wallet has init : " + hasInit);
+
         _wallet.setListener(this);
 
         System.out.println("Wallet status : " + _wallet.getStatus());
@@ -230,29 +232,48 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
      * @param creationdDate
      */
     @Override
-    public void recoverWalletBy(CoinAction.CoinActionCallback callback, String seed, Date creationdDate) {
+    public void recoverWalletBy(CoinAction.CoinActionCallback callback, String seed, Date creationdDate, long blockheight) {
         _isSyncing = true;
         _isSynced = false;
 
+//        boolean isDeleted = true;
+//
+
         File newWalletFile = new File(_coin.getDataDir().getAbsoluteFile() + "/monerowallet_" + Monero.IS_TEST_NETWORK);
-        if (newWalletFile.exists()) {
-            if (_wallet != null) {
-                moneroManagerXmrLib.close(_wallet);
-            }
+//        if (newWalletFile.exists()) {
+//            if (_wallet != null) {
+//                _wallet.pauseRefresh();
+//                moneroManagerXmrLib.close(_wallet);
+//            }
+//
+//            isDeleted = newWalletFile.delete();
+//        }
+//
+//        System.out.println("Previous wallet file was deleted : " + isDeleted);
 
-            newWalletFile.delete();
+        _wallet = moneroManagerXmrLib.recoveryWallet(newWalletFile, seed, 1430000);
+        _wallet.setPassword("");
+        _wallet.setSeedLanguage("English");
+        _wallet.store();
+
+
+        System.out.println("Recovery wallet status : " + _wallet.getStatus().name());
+        if (_wallet.getStatus() != Wallet.Status.Status_Ok) {
+            System.out.println("Wallet error : " + _wallet.getErrorString());
         }
 
-        _wallet = moneroManagerXmrLib.recoveryWallet(newWalletFile, seed);
+//        boolean rc = _wallet.store();
+//        System.out.println("wallet stored: " + _wallet.getName() + " with rc=" + rc);
+//        if (!rc) {
+//            System.out.println("Wallet store failed: " + _wallet.getErrorString());
+//        }
 
-        boolean rc = _wallet.store();
-        System.out.println("wallet stored: " + _wallet.getName() + " with rc=" + rc);
-        if (!rc) {
-            System.out.println("Wallet store failed: " + _wallet.getErrorString());
-        }
-
+        boolean hasInit = _wallet.init(0);
+        System.out.println("Wallet has init : " + hasInit);
         _wallet.setListener(this);
-        _wallet.refresh();
+
+        _wallet.startRefresh();
+        _wallet.refreshAsync();
     }
 
     /**
@@ -260,7 +281,11 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
      */
     @Override
     public void stopSync() {
-
+        if (_wallet != null) {
+            _wallet.pauseRefresh();
+            _wallet.store();
+            _wallet.close();
+        }
     }
 
     /**
@@ -346,7 +371,10 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
      */
     @Override
     public void onCloseWallet() {
-
+        if (_wallet != null && _wallet.getStatus() == Wallet.Status.Status_Ok) {
+            _wallet.store();
+            _wallet.close();
+        }
     }
 
     // =========================
@@ -393,14 +421,32 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
         long target = moneroManagerXmrLib.getBlockchainTargetHeight();
         double pct = ((double) height / target) * 100.000f;
 
-        DecimalFormat df = new DecimalFormat("#.0000");
-        pct = Double.valueOf(df.format(pct));
+        try {
+            DecimalFormat df = new DecimalFormat("#.0000");
+            pct = Double.valueOf(df.format(pct));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
+
+        int storeEvery = 20000;
+        long diff = moneroManagerXmrLib.getBlockchainTargetHeight() - height;
+        if (height > 1415000) {
+            storeEvery = 100;
+        }
 
 //        pct = Math.round(pct * 100.000f);
 //        pct = pct / 100.000f;
 
-        if (_callback != null)
+        if (height % storeEvery == 0) {
+            System.out.println("storing state");
+            boolean isStored = _wallet.store();
+            System.out.println("Stored : " + isStored);
+        }
+
+        if (_callback != null) {
             _callback.onBlocksDownloaded(_coin, pct, target - height, null);
+        }
     }
 
     /**
@@ -421,24 +467,19 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
         _isSyncing = false;
 
         if(_isSynced) {
-            _wallet.store();
-            System.out.println("storing");
+            _wallet.getHistory().refresh();
+            boolean isStored = _wallet.store();
+            System.out.println("storing : " + isStored);
             if (_callback != null)
                 _callback.onChainSynced(_coin);
             // _wallet.close();
         }
 
-        updateDaemonState(_wallet, 0);
-        _wallet.getHistory().refresh();
-
+       // updateDaemonState(_wallet, 0);
         System.out.println("Wallet status : " + _wallet.getStatus());
         if (_wallet.getStatus() != Wallet.Status.Status_Ok) {
             moneroManagerXmrLib.close(_wallet);
             _wallet.close();
-
-            _wallet = moneroManagerXmrLib.openWallet(_walletFile.getAbsolutePath(), "");
-            _wallet.setListener(this);
-            _wallet.refresh();
         }
 
         //daemon info
@@ -452,27 +493,27 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
      * @param wallet
      * @param height
      */
-    private void updateDaemonState(Wallet wallet, long height) {
-        long t = System.currentTimeMillis();
-        if (height > 0) { // if we get a height, we are connected
-            daemonHeight = height;
-            connectionStatus = Wallet.ConnectionStatus.ConnectionStatus_Connected;
-            lastDaemonStatusUpdate = t;
-        } else {
-            if (t - lastDaemonStatusUpdate > STATUS_UPDATE_INTERVAL) {
-                lastDaemonStatusUpdate = t;
-                // these calls really connect to the daemon - wasting time
-                daemonHeight = wallet.getDaemonBlockChainHeight();
-                if (daemonHeight > 0) {
-                    // if we get a valid height, then obviously we are connected
-                    connectionStatus = Wallet.ConnectionStatus.ConnectionStatus_Connected;
-                } else {
-                    connectionStatus = Wallet.ConnectionStatus.ConnectionStatus_Disconnected;
-                }
-            }
-        }
-        //Log.d(TAG, "updated daemon status: " + daemonHeight + "/" + connectionStatus.toString());
-    }
+//    private void updateDaemonState(Wallet wallet, long height) {
+//        long t = System.currentTimeMillis();
+//        if (height > 0) { // if we get a height, we are connected
+//            daemonHeight = height;
+//            connectionStatus = Wallet.ConnectionStatus.ConnectionStatus_Connected;
+//            lastDaemonStatusUpdate = t;
+//        } else {
+//            if (t - lastDaemonStatusUpdate > STATUS_UPDATE_INTERVAL) {
+//                lastDaemonStatusUpdate = t;
+//                // these calls really connect to the daemon - wasting time
+//                daemonHeight = wallet.getDaemonBlockChainHeight();
+//                if (daemonHeight > 0) {
+//                    // if we get a valid height, then obviously we are connected
+//                    connectionStatus = Wallet.ConnectionStatus.ConnectionStatus_Connected;
+//                } else {
+//                    connectionStatus = Wallet.ConnectionStatus.ConnectionStatus_Disconnected;
+//                }
+//            }
+//        }
+//        //Log.d(TAG, "updated daemon status: " + daemonHeight + "/" + connectionStatus.toString());
+//    }
 
     /**
      *

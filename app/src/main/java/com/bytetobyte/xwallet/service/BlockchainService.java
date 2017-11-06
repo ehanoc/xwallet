@@ -27,6 +27,7 @@ import com.bytetobyte.xwallet.service.ipcmodel.RecoverWalletMessage;
 import com.bytetobyte.xwallet.service.ipcmodel.SpentValueMessage;
 import com.bytetobyte.xwallet.service.ipcmodel.SyncedMessage;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.util.Date;
 import java.util.List;
@@ -82,7 +83,9 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
      *
      */
     public BlockchainService() {
-        _gson = new Gson();
+        _gson = new GsonBuilder()
+                .serializeSpecialFloatingPointValues()
+                .create();
     }
 
     /**
@@ -228,7 +231,7 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
 
             System.out.println("BlockchainService handling message! " + msg.arg1 + " isSyncing : " + _coinManager.isSyncing());
             Log.d(getClass().getSimpleName(), "#1");
-            if (_coinManager.isSyncing())
+            if (_coinManager.isSyncing() && msg.what != IPC_MSG_WALLET_RECOVER)
                 return;
 
             System.out.println("msg.what : " + msg.what);
@@ -253,6 +256,8 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
                     break;
 
                 case IPC_MSG_WALLET_RECOVER:
+                    _coinManager.stopSync();
+
                     RecoverWalletMessage recoverMsg = _gson.fromJson(msg.getData().getString(IPC_BUNDLE_DATA_KEY), RecoverWalletMessage.class);
 
                     acquireWakeLocks();
@@ -260,7 +265,7 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
                     startForeground(NOTIFICATION_SYNC_ID + _coinManager.getCurrencyCoin().getCoinId(), getServiceNotification("Starting", _coinManager.getCurrencyCoin().getCoinId()));
                     // illness bulk jewel deer chaos swing goose fetch patch blood acid call creation
                     System.out.println("service recover! : " + _coinManager);
-                    _coinManager.recoverWalletBy(BlockchainService.this, recoverMsg.getSeed(), recoverMsg.getDate());
+                    _coinManager.recoverWalletBy(BlockchainService.this, recoverMsg.getSeed(), recoverMsg.getDate(), recoverMsg.getBlockHeight());
                     break;
 
                 case IPC_MSG_WALLET_SEND_AMOUNT:

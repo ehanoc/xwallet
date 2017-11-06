@@ -119,8 +119,8 @@ public class MainActivityView implements MainViewContract {
      *
      */
     private void initCircleMenuBoom() {
-        int[] boomsButtons = { R.drawable.ic_backup, R.drawable.ic_recover_wallet, R.drawable.ic_send, R.drawable.ic_receive};
-        String [] btnsText = { "Backup", "Recover", "Send", "Receive" };
+        int[] boomsButtons = { com.m2049r.xmrwallet.R.drawable.ic_add_black_24dp, R.drawable.ic_recover_wallet , R.drawable.ic_send, android.R.drawable.ic_menu_close_clear_cancel, R.drawable.ic_backup, R.drawable.ic_receive};
+        String [] btnsText = { "Sync", "Recover", "Send", "Stop", "Backup", "Receive" };
 
         _bmb = (BoomMenuButton) _act.findViewById(R.id.bmb);
         for (int i = 0; i < _bmb.getButtonPlaceEnum().buttonNumber(); i++) {
