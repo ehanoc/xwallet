@@ -2,9 +2,11 @@ package com.bytetobyte.xwallet.ui.fragment;
 
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +22,6 @@ import com.bytetobyte.xwallet.ui.fragment.view.SendFragmentView;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import cn.pedant.SweetAlert.SweetAlertDialog;
 import github.nisrulz.qreader.QRDataListener;
 import github.nisrulz.qreader.QREader;
 
@@ -217,27 +218,25 @@ public class SendFragment extends BaseDialogFragment {
      *
      */
     public void confirmSend(final String address, final String amount, final String txFee) {
-
-        new SweetAlertDialog(getBaseActivity(), SweetAlertDialog.NORMAL_TYPE)
-                .setTitleText("Confirm Send?")
-                .setContentText("You want to send " + amount + " (Estimated Fee: "+txFee+") \n to : " + address)
-                .setConfirmText("Yes, Send!")
-                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogCustom);
+        builder.setTitle("Confirm Send?")
+                .setMessage("You want to send " + amount + " (Estimated Fee: "+txFee+") \n to : " + address)
+                .setPositiveButton("Yes, Send!", new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(SweetAlertDialog sDialog) {
+                    public void onClick(DialogInterface dialog, int which) {
                         getBaseActivity().sendCoins(address, amount, getBaseActivity().getSelectedCoin());
-                        sDialog.dismissWithAnimation();
+                        dialog.dismiss();
                         getBaseActivity().showMenuSelection(0);
                     }
-                })
-                .setCancelText("Cancel")
-                .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                    @Override
-                    public void onClick(SweetAlertDialog sweetAlertDialog) {
-                        sweetAlertDialog.cancel();
-                    }
-                })
-                .show();
+                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     /**

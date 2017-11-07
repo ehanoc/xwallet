@@ -5,6 +5,10 @@ import android.util.Base64;
 
 import com.bytetobyte.xwallet.R;
 
+import org.spongycastle.crypto.DataLengthException;
+import org.spongycastle.crypto.InvalidCipherTextException;
+
+import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
@@ -53,29 +57,29 @@ public abstract class EncryptUtils {
     }
 
 
-    public static String cipher(String cipherKey, String data) throws NoSuchAlgorithmException,
-            InvalidKeySpecException, NoSuchPaddingException, InvalidKeyException,
-            IllegalBlockSizeException, BadPaddingException {
-        SecretKeyFactory skf = SecretKeyFactory.getInstance(algorithm);
-        KeySpec spec = new PBEKeySpec(cipherKey.toCharArray(), cipherKey.getBytes(), 128, 256);
-        SecretKey tmp = skf.generateSecret(spec);
-        SecretKey key = new SecretKeySpec(tmp.getEncoded(), CP_ALGORITH);
-        Cipher cipher = Cipher.getInstance(CP_ALGORITH);
-        cipher.init(Cipher.ENCRYPT_MODE, key);
-        return toHex(cipher.doFinal(data.getBytes()));
-    }
-
-    public static String decipher(String cipherKey, String data) throws NoSuchAlgorithmException,
-            InvalidKeySpecException, NoSuchPaddingException, InvalidKeyException,
-            IllegalBlockSizeException, BadPaddingException {
-        SecretKeyFactory skf = SecretKeyFactory.getInstance(algorithm);
-        KeySpec spec = new PBEKeySpec(cipherKey.toCharArray(), cipherKey.getBytes(), 128, 256);
-        SecretKey tmp = skf.generateSecret(spec);
-        SecretKey key = new SecretKeySpec(tmp.getEncoded(), CP_ALGORITH);
-        Cipher cipher = Cipher.getInstance(CP_ALGORITH);
-        cipher.init(Cipher.DECRYPT_MODE, key);
-        return new String(cipher.doFinal(toByte(data)));
-    }
+//    public static String cipher(String cipherKey, String data) throws NoSuchAlgorithmException,
+//            InvalidKeySpecException, NoSuchPaddingException, InvalidKeyException,
+//            IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException {
+//        SecretKeyFactory skf = SecretKeyFactory.getInstance(algorithm);
+//        KeySpec spec = new PBEKeySpec(cipherKey.toCharArray(), cipherKey.getBytes(CHARSET), 128, 256);
+//        SecretKey tmp = skf.generateSecret(spec);
+//        SecretKey key = new SecretKeySpec(tmp.getEncoded(), CP_ALGORITH);
+//        Cipher cipher = Cipher.getInstance(CP_ALGORITH);
+//        cipher.init(Cipher.ENCRYPT_MODE, key);
+//        return toHex(cipher.doFinal(data.getBytes()));
+//    }
+//
+//    public static String decipher(String cipherKey, String data) throws NoSuchAlgorithmException,
+//            InvalidKeySpecException, NoSuchPaddingException, InvalidKeyException,
+//            IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException {
+//        SecretKeyFactory skf = SecretKeyFactory.getInstance(algorithm);
+//        KeySpec spec = new PBEKeySpec(cipherKey.toCharArray(), cipherKey.getBytes(CHARSET), 128, 256);
+//        SecretKey tmp = skf.generateSecret(spec);
+//        SecretKey key = new SecretKeySpec(tmp.getEncoded(), CP_ALGORITH);
+//        Cipher cipher = Cipher.getInstance(CP_ALGORITH);
+//        cipher.init(Cipher.DECRYPT_MODE, key);
+//        return new String(cipher.doFinal(toByte(data)), CHARSET);
+//    }
 
     private static byte[] toByte(String data) throws NullPointerException{
         int len = data.length()/2;
@@ -91,5 +95,37 @@ public abstract class EncryptUtils {
             result.append(HEX.charAt((doFinal[i]>>4)&0x0f)).append(HEX.charAt(doFinal[i]&0x0f));
         }
         return result.toString();
+    }
+
+        private static final String ALGORITHME = "Blowfish";
+        private static final String TRANSFORMATION = "Blowfish/ECB/PKCS5Padding";
+        private static final String SECRET = "kjkdfjslm";
+        private static final String CHARSET = "ISO-8859-1";
+
+    public static String encrypt(String plaintext)
+            throws NoSuchAlgorithmException,
+            NoSuchPaddingException,
+            InvalidKeyException,
+            UnsupportedEncodingException,
+            IllegalBlockSizeException,
+            BadPaddingException
+    {
+
+        Cipher cipher = Cipher.getInstance(TRANSFORMATION);
+        cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(SECRET.getBytes(CHARSET), ALGORITHME));
+        return new String(cipher.doFinal(plaintext.getBytes()), CHARSET);
+    }
+
+    public static String decrypt(String ciphertext)
+            throws NoSuchAlgorithmException,
+            NoSuchPaddingException,
+            InvalidKeyException,
+            UnsupportedEncodingException,
+            IllegalBlockSizeException,
+            BadPaddingException
+    {
+        Cipher cipher = Cipher.getInstance(TRANSFORMATION);
+        cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(SECRET.getBytes(), ALGORITHME));
+        return new String(cipher.doFinal(ciphertext.getBytes(CHARSET)), CHARSET);
     }
 }

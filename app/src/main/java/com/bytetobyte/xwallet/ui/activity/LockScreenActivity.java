@@ -176,8 +176,8 @@ public class LockScreenActivity extends AppCompatActivity {
         if (pinSet == null) return;
 
         try {
-            pinSet = EncryptUtils.decipher(EncryptUtils.getXorKey(), pinSet);
-            EncryptUtils.KSEED = EncryptUtils.cipher(EncryptUtils.getXorKey(), pinSet);
+            pinSet = EncryptUtils.decrypt(pinSet);
+            EncryptUtils.KSEED = pinSet;
             System.out.println("MY KEY! : " + EncryptUtils.KSEED);
         } catch (Exception e) {
             e.printStackTrace();
@@ -204,7 +204,7 @@ public class LockScreenActivity extends AppCompatActivity {
         if (pinSet == null) return;
 
         try {
-            pinSet = EncryptUtils.decipher(EncryptUtils.getXorKey(), pinSet);
+            pinSet = EncryptUtils.decrypt(pinSet);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -252,8 +252,8 @@ public class LockScreenActivity extends AppCompatActivity {
         String savedJsonPin = gson.toJson(_pinNumbers);
 
         try {
-            savedJsonPin = EncryptUtils.cipher(EncryptUtils.getXorKey(), savedJsonPin);
-            EncryptUtils.KSEED = EncryptUtils.cipher(savedJsonPin, savedJsonPin).intern();
+            savedJsonPin = EncryptUtils.encrypt(savedJsonPin);
+            EncryptUtils.KSEED = savedJsonPin;
             System.out.println("MY KEY! : " + EncryptUtils.KSEED);
         } catch (Exception e) {
             e.printStackTrace();

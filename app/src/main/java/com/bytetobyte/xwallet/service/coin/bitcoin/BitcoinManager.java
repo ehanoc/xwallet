@@ -289,6 +289,7 @@ public class BitcoinManager implements CoinManager, CoinAction.CoinActionCallbac
         if (!_coin.getWalletManager().wallet().isEncrypted()) {
             System.out.println("wallet encrypting!");
             _coin.getWalletManager().wallet().encrypt(_walletPwd);
+            System.out.println("wallet is encrypted : " + _coin.getWalletManager().wallet().isEncrypted());
         }
     }
 

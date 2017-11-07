@@ -19,7 +19,6 @@ public class ReceiveFragmentView implements ReceiveFragmentViewContract, TextWat
 
     private ImageView _qrImg;
     private TextView _addrText;
-    private EditText _amountText;
 
     /**
      *
@@ -39,9 +38,6 @@ public class ReceiveFragmentView implements ReceiveFragmentViewContract, TextWat
 
         _qrImg = (ImageView) fragView.findViewById(R.id.receive_id_qr_code_img);
         _addrText = (TextView) fragView.findViewById(R.id.receive_addr_text);
-        _amountText = (EditText) fragView.findViewById(R.id.receive_amount_edittext);
-
-        _amountText.addTextChangedListener(this);
     }
 
     public ImageView getQrImg() {
@@ -50,10 +46,6 @@ public class ReceiveFragmentView implements ReceiveFragmentViewContract, TextWat
 
     public TextView getAddrText() {
         return _addrText;
-    }
-
-    public EditText getAmountText() {
-        return _amountText;
     }
 
     @Override
