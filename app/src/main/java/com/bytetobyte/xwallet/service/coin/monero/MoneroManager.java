@@ -8,6 +8,7 @@ import com.bytetobyte.xwallet.service.coin.CoinManager;
 import com.bytetobyte.xwallet.service.coin.CurrencyCoin;
 import com.bytetobyte.xwallet.service.ipcmodel.CoinTransaction;
 import com.bytetobyte.xwallet.service.ipcmodel.SpentValueMessage;
+import com.github.mikephil.charting.utils.FileUtils;
 import com.google.zxing.common.detector.MathUtils;
 import com.m2049r.xmrwallet.model.TransactionInfo;
 import com.m2049r.xmrwallet.model.Wallet;
@@ -238,29 +239,36 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
      */
     @Override
     public void recoverWalletBy(CoinAction.CoinActionCallback callback, String seed, Date creationdDate, long blockheight) {
+        _callback = callback;
+
         _isSyncing = true;
         _isSynced = false;
-
-//        boolean isDeleted = true;
 //
+        if (_wallet != null) {
+            _wallet.pauseRefresh();
+            _wallet.close();
+        }
 
         File newWalletFile = new File(_coin.getDataDir().getAbsoluteFile() + "/monerowallet_" + Monero.IS_TEST_NETWORK);
-//        if (newWalletFile.exists()) {
-//            if (_wallet != null) {
-//                _wallet.pauseRefresh();
-//                moneroManagerXmrLib.close(_wallet);
-//            }
-//
-//            isDeleted = newWalletFile.delete();
-//        }
-//
-//        System.out.println("Previous wallet file was deleted : " + isDeleted);
+
+        for(File file: _coin.getDataDir().listFiles()) {
+            if (!file.isDirectory()) {
+                boolean isDeleted = file.delete();
+                System.out.println("File : " + file.getName() + " was deleted : " + isDeleted);
+            }
+        }
+
+        if (moneroManagerXmrLib == null) {
+            moneroManagerXmrLib = WalletManager.getInstance();
+            moneroManagerXmrLib.setDaemon("node.moneroworld.com:18089", Monero.IS_TEST_NETWORK, "", "");
+            _targetHeight = moneroManagerXmrLib.getBlockchainTargetHeight();
+        }
 
         _wallet = moneroManagerXmrLib.recoveryWallet(newWalletFile, seed, 1430000);
-        _wallet.setPassword("");
-        _wallet.setSeedLanguage("English");
-        _wallet.store();
-
+//        _wallet.setPassword("");
+//        _wallet.setSeedLanguage("English");
+//        _wallet.store();
+//
 
         System.out.println("Recovery wallet status : " + _wallet.getStatus().name());
         if (_wallet.getStatus() != Wallet.Status.Status_Ok) {
@@ -422,10 +430,10 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
     public void newBlock(long height) {
         System.out.println("new block : " + height);
 
-        double pct = ((double) height / _targetHeight) * 100.000f;
+        double pct = ((double) height / _targetHeight) * 100.0f;
 
         try {
-            DecimalFormat df = new DecimalFormat("#.0000");
+            DecimalFormat df = new DecimalFormat("#.000");
             pct = Double.valueOf(df.format(pct));
         } catch (Exception e) {
             e.printStackTrace();
@@ -469,10 +477,10 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
 
        // updateDaemonState(_wallet, 0);
         System.out.println("Wallet status : " + _wallet.getStatus());
-        if (_wallet.getStatus() != Wallet.Status.Status_Ok) {
-            moneroManagerXmrLib.close(_wallet);
-            _wallet.close();
-        }
+//        if (_wallet.getStatus() != Wallet.Status.Status_Ok) {
+//            moneroManagerXmrLib.close(_wallet);
+//            _wallet.close();
+//        }
 
         //daemon info
         System.out.println("daemon addr : " + moneroManagerXmrLib.getDaemonAddress());

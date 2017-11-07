@@ -1,5 +1,7 @@
 package com.bytetobyte.xwallet.ui.fragment;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -148,13 +150,12 @@ public class RecoverFragment extends BaseDialogFragment implements CalendarDateP
      * @param seed
      */
     public void promptWalletRecovery(final String seed) {
-        new SweetAlertDialog(getBaseActivity(), SweetAlertDialog.NORMAL_TYPE)
-                .setTitleText("Recovery")
-                .setContentText("You sure you want to recover wallet from the seed : " + seed + " ? \n\n This might take some time, please keep your phone plugged in!")
-                .setConfirmText("Yes, Recover!")
-                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogCustom);
+        builder.setTitle("Recovery")
+                .setMessage("You sure you want to recover wallet from the seed : " + seed + " ? \n\n This might take some time, please keep your phone plugged in!")
+                .setPositiveButton("Yes, Recover!", new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(SweetAlertDialog sDialog) {
+                    public void onClick(DialogInterface dialog, int which) {
                         getBaseActivity().recoverWallet(getBaseActivity().getSelectedCoin(), seed, _lastDateSet, 0);
                         Toast.makeText(RecoverFragment.this.getBaseActivity(), "Initiating recovery... Please wait!", Toast.LENGTH_SHORT).show();
 
@@ -166,16 +167,17 @@ public class RecoverFragment extends BaseDialogFragment implements CalendarDateP
                             }
                         }, 500);
 
-                        sDialog.dismissWithAnimation();
+                        dialog.dismiss();
                     }
                 })
-                .setCancelText("Cancel")
-                .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(SweetAlertDialog sweetAlertDialog) {
-                        sweetAlertDialog.cancel();
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
                     }
-                })
-                .show();
+                });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }
