@@ -10,7 +10,7 @@ apply plugin: 'com.getkeepsafe.dexcount'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.3"
+    buildToolsVersion '26.0.2'
 
     defaultConfig {
         applicationId "com.bytetobyte.xwallet"
@@ -100,6 +100,8 @@ dependencies {
     compile 'com.code-troopers.betterpickers:library:3.1.0'
 
     compile 'com.getkeepsafe.taptargetview:taptargetview:1.9.1'
+    compile 'com.jakewharton:butterknife:8.8.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
 
     //compile 'com.android.support:appcompat-v7:25.4.0'
     compile 'com.android.support:design:25.3.1'

@@ -85,7 +85,7 @@ public class WalletFragment extends BaseFragment implements CexChartAPI.CexChart
     @Override
     public void onResume() {
         super.onResume();
-       // getBaseActivity().syncChain(this._coinId);
+        getBaseActivity().syncChain(this._coinId);
 
         //new CexChartAPI(this).execute();
         new PriceRequestAPI(PriceRequestAPI.GetCoinUrl(_coinId), this).execute();
@@ -96,7 +96,7 @@ public class WalletFragment extends BaseFragment implements CexChartAPI.CexChart
      */
     @Override
     public void onServiceReady(int coinId) {
-        //getBaseActivity().syncChain(this._coinId);
+        getBaseActivity().syncChain(this._coinId);
     }
 
     /**

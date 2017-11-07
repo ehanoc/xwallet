@@ -231,7 +231,7 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
 
             System.out.println("BlockchainService handling message! " + msg.arg1 + " isSyncing : " + _coinManager.isSyncing());
             Log.d(getClass().getSimpleName(), "#1");
-            if (_coinManager.isSyncing() && msg.what != IPC_MSG_WALLET_RECOVER)
+            if (_coinManager.isSyncing() && msg.what != IPC_MSG_WALLET_CLOSE)
                 return;
 
             System.out.println("msg.what : " + msg.what);
@@ -250,7 +250,7 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
                     acquireWakeLocks();
                     System.out.println("#1");
                     System.out.println("service setup! : " + _coinManager);
-                    startForeground(NOTIFICATION_SYNC_ID + _coinManager.getCurrencyCoin().getCoinId(), getServiceNotification("Starting", _coinManager.getCurrencyCoin().getCoinId()));
+                    //startForeground(NOTIFICATION_SYNC_ID + _coinManager.getCurrencyCoin().getCoinId(), getServiceNotification("Starting", _coinManager.getCurrencyCoin().getCoinId()));
                     _coinManager.setup(BlockchainService.this);
                     System.out.println("#2");
                     break;
@@ -262,7 +262,7 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
 
                     acquireWakeLocks();
                     //wakeLock.acquire(1000 * 360 * 5);
-                    startForeground(NOTIFICATION_SYNC_ID + _coinManager.getCurrencyCoin().getCoinId(), getServiceNotification("Starting", _coinManager.getCurrencyCoin().getCoinId()));
+                    //startForeground(NOTIFICATION_SYNC_ID + _coinManager.getCurrencyCoin().getCoinId(), getServiceNotification("Starting", _coinManager.getCurrencyCoin().getCoinId()));
                     // illness bulk jewel deer chaos swing goose fetch patch blood acid call creation
                     System.out.println("service recover! : " + _coinManager);
                     _coinManager.recoverWalletBy(BlockchainService.this, recoverMsg.getSeed(), recoverMsg.getDate(), recoverMsg.getBlockHeight());
@@ -306,6 +306,7 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
 
                 case IPC_MSG_WALLET_CLOSE:
                     _coinManager.onCloseWallet();
+                    stopSelf();
                     break;
 
                 default:

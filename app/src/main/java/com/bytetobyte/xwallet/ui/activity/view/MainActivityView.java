@@ -29,6 +29,14 @@ import su.levenetc.android.badgeview.BadgeView;
  */
 public class MainActivityView implements MainViewContract {
 
+    // main wheel boom
+    public static final int SYNC_BOOM_INDEX = 0;
+    public static final int STOP_BOOM_INDEX = 3;
+    public static final int BACKUP_BOOM_INDEX = 4;
+    public static final int RECOVER_BOOM_INDEX = 1;
+    public static final int SEND_BOOM_INDEX = 2;
+    public static final int RECEIVE_BOOM_INDEX = 5;
+
     private final MainActivity _act;
     private final TutorialAnim _tutorialHandler;
 

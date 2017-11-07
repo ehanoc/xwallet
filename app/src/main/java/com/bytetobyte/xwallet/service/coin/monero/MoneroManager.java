@@ -46,6 +46,7 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
     private long lastDaemonStatusUpdate;
     private static final long STATUS_UPDATE_INTERVAL = 120000; // 120s (blocktime)
     private File _walletFile;
+    private long _targetHeight;
 
     /**
      *
@@ -69,6 +70,8 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
         System.out.println("MoneroManager::setup");
         moneroManagerXmrLib = WalletManager.getInstance();
         moneroManagerXmrLib.setDaemon("node.moneroworld.com:18089", Monero.IS_TEST_NETWORK, "", "");
+        _targetHeight = moneroManagerXmrLib.getBlockchainTargetHeight();
+
         System.out.println("#2");
 
         _isSyncing = true;
@@ -105,7 +108,7 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
         System.out.println("wallet height : " + _wallet.getBlockChainHeight()
                 + " daemon height" + _wallet.getDaemonBlockChainHeight());
 
-        _wallet.refresh();
+        _wallet.startRefresh();
     }
 
     /**
@@ -137,17 +140,19 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
         // Map monero model Txs to generic CoinTransaction
         List<CoinTransaction> allTxs = new ArrayList<>();
 
-        List<TransactionInfo> moneroTxs = _wallet.getHistory().getAll();
-        for (TransactionInfo tx: moneroTxs) {
-            CoinTransaction aNewCoinTx = new CoinTransaction(_coin.getCoinId(),
-                    Long.toString(tx.fee),
-                    tx.hash,
-                    Long.toString(tx.amount),
-                    Long.toString(tx.confirmations),
-                    new Date(tx.timestamp)
-                    );
+        if (_wallet != null) {
+            List<TransactionInfo> moneroTxs = _wallet.getHistory().getAll();
+            for (TransactionInfo tx : moneroTxs) {
+                CoinTransaction aNewCoinTx = new CoinTransaction(_coin.getCoinId(),
+                        Long.toString(tx.fee),
+                        tx.hash,
+                        Long.toString(tx.amount),
+                        Long.toString(tx.confirmations),
+                        new Date(tx.timestamp)
+                );
 
-            allTxs.add(aNewCoinTx);
+                allTxs.add(aNewCoinTx);
+            }
         }
 
         return allTxs;
@@ -273,7 +278,6 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
         _wallet.setListener(this);
 
         _wallet.startRefresh();
-        _wallet.refreshAsync();
     }
 
     /**
@@ -416,10 +420,9 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
      */
     @Override
     public void newBlock(long height) {
-        System.out.println("new block : " + height + " / " + moneroManagerXmrLib.getBlockchainTargetHeight());
+        System.out.println("new block : " + height);
 
-        long target = moneroManagerXmrLib.getBlockchainTargetHeight();
-        double pct = ((double) height / target) * 100.000f;
+        double pct = ((double) height / _targetHeight) * 100.000f;
 
         try {
             DecimalFormat df = new DecimalFormat("#.0000");
@@ -429,23 +432,11 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
             return;
         }
 
-        int storeEvery = 20000;
-        long diff = moneroManagerXmrLib.getBlockchainTargetHeight() - height;
-        if (height > 1415000) {
-            storeEvery = 100;
-        }
-
 //        pct = Math.round(pct * 100.000f);
 //        pct = pct / 100.000f;
 
-        if (height % storeEvery == 0) {
-            System.out.println("storing state");
-            boolean isStored = _wallet.store();
-            System.out.println("Stored : " + isStored);
-        }
-
         if (_callback != null) {
-            _callback.onBlocksDownloaded(_coin, pct, target - height, null);
+            _callback.onBlocksDownloaded(_coin, pct, _targetHeight - height, null);
         }
     }
 
@@ -467,13 +458,14 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
         _isSyncing = false;
 
         if(_isSynced) {
-            _wallet.getHistory().refresh();
-            boolean isStored = _wallet.store();
-            System.out.println("storing : " + isStored);
+//            boolean isStored = _wallet.store();
+//            System.out.println("storing : " + isStored);
             if (_callback != null)
                 _callback.onChainSynced(_coin);
             // _wallet.close();
         }
+
+        _wallet.getHistory().refresh();
 
        // updateDaemonState(_wallet, 0);
         System.out.println("Wallet status : " + _wallet.getStatus());

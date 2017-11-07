@@ -258,6 +258,17 @@ public abstract class XWalletBaseActivity extends AppCompatActivity {
      *
      * @param coinId
      */
+    public void stopChain(int coinId) {
+        System.out.println("Stopping chain");
+
+        Message stopMsg = Message.obtain(null, BlockchainService.IPC_MSG_WALLET_CLOSE, coinId, 0);
+        sendMessage(stopMsg);
+    }
+
+    /**
+     *
+     * @param coinId
+     */
     public void requestTxList(int coinId) {
         Message sendMsg = Message.obtain(null, BlockchainService.IPC_MSG_WALLET_TRANSACTION_LIST, coinId, 0);
         sendMessage(sendMsg);

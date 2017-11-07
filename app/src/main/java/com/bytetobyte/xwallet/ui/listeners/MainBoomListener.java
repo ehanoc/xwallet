@@ -5,7 +5,7 @@ import android.support.v4.app.DialogFragment;
 
 import com.bytetobyte.xwallet.ui.activity.MainActivity;
 import com.bytetobyte.xwallet.R;
-import com.bytetobyte.xwallet.ui.fragment.BackupFragment;
+import com.bytetobyte.xwallet.ui.activity.view.MainActivityView;
 import com.bytetobyte.xwallet.ui.fragment.ReceiveFragment;
 import com.bytetobyte.xwallet.ui.fragment.RecoverFragment;
 import com.bytetobyte.xwallet.ui.fragment.SendFragment;
@@ -40,11 +40,19 @@ public class MainBoomListener implements OnBoomListener {
         DialogFragment newContent = null;
 
         switch (index) {
-            case MainActivity.SEND_BOOM_INDEX:
+            case MainActivityView.SYNC_BOOM_INDEX:
+                _mainAct.syncChain(_mainAct.getSelectedCoin());
+                return;
+
+            case MainActivityView.STOP_BOOM_INDEX:
+                _mainAct.stopChain(_mainAct.getSelectedCoin());
+                return;
+
+            case MainActivityView.SEND_BOOM_INDEX:
                 newContent = new SendFragment();
                 break;
 
-            case MainActivity.RECEIVE_BOOM_INDEX:
+            case MainActivityView.RECEIVE_BOOM_INDEX:
                 if (_mainAct.getLastSyncedMessage() == null) return;
 
                 List<String> addrs = _mainAct.getLastSyncedMessage().getAddresses();
@@ -58,12 +66,12 @@ public class MainBoomListener implements OnBoomListener {
                 }
                 break;
 
-            case MainActivity.BACKUP_BOOM_INDEX:
+            case MainActivityView.BACKUP_BOOM_INDEX:
                 //newContent = new BackupFragment();
                 _mainAct.toLock(MainActivity.BACKUP_UNLOCK_REQUEST_CODE);
                 return;
 
-            case MainActivity.RECOVER_BOOM_INDEX:
+            case MainActivityView.RECOVER_BOOM_INDEX:
                 RecoverFragment recoverFragment = new RecoverFragment();
                 newContent = recoverFragment;
                 //_mainAct.replaceContent(newContent, R.id.xwallet_main_content_layout);

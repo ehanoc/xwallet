@@ -375,28 +375,31 @@ public class BitcoinManager implements CoinManager, CoinAction.CoinActionCallbac
     public List<CoinTransaction> getTransactionList() {
         List<CoinTransaction> transactions = new ArrayList<>();
 
-        Set<Transaction> txs = _coin.getWalletManager().wallet().getTransactions(true);
-        for (Transaction tx : txs) {
-            Coin amount = tx.getValue(_coin.getWalletManager().wallet());
+        WalletAppKit walletManager = _coin.getWalletManager();
+        if (walletManager != null) {
+            Set<Transaction> txs = walletManager.wallet().getTransactions(true);
+            for (Transaction tx : txs) {
+                Coin amount = tx.getValue(_coin.getWalletManager().wallet());
 
-            String hash = tx.getHash().toString();
-            String amountStr = amount.toPlainString();
-            String fee = "";
-            String confirmationStr = "CONFIRMED";
+                String hash = tx.getHash().toString();
+                String amountStr = amount.toPlainString();
+                String fee = "";
+                String confirmationStr = "CONFIRMED";
 
-            if (tx.getFee() != null) {
-                fee = tx.getFee().toPlainString();
+                if (tx.getFee() != null) {
+                    fee = tx.getFee().toPlainString();
+                }
+
+                TransactionConfidence confidence = tx.getConfidence();
+                if (confidence.getDepthInBlocks() < 6) {
+                    confirmationStr = confidence.getDepthInBlocks() + " CONFIRMATIONS";
+                }
+
+                TransactionConfidence.ConfidenceType cType = confidence.getConfidenceType();
+
+                CoinTransaction coinTransaction = new CoinTransaction(_coin.getCoinId(), fee, hash, amountStr, confirmationStr, tx.getUpdateTime());
+                transactions.add(coinTransaction);
             }
-
-            TransactionConfidence confidence = tx.getConfidence();
-            if (confidence.getDepthInBlocks() < 6) {
-                confirmationStr = confidence.getDepthInBlocks() + " CONFIRMATIONS";
-            }
-
-            TransactionConfidence.ConfidenceType cType = confidence.getConfidenceType();
-
-            CoinTransaction coinTransaction = new CoinTransaction(_coin.getCoinId(), fee, hash, amountStr, confirmationStr, tx.getUpdateTime());
-            transactions.add(coinTransaction);
         }
 
         return transactions;
