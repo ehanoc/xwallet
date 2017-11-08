@@ -49,6 +49,10 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
     private File _walletFile;
     private long _targetHeight;
 
+    private static String TEST_NODE = "node.xmrbackb.one:28081";
+    private static String DEFAULT_NODE = "node.moneroworld.com:18089";
+    private static String NODE = DEFAULT_NODE;
+
     /**
      *
      * @param moneroCoin
@@ -70,7 +74,7 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
 
         System.out.println("MoneroManager::setup");
         moneroManagerXmrLib = WalletManager.getInstance();
-        moneroManagerXmrLib.setDaemon("node.moneroworld.com:18089", Monero.IS_TEST_NETWORK, "", "");
+        moneroManagerXmrLib.setDaemon(NODE, Monero.IS_TEST_NETWORK, "", "");
         _targetHeight = moneroManagerXmrLib.getBlockchainTargetHeight();
 
         System.out.println("#2");
@@ -107,7 +111,7 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
         System.out.println("wallet is synced : " + isSynced);
 
         System.out.println("wallet height : " + _wallet.getBlockChainHeight()
-                + " daemon height" + _wallet.getDaemonBlockChainHeight());
+                + " daemon height :" + _wallet.getDaemonBlockChainHeight());
 
         _wallet.startRefresh();
     }
@@ -260,7 +264,7 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
 
         if (moneroManagerXmrLib == null) {
             moneroManagerXmrLib = WalletManager.getInstance();
-            moneroManagerXmrLib.setDaemon("node.moneroworld.com:18089", Monero.IS_TEST_NETWORK, "", "");
+            moneroManagerXmrLib.setDaemon(NODE, Monero.IS_TEST_NETWORK, "", "");
         }
 
         _targetHeight = moneroManagerXmrLib.getBlockchainTargetHeight();
