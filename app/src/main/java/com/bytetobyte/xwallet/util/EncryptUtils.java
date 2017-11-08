@@ -44,7 +44,7 @@ public abstract class EncryptUtils {
      *
      * @return
      */
-    public static String getXorKey() {
+    public static byte[] getXorKey() {
         byte[] xorParts0 = Base64.decode(keyParts[0],0);
         byte[] xorParts1 = Base64.decode(keyParts[1], 0);
 
@@ -53,7 +53,7 @@ public abstract class EncryptUtils {
             xorKey[i] = (byte) (xorParts0[i] ^ xorParts1[i]);
         }
 
-        return new String(xorKey);
+        return xorKey;
     }
 
 
@@ -99,20 +99,15 @@ public abstract class EncryptUtils {
 
         private static final String ALGORITHME = "Blowfish";
         private static final String TRANSFORMATION = "Blowfish/ECB/PKCS5Padding";
-        private static final String SECRET = "kjkdfjslm";
+        //private static final String SECRET = "kjkdfjslm";
         private static final String CHARSET = "ISO-8859-1";
 
     public static String encrypt(String plaintext)
             throws NoSuchAlgorithmException,
-            NoSuchPaddingException,
-            InvalidKeyException,
-            UnsupportedEncodingException,
-            IllegalBlockSizeException,
-            BadPaddingException
-    {
+            NoSuchPaddingException, InvalidKeyException, UnsupportedEncodingException, IllegalBlockSizeException, BadPaddingException {
 
         Cipher cipher = Cipher.getInstance(TRANSFORMATION);
-        cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(SECRET.getBytes(CHARSET), ALGORITHME));
+        cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(getXorKey(), ALGORITHME));
         return new String(cipher.doFinal(plaintext.getBytes()), CHARSET);
     }
 
@@ -122,10 +117,9 @@ public abstract class EncryptUtils {
             InvalidKeyException,
             UnsupportedEncodingException,
             IllegalBlockSizeException,
-            BadPaddingException
-    {
+            BadPaddingException {
         Cipher cipher = Cipher.getInstance(TRANSFORMATION);
-        cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(SECRET.getBytes(), ALGORITHME));
+        cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(getXorKey(), ALGORITHME));
         return new String(cipher.doFinal(ciphertext.getBytes(CHARSET)), CHARSET);
     }
 }

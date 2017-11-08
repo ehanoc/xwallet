@@ -21,13 +21,19 @@ import com.google.gson.reflect.TypeToken;
 
 import org.spongycastle.crypto.engines.AESFastEngine;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.security.spec.KeySpec;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
@@ -177,7 +183,6 @@ public class LockScreenActivity extends AppCompatActivity {
 
         try {
             pinSet = EncryptUtils.decrypt(pinSet);
-            EncryptUtils.KSEED = pinSet;
             System.out.println("MY KEY! : " + EncryptUtils.KSEED);
         } catch (Exception e) {
             e.printStackTrace();
@@ -188,6 +193,12 @@ public class LockScreenActivity extends AppCompatActivity {
         Map<Integer, Integer> pinNumbers = gson.fromJson(pinSet, type);
 
         if (equalMaps(pinNumbers, _pinNumbers)) {
+            try {
+                EncryptUtils.KSEED = EncryptUtils.encrypt(pinSet);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             setResult(RESULT_OK);
             finish();
         } else {

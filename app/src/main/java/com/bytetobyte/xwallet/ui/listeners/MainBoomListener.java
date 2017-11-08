@@ -40,13 +40,13 @@ public class MainBoomListener implements OnBoomListener {
         DialogFragment newContent = null;
 
         switch (index) {
-            case MainActivityView.SYNC_BOOM_INDEX:
-                _mainAct.syncChain(_mainAct.getSelectedCoin());
-                return;
-
-            case MainActivityView.STOP_BOOM_INDEX:
-                _mainAct.stopChain(_mainAct.getSelectedCoin());
-                return;
+//            case MainActivityView.SYNC_BOOM_INDEX:
+//                _mainAct.syncChain(_mainAct.getSelectedCoin());
+//                return;
+//
+//            case MainActivityView.STOP_BOOM_INDEX:
+//                _mainAct.stopChain(_mainAct.getSelectedCoin());
+//                return;
 
             case MainActivityView.SEND_BOOM_INDEX:
                 newContent = new SendFragment();

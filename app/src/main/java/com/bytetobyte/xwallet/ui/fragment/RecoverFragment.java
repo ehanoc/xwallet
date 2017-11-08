@@ -159,7 +159,9 @@ public class RecoverFragment extends BaseDialogFragment implements CalendarDateP
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                getBaseActivity().showMenuSelection(0);
+                                // +1 due to index starts at 0 and coin id start at 1
+                                getBaseActivity().showMenuSelection(getBaseActivity().getSelectedCoin() - 1);
+                                getBaseActivity().resetCoinProgress();
                             }
                         }, 500);
 

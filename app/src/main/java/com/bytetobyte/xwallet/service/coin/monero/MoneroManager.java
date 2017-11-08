@@ -66,7 +66,7 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
     public void setup(final CoinAction.CoinActionCallback callback) {
         _callback = callback;
 
-        _walletFile = new File(_coin.getDataDir().getAbsoluteFile() + "/monerowallet_" + Monero.IS_TEST_NETWORK);
+        _walletFile = new File(_coin.getDataDir().getAbsoluteFile() + "/monerowallet_" + Monero.IS_TEST_NETWORK + Monero.WALLET_EXTRA_ID);
 
         System.out.println("MoneroManager::setup");
         moneroManagerXmrLib = WalletManager.getInstance();
@@ -83,9 +83,9 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
 
         if (_wallet == null) {
             if (hasWallet) {
-                _wallet = moneroManagerXmrLib.openWallet(_walletFile.getAbsolutePath(), "");
+                _wallet = moneroManagerXmrLib.openWallet(_walletFile.getAbsolutePath(), _walletPwd);
             } else {
-                _wallet = moneroManagerXmrLib.createWallet(_walletFile, "", "English");
+                _wallet = moneroManagerXmrLib.createWallet(_walletFile, _walletPwd, "English");
                 boolean rc = _wallet.store();
                 System.out.println("wallet stored: " + _wallet.getName() + " with rc=" + rc);
                 if (!rc) {
@@ -244,12 +244,12 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
         _isSyncing = true;
         _isSynced = false;
 //
-        if (_wallet != null) {
-            _wallet.pauseRefresh();
-            _wallet.close();
-        }
+//        if (_wallet != null) {
+//            _wallet.pauseRefresh();
+//            _wallet.close();
+//        }
 
-        File newWalletFile = new File(_coin.getDataDir().getAbsoluteFile() + "/monerowallet_" + Monero.IS_TEST_NETWORK);
+        File newWalletFile = new File(_coin.getDataDir().getAbsoluteFile() + "/monerowallet_" + Monero.IS_TEST_NETWORK + Monero.WALLET_EXTRA_ID);
 
         for(File file: _coin.getDataDir().listFiles()) {
             if (!file.isDirectory()) {
@@ -261,11 +261,11 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
         if (moneroManagerXmrLib == null) {
             moneroManagerXmrLib = WalletManager.getInstance();
             moneroManagerXmrLib.setDaemon("node.moneroworld.com:18089", Monero.IS_TEST_NETWORK, "", "");
-            _targetHeight = moneroManagerXmrLib.getBlockchainTargetHeight();
         }
 
+        _targetHeight = moneroManagerXmrLib.getBlockchainTargetHeight();
         _wallet = moneroManagerXmrLib.recoveryWallet(newWalletFile, seed, 1430000);
-//        _wallet.setPassword("");
+        _wallet.setPassword(_walletPwd);
 //        _wallet.setSeedLanguage("English");
 //        _wallet.store();
 //
@@ -383,8 +383,10 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
      */
     @Override
     public void onCloseWallet() {
-        if (_wallet != null && _wallet.getStatus() == Wallet.Status.Status_Ok) {
-            _wallet.store();
+        if (_wallet != null) {
+            System.out.println("Storing wallet");
+            boolean isStored = _wallet.store();
+            System.out.println("wallet stored : " + isStored);
             _wallet.close();
         }
     }
@@ -477,10 +479,9 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
 
        // updateDaemonState(_wallet, 0);
         System.out.println("Wallet status : " + _wallet.getStatus());
-//        if (_wallet.getStatus() != Wallet.Status.Status_Ok) {
-//            moneroManagerXmrLib.close(_wallet);
-//            _wallet.close();
-//        }
+        if (_wallet.getStatus() != Wallet.Status.Status_Ok) {
+            System.out.println(" Wallet error : " + _wallet.getErrorString());
+        }
 
         //daemon info
         System.out.println("daemon addr : " + moneroManagerXmrLib.getDaemonAddress());

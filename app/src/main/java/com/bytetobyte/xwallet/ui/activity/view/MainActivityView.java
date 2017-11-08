@@ -30,12 +30,12 @@ import su.levenetc.android.badgeview.BadgeView;
 public class MainActivityView implements MainViewContract {
 
     // main wheel boom
-    public static final int SYNC_BOOM_INDEX = 0;
-    public static final int STOP_BOOM_INDEX = 3;
-    public static final int BACKUP_BOOM_INDEX = 4;
+//    public static final int SYNC_BOOM_INDEX = 0;
+//    public static final int STOP_BOOM_INDEX = 3;
+    public static final int BACKUP_BOOM_INDEX = 0;
     public static final int RECOVER_BOOM_INDEX = 1;
     public static final int SEND_BOOM_INDEX = 2;
-    public static final int RECEIVE_BOOM_INDEX = 5;
+    public static final int RECEIVE_BOOM_INDEX = 3;
 
     private final MainActivity _act;
     private final TutorialAnim _tutorialHandler;
@@ -127,8 +127,8 @@ public class MainActivityView implements MainViewContract {
      *
      */
     private void initCircleMenuBoom() {
-        int[] boomsButtons = { com.m2049r.xmrwallet.R.drawable.ic_add_black_24dp, R.drawable.ic_recover_wallet , R.drawable.ic_send, android.R.drawable.ic_menu_close_clear_cancel, R.drawable.ic_backup, R.drawable.ic_receive};
-        String [] btnsText = { "Sync", "Recover", "Send", "Stop", "Backup", "Receive" };
+        int[] boomsButtons = { R.drawable.ic_backup, R.drawable.ic_recover_wallet , R.drawable.ic_send, R.drawable.ic_receive};
+        String [] btnsText = { "Backup", "Recover", "Send", "Receive" };
 
         _bmb = (BoomMenuButton) _act.findViewById(R.id.bmb);
         for (int i = 0; i < _bmb.getButtonPlaceEnum().buttonNumber(); i++) {

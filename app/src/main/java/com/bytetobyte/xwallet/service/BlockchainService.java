@@ -211,7 +211,7 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
      */
     @Override
     public void onDestroy() {
-        if (_coinManager != null)
+        if (_coinManager != null && !_coinManager.isSyncing() && _coinManager.isSynced())
             _coinManager.onCloseWallet();
 
         super.onDestroy();
@@ -231,7 +231,7 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
 
             System.out.println("BlockchainService handling message! " + msg.arg1 + " isSyncing : " + _coinManager.isSyncing());
             Log.d(getClass().getSimpleName(), "#1");
-            if (_coinManager.isSyncing() && msg.what != IPC_MSG_WALLET_CLOSE)
+            if (_coinManager.isSyncing())
                 return;
 
             System.out.println("msg.what : " + msg.what);

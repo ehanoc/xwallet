@@ -382,4 +382,13 @@ public class MainActivity extends XWalletBaseActivity {
             }
         }, 2000);
     }
+
+
+
+    /**
+     *
+     */
+    public void resetCoinProgress () {
+        _mainView.setSyncProgress(getSelectedCoin(), 1);
+    }
 }
