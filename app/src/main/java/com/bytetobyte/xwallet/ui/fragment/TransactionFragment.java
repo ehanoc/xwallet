@@ -14,6 +14,7 @@ import com.bytetobyte.xwallet.R;
 import com.bytetobyte.xwallet.service.coin.CoinManagerFactory;
 import com.bytetobyte.xwallet.service.ipcmodel.CoinTransaction;
 import com.bytetobyte.xwallet.service.ipcmodel.SyncedMessage;
+import com.bytetobyte.xwallet.ui.activity.MainActivity;
 import com.bytetobyte.xwallet.ui.adapters.TxsAdapter;
 
 import java.util.ArrayList;
@@ -60,7 +61,7 @@ public class TransactionFragment extends BaseFragment {
 
         _recyclerView.addItemDecoration(new RecyclerViewItemDecorator(1, 1));
 
-        _txsAdapter = new TxsAdapter(getBaseActivity(), _txs);
+        _txsAdapter = new TxsAdapter((MainActivity) getBaseActivity(), _txs);
         _recyclerView.setAdapter(_txsAdapter);
 
         _txsAdapter.notifyDataSetChanged();

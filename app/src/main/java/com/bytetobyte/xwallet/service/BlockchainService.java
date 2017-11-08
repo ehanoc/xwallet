@@ -231,7 +231,7 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
 
             System.out.println("BlockchainService handling message! " + msg.arg1 + " isSyncing : " + _coinManager.isSyncing());
             Log.d(getClass().getSimpleName(), "#1");
-            if (_coinManager.isSyncing())
+            if (_coinManager.isSyncing() && msg.what != IPC_MSG_WALLET_RECOVER)
                 return;
 
             System.out.println("msg.what : " + msg.what);

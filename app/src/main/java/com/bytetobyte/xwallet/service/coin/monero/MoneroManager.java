@@ -49,9 +49,9 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
     private File _walletFile;
     private long _targetHeight;
 
-    private static String TEST_NODE = "node.xmrbackb.one:28081";
+    private static String TEST_NODE = "testnet.xmrchain.net:28081";
     private static String DEFAULT_NODE = "node.moneroworld.com:18089";
-    private static String NODE = DEFAULT_NODE;
+    private static String NODE = Monero.IS_TEST_NETWORK ? TEST_NODE : DEFAULT_NODE;
 
     /**
      *
@@ -147,11 +147,13 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
 
         if (_wallet != null) {
             List<TransactionInfo> moneroTxs = _wallet.getHistory().getAll();
+            System.out.println(" nr of txs : " + _wallet.getHistory().getCount());
+
             for (TransactionInfo tx : moneroTxs) {
                 CoinTransaction aNewCoinTx = new CoinTransaction(_coin.getCoinId(),
                         Long.toString(tx.fee),
                         tx.hash,
-                        Long.toString(tx.amount),
+                        Wallet.getDisplayAmount(tx.amount),
                         Long.toString(tx.confirmations),
                         new Date(tx.timestamp)
                 );
@@ -165,9 +167,15 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
 
     @Override
     public String getBalanceFriendlyStr() {
-        return Long.toString(_wallet.getBalance());
+        System.out.println(" balance : " + _wallet.getBalance() + ", unlocked : " + _wallet.getUnlockedBalance());
+
+        return Wallet.getDisplayAmount(_wallet.getBalance());
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public long getBalanceValue() {
         return _wallet.getBalance();
@@ -445,6 +453,9 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
             e.printStackTrace();
             return;
         }
+
+        if (height % 10000 == 0)
+            _wallet.getHistory().refresh();
 
 //        pct = Math.round(pct * 100.000f);
 //        pct = pct / 100.000f;

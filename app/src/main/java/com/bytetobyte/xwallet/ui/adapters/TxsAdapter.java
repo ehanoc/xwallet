@@ -1,5 +1,6 @@
 package com.bytetobyte.xwallet.ui.adapters;
 
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.bytetobyte.xwallet.R;
+import com.bytetobyte.xwallet.service.coin.CoinManagerFactory;
+import com.bytetobyte.xwallet.ui.activity.MainActivity;
 import com.bytetobyte.xwallet.ui.activity.XWalletBaseActivity;
 import com.bytetobyte.xwallet.service.ipcmodel.CoinTransaction;
 
@@ -17,7 +20,7 @@ import java.util.List;
  */
 public class TxsAdapter extends RecyclerView.Adapter<TxsAdapter.ViewHolder> {
 
-    private final XWalletBaseActivity _activity;
+    private final MainActivity _activity;
     private final List<CoinTransaction> _txs;
 
     /**
@@ -25,7 +28,7 @@ public class TxsAdapter extends RecyclerView.Adapter<TxsAdapter.ViewHolder> {
      * @param baseActivity
      * @param txs
      */
-    public TxsAdapter(XWalletBaseActivity baseActivity, List<CoinTransaction> txs) {
+    public TxsAdapter(MainActivity baseActivity, List<CoinTransaction> txs) {
         this._activity = baseActivity;
         this._txs = txs;
     }
@@ -66,6 +69,7 @@ public class TxsAdapter extends RecyclerView.Adapter<TxsAdapter.ViewHolder> {
         holder._amountText.setText(amount);
         holder._dateText.setText(tx.getTxUpdate().toString());
         holder._statusText.setText(tx.getConfirmations());
+        holder.setCoinLabel(_activity.getSelectedCoin());
     }
 
     /**
@@ -104,6 +108,7 @@ public class TxsAdapter extends RecyclerView.Adapter<TxsAdapter.ViewHolder> {
         public TextView _statusText;
         public TextView _amountText;
         public TextView _dateText;
+        public TextView _coinLabel;
 
         public ViewHolder(View v) {
             super(v);
@@ -112,6 +117,7 @@ public class TxsAdapter extends RecyclerView.Adapter<TxsAdapter.ViewHolder> {
             _statusText = (TextView) v.findViewById(R.id.txs_row_status_textview);
             _amountText = (TextView) v.findViewById(R.id.txs_row_amount_text);
             _dateText = (TextView) v.findViewById(R.id.txs_row_date_textview);
+            _coinLabel = (TextView) v.findViewById(R.id.txs_row_coin_label);
         }
 
         /**
@@ -120,6 +126,21 @@ public class TxsAdapter extends RecyclerView.Adapter<TxsAdapter.ViewHolder> {
          */
         public void setBackground(int drawId) {
             itemView.setBackgroundResource(drawId);
+        }
+
+        /**
+         *
+         * @param coin
+         */
+        public void setCoinLabel(int coin) {
+            if (coin == CoinManagerFactory.MONERO) {
+               // _coinLabel.setTextColor(Color.RED);
+                _coinLabel.setText("XMR");
+            }
+
+            if (coin == CoinManagerFactory.BITCOIN) {
+                _coinLabel.setText("BTC");
+            }
         }
     }
 }
