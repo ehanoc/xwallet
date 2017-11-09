@@ -203,14 +203,23 @@ public class SendFragment extends BaseDialogFragment {
      *
      */
     public void sendAmount() {
-        if (_feeToSpend != null
-                &&_sendViewContract.getAddressField().getText().length() > 0
+        if (_sendViewContract.getAddressField().getText().length() > 0
                 && _sendViewContract.getAmountEdit().getText().length() > 0
                 && CoinManagerFactory.isCoinAddress(_sendViewContract.getAddressField().getText().toString(), getBaseActivity().getSelectedCoin())) {
             String address = _sendViewContract.getAddressField().getText().toString();
             //String amount = _amountEdit.getText().toString();
 
-            confirmSend(address, _feeToSpend.getAmount(), _feeToSpend.getTxFee());
+            String amount = _sendViewContract.getAmountEdit().getText().toString();
+            String fee = "0";
+            // check fee for bitcoin
+            if (getBaseActivity().getSelectedCoin() == CoinManagerFactory.BITCOIN ) {
+                if (_feeToSpend == null) return;
+
+                amount = _feeToSpend.getAmount();
+                fee = _feeToSpend.getTxFee();
+            }
+
+            confirmSend(address, amount, fee);
         }
     }
 
@@ -226,7 +235,7 @@ public class SendFragment extends BaseDialogFragment {
                     public void onClick(DialogInterface dialog, int which) {
                         getBaseActivity().sendCoins(address, amount, getBaseActivity().getSelectedCoin());
                         dialog.dismiss();
-                        getBaseActivity().showMenuSelection(0);
+                        getBaseActivity().showMenuSelection(getBaseActivity().getSelectedCoin() - 1);
                     }
                 }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override

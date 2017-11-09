@@ -10,12 +10,17 @@ import com.bytetobyte.xwallet.service.ipcmodel.CoinTransaction;
 import com.bytetobyte.xwallet.service.ipcmodel.SpentValueMessage;
 import com.github.mikephil.charting.utils.FileUtils;
 import com.google.zxing.common.detector.MathUtils;
+import com.m2049r.xmrwallet.SendFragment;
+import com.m2049r.xmrwallet.model.PendingTransaction;
 import com.m2049r.xmrwallet.model.TransactionInfo;
 import com.m2049r.xmrwallet.model.Wallet;
 import com.m2049r.xmrwallet.model.WalletListener;
 import com.m2049r.xmrwallet.model.WalletManager;
 
+import org.bitcoinj.core.Coin;
+
 import java.io.File;
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -52,6 +57,12 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
     private static String TEST_NODE = "testnet.xmrchain.net:28081";
     private static String DEFAULT_NODE = "node.moneroworld.com:18089";
     private static String NODE = Monero.IS_TEST_NETWORK ? TEST_NODE : DEFAULT_NODE;
+
+    final static PendingTransaction.Priority Priorities[] =
+            {PendingTransaction.Priority.Priority_Default,
+                    PendingTransaction.Priority.Priority_Low,
+                    PendingTransaction.Priority.Priority_Medium,
+                    PendingTransaction.Priority.Priority_High}; // must match the layout XML
 
     /**
      *
@@ -124,7 +135,13 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
      */
     @Override
     public void sendCoins(String address, String amount, CoinAction.CoinActionCallback callback) {
+        PendingTransaction pendingTx = _wallet.createTransaction(address,
+                "",
+                Wallet.getAmountFromString(amount),
+                4,
+                PendingTransaction.Priority.Priority_Default);
 
+        _wallet.disposeTransaction(pendingTx);
     }
 
     /**
@@ -167,7 +184,10 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
 
     @Override
     public String getBalanceFriendlyStr() {
-        System.out.println(" balance : " + _wallet.getBalance() + ", unlocked : " + _wallet.getUnlockedBalance());
+        BigDecimal bigDecimal = new BigDecimal(_wallet.getBalance());
+        String res = bigDecimal.movePointRight(1).toBigInteger().toString();
+
+        System.out.println(" balance : " + _wallet.getBalance() + ", unlocked : " + _wallet.getUnlockedBalance() + " res : " + res);
 
         return Wallet.getDisplayAmount(_wallet.getBalance());
     }
@@ -276,7 +296,7 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
         }
 
         _targetHeight = moneroManagerXmrLib.getBlockchainTargetHeight();
-        _wallet = moneroManagerXmrLib.recoveryWallet(newWalletFile, seed, 1430000);
+        _wallet = moneroManagerXmrLib.recoveryWallet(newWalletFile, seed, 800000);
         _wallet.setPassword(_walletPwd);
 //        _wallet.setSeedLanguage("English");
 //        _wallet.store();
@@ -454,7 +474,7 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
             return;
         }
 
-        if (height % 10000 == 0)
+        if (height % 5000 == 0)
             _wallet.getHistory().refresh();
 
 //        pct = Math.round(pct * 100.000f);
@@ -482,15 +502,13 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
         _isSynced = _wallet.isSynchronized();
         _isSyncing = false;
 
+        _wallet.getHistory().refresh();
+
         if(_isSynced) {
-//            boolean isStored = _wallet.store();
-//            System.out.println("storing : " + isStored);
             if (_callback != null)
                 _callback.onChainSynced(_coin);
             // _wallet.close();
         }
-
-        _wallet.getHistory().refresh();
 
        // updateDaemonState(_wallet, 0);
         System.out.println("Wallet status : " + _wallet.getStatus());

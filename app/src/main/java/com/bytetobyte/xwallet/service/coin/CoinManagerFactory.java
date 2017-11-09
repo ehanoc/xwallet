@@ -89,6 +89,10 @@ public abstract class CoinManagerFactory {
         if (coinId == MONERO) {
             Pattern p = Pattern.compile("4[0-9AB][123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{93}");
             Matcher m = p.matcher(address);
+
+            if(Monero.IS_TEST_NETWORK)
+                return true;
+
             return m.matches();
         }
 
