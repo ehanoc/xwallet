@@ -21,6 +21,8 @@ import org.bitcoinj.core.Coin;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -52,7 +54,9 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
     private long lastDaemonStatusUpdate;
     private static final long STATUS_UPDATE_INTERVAL = 120000; // 120s (blocktime)
     private File _walletFile;
+
     private long _targetHeight;
+    private long _recoveryHeight;
 
     private static String TEST_NODE = "testnet.xmrchain.net:28081";
     private static String DEFAULT_NODE = "node.moneroworld.com:18089";
@@ -71,6 +75,7 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
     public MoneroManager(CurrencyCoin<MoneroWalletManager> moneroCoin, Context context) {
         this._coin = moneroCoin;
         this._context = context;
+        _recoveryHeight = 0;
     }
 
     /**
@@ -124,7 +129,7 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
         System.out.println("wallet height : " + _wallet.getBlockChainHeight()
                 + " daemon height :" + _wallet.getDaemonBlockChainHeight());
 
-        _wallet.startRefresh();
+        _wallet.refresh();
     }
 
     /**
@@ -141,7 +146,11 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
                 4,
                 PendingTransaction.Priority.Priority_Default);
 
-        _wallet.disposeTransaction(pendingTx);
+        String txid = pendingTx.getFirstTxId();
+        boolean success = pendingTx.commit("", true);
+
+        System.out.println("Committing :" + txid + " success : " + success);
+        _wallet.disposePendingTransaction();
     }
 
     /**
@@ -167,10 +176,15 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
             System.out.println(" nr of txs : " + _wallet.getHistory().getCount());
 
             for (TransactionInfo tx : moneroTxs) {
+
+                long amount = tx.amount;
+                if (tx.direction == TransactionInfo.Direction.Direction_Out)
+                    amount *= -1;
+
                 CoinTransaction aNewCoinTx = new CoinTransaction(_coin.getCoinId(),
                         Long.toString(tx.fee),
                         tx.hash,
-                        Wallet.getDisplayAmount(tx.amount),
+                        formatAmount(amount),
                         Long.toString(tx.confirmations),
                         new Date(tx.timestamp)
                 );
@@ -184,12 +198,22 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
 
     @Override
     public String getBalanceFriendlyStr() {
-        BigDecimal bigDecimal = new BigDecimal(_wallet.getBalance());
-        String res = bigDecimal.movePointRight(1).toBigInteger().toString();
+        return formatAmount(_wallet.getBalance());
+    }
 
-        System.out.println(" balance : " + _wallet.getBalance() + ", unlocked : " + _wallet.getUnlockedBalance() + " res : " + res);
+    /**
+     *
+     * @param amount
+     * @return
+     */
+    private static String formatAmount(long amount) {
+        BigDecimal bigDecimal = new BigDecimal(amount);
+        String res = bigDecimal
+                .scaleByPowerOfTen(-12)
+                .stripTrailingZeros()
+                .toPlainString();
 
-        return Wallet.getDisplayAmount(_wallet.getBalance());
+        return res;
     }
 
     /**
@@ -273,6 +297,7 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
     public void recoverWalletBy(CoinAction.CoinActionCallback callback, String seed, Date creationdDate, long blockheight) {
         _callback = callback;
 
+        _recoveryHeight = blockheight;
         _isSyncing = true;
         _isSynced = false;
 //
@@ -317,7 +342,7 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
         System.out.println("Wallet has init : " + hasInit);
         _wallet.setListener(this);
 
-        _wallet.startRefresh();
+        _wallet.refresh();
     }
 
     /**
@@ -433,7 +458,9 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
      */
     @Override
     public void moneySpent(String s, long l) {
-        sendCoins(s, Long.toString(l), _callback);
+        System.out.println("moneySpent addr : " + s + " amount : " + l);
+
+        //sendCoins(s, Long.toString(l), _callback);
     }
 
     /**
@@ -476,6 +503,13 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
 
         if (height % 5000 == 0)
             _wallet.getHistory().refresh();
+
+        if (_recoveryHeight > 0) { // we are recovery, long process, store often
+            if (height % 5000 == 0) {
+                System.out.println("storing...");
+                _wallet.store();
+            }
+        }
 
 //        pct = Math.round(pct * 100.000f);
 //        pct = pct / 100.000f;

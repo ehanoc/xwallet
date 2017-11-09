@@ -25,10 +25,11 @@
             android:layout_height="@dimen/recover_input_height" />
 
         <LinearLayout
+            android:id="@+id/recovery_date_options"
             android:weightSum="10"
             android:gravity="center_vertical"
             android:layout_below="@+id/recover_seed_input"
-            android:layout_above="@+id/recover_button"
+
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -47,6 +48,28 @@
                 android:layout_weight="9"
                 android:text="----"
                 android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/recovery_block_height_options_layout"
+            android:layout_below="@+id/recovery_date_options"
+            android:layout_above="@+id/recover_button"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:text="Wallet Block height :"
+                android:textColor="@color/colorSecondary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <EditText
+                android:id="@+id/recovery_block_height_text"
+                android:inputType="number"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
         </LinearLayout>

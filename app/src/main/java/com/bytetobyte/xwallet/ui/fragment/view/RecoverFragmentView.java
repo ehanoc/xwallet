@@ -5,6 +5,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bytetobyte.xwallet.R;
@@ -25,6 +26,10 @@ public class RecoverFragmentView implements RecoverFragmentViewContract, View.On
     private TextView _dateDisplay;
     private ImageView _recoverBtn;
 
+    private LinearLayout _dateRecoveryOptions;
+    private LinearLayout _blockHeightRecoveryOptions;
+
+    private EditText _blockHeightEditText;
     /**
      *
      * @param recoverFragment
@@ -45,16 +50,34 @@ public class RecoverFragmentView implements RecoverFragmentViewContract, View.On
         _dateLabel = (TextView) v.findViewById(R.id.recover_date_label_btn);
         _dateDisplay = (TextView) v.findViewById(R.id.recover_date_display);
         _recoverBtn = (ImageView) v.findViewById(R.id.recover_button);
+        _blockHeightEditText = (EditText) v.findViewById(R.id.recovery_block_height_text);
+
+        _dateRecoveryOptions = (LinearLayout) v.findViewById(R.id.recovery_date_options);
+        _blockHeightRecoveryOptions = (LinearLayout) v.findViewById(R.id.recovery_block_height_options_layout);
 
         _seedInput.addTextChangedListener(this);
         _recoverBtn.setOnClickListener(this);
         _dateLabel.setOnClickListener(this);
 
+        // default as in btc, its easier to remember just date
+        _dateRecoveryOptions.setVisibility(View.VISIBLE);
+        _blockHeightRecoveryOptions.setVisibility(View.INVISIBLE);
+
         if (_recoverFrag.getBaseActivity().getSelectedCoin() == CoinManagerFactory.MONERO) {
             //not needed
             _dateDisplay.setVisibility(View.INVISIBLE);
             _dateLabel.setVisibility(View.INVISIBLE);
+            _dateRecoveryOptions.setVisibility(View.INVISIBLE);
+            _blockHeightRecoveryOptions.setVisibility(View.VISIBLE);
         }
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getBlockHeight() {
+        return _blockHeightEditText.getText().toString();
     }
 
     /**

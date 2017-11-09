@@ -68,7 +68,7 @@ public class TxsAdapter extends RecyclerView.Adapter<TxsAdapter.ViewHolder> {
 
         holder._amountText.setText(amount);
         holder._dateText.setText(tx.getTxUpdate().toString());
-        holder._statusText.setText(tx.getConfirmations());
+        holder._statusText.setText(String.format("%s CONFIRMATIONS", tx.getConfirmations()));
         holder.setCoinLabel(_activity.getSelectedCoin());
     }
 

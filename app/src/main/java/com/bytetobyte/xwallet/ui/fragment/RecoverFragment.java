@@ -146,13 +146,24 @@ public class RecoverFragment extends BaseDialogFragment implements CalendarDateP
      * @param seed
      */
     public void promptWalletRecovery(final String seed) {
+        String blockHeightStr = _rView.getBlockHeight();
+        long blockHeight = 800000;
+        try {
+            blockHeight = Long.valueOf(blockHeightStr);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // final temp to be used in dialog build
+        final long finalBlockHeight = blockHeight;
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogCustom);
         builder.setTitle("Recovery")
                 .setMessage("You sure you want to recover wallet from the seed : " + seed + " ? \n\n This might take some time, please keep your phone plugged in!")
                 .setPositiveButton("Yes, Recover!", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        getBaseActivity().recoverWallet(getBaseActivity().getSelectedCoin(), seed, _lastDateSet, 0);
+                        getBaseActivity().recoverWallet(getBaseActivity().getSelectedCoin(), seed, _lastDateSet, finalBlockHeight);
                         Toast.makeText(RecoverFragment.this.getBaseActivity(), "Initiating recovery... Please wait!", Toast.LENGTH_SHORT).show();
 
                         Handler handler = new Handler();

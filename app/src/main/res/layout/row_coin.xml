@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/colorContentBackgrounds"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -82,15 +83,19 @@
 
             <LinearLayout
                 android:orientation="vertical"
+                android:layout_alignParentLeft="true"
+                android:layout_toLeftOf="@+id/wallet_coin_chart"
                 android:gravity="center_vertical"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
                 <TextView
                     android:id="@+id/wallet_balance"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
+                    android:autoSizeTextType="uniform"
+                    android:maxLines="1"
                     android:textColor="@android:color/white"
                     android:text="--"
                     android:textSize="@dimen/wallet_coin_balance_size"
@@ -102,7 +107,8 @@
                     android:id="@+id/wallet_balance_sub_currency"
                     android:textColor="@color/colorSecondary"
                     android:gravity="center_vertical"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
+                    android:singleLine="true"
                     android:text="(-$)"
                     android:textSize="@dimen/wallet_coin_sub_balance_size"
                     android:layout_height="wrap_content" />
@@ -112,8 +118,6 @@
 
             <com.github.mikephil.charting.charts.LineChart
                 android:id="@+id/wallet_coin_chart"
-                android:layout_marginLeft="44dp"
-                android:layout_marginStart="44dp"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:gravity="center_vertical"

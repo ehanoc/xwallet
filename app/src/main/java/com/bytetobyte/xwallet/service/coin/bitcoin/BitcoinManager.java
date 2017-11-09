@@ -385,16 +385,19 @@ public class BitcoinManager implements CoinManager, CoinAction.CoinActionCallbac
                 String hash = tx.getHash().toString();
                 String amountStr = amount.toPlainString();
                 String fee = "";
-                String confirmationStr = "CONFIRMED";
+                String confirmationStr = "0";
 
                 if (tx.getFee() != null) {
                     fee = tx.getFee().toPlainString();
                 }
 
                 TransactionConfidence confidence = tx.getConfidence();
-                if (confidence.getDepthInBlocks() < 6) {
-                    confirmationStr = confidence.getDepthInBlocks() + " CONFIRMATIONS";
-                }
+                try {
+                    confirmationStr = Integer.toString(confidence.getDepthInBlocks());
+                } catch (Exception e) { e.printStackTrace(); }
+//                if (confidence.getDepthInBlocks() < 6) {
+//                    confirmationStr = confidence.getDepthInBlocks() + " CONFIRMATIONS";
+//                }
 
                 TransactionConfidence.ConfidenceType cType = confidence.getConfidenceType();
 
