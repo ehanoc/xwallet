@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="4dp"
+    android:gravity="center"
     android:background="@color/colorPrimaryDark"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -35,7 +36,18 @@
         <ImageView
             android:id="@+id/receive_id_qr_code_img"
             android:layout_width="@dimen/receive_qr_size"
-            android:layout_height="@dimen/receive_qr_size" />
+            android:layout_height="@dimen/receive_qr_size"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true" />
+
+        <ProgressBar
+            android:id="@+id/receive_qr_loading_spinner"
+            style="@style/Widget.AppCompat.ProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:foregroundGravity="center" />
 
     </RelativeLayout>
 

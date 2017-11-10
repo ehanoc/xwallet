@@ -5,6 +5,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bytetobyte.xwallet.R;
@@ -19,6 +20,7 @@ public class ReceiveFragmentView implements ReceiveFragmentViewContract, TextWat
 
     private ImageView _qrImg;
     private TextView _addrText;
+    private ProgressBar _loadingQrSpinner;
 
     /**
      *
@@ -36,8 +38,11 @@ public class ReceiveFragmentView implements ReceiveFragmentViewContract, TextWat
         View fragView = _receiveFragment.getView();
         if (fragView == null) return;
 
+        _loadingQrSpinner = fragView.findViewById(R.id.receive_qr_loading_spinner);
         _qrImg = (ImageView) fragView.findViewById(R.id.receive_id_qr_code_img);
         _addrText = (TextView) fragView.findViewById(R.id.receive_addr_text);
+
+        _loadingQrSpinner.setVisibility(View.VISIBLE);
     }
 
     public ImageView getQrImg() {
@@ -46,6 +51,10 @@ public class ReceiveFragmentView implements ReceiveFragmentViewContract, TextWat
 
     public TextView getAddrText() {
         return _addrText;
+    }
+
+    public ProgressBar getLoadingQrSpinner() {
+        return _loadingQrSpinner;
     }
 
     @Override

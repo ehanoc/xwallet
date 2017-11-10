@@ -3,6 +3,7 @@ package com.bytetobyte.xwallet.ui.fragment;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -74,7 +75,12 @@ public class ReceiveFragment extends BaseDialogFragment {
         super.onResume();
 
         _receiveFragmentView.getAddrText().setText(_addr);
-        generateQRCode(null);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                generateQRCode(null);
+            }
+        }).start();
     }
 
     /**
@@ -96,14 +102,20 @@ public class ReceiveFragment extends BaseDialogFragment {
             BitMatrix bitMatrix = writer.encode(uriStr, BarcodeFormat.QR_CODE, 512, 512);
             int width = bitMatrix.getWidth();
             int height = bitMatrix.getHeight();
-            Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+            final Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
             for (int x = 0; x < width; x++) {
                 for (int y = 0; y < height; y++) {
                     bmp.setPixel(x, y, bitMatrix.get(x, y) ? Color.BLACK : Color.WHITE);
                 }
             }
 
-            _receiveFragmentView.getQrImg().setImageBitmap(bmp);
+            getBaseActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    _receiveFragmentView.getLoadingQrSpinner().setVisibility(View.GONE);
+                    _receiveFragmentView.getQrImg().setImageBitmap(bmp);
+                }
+            });
         } catch (WriterException e) {
             e.printStackTrace();
         }
