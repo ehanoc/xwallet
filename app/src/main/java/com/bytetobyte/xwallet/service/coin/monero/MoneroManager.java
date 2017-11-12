@@ -37,8 +37,6 @@ import java.util.Map;
 
 public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback, WalletListener {
 
-    private static final String TAG = "MoneroManager";
-
     private final CurrencyCoin<MoneroWalletManager> _coin;
     private final Context _context;
 
@@ -50,10 +48,6 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
 
     private CoinAction.CoinActionCallback _callback;
     private String _walletPwd;
-    private long daemonHeight;
-    private Wallet.ConnectionStatus connectionStatus;
-    private long lastDaemonStatusUpdate;
-    private static final long STATUS_UPDATE_INTERVAL = 120000; // 120s (blocktime)
     private File _walletFile;
 
     private long _targetHeight;
@@ -322,7 +316,7 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
         }
 
         _targetHeight = moneroManagerXmrLib.getBlockchainTargetHeight();
-        _wallet = moneroManagerXmrLib.recoveryWallet(newWalletFile, seed, 800000);
+        _wallet = moneroManagerXmrLib.recoveryWallet(newWalletFile, seed, _recoveryHeight);
         _wallet.setPassword(_walletPwd);
 //        _wallet.setSeedLanguage("English");
 //        _wallet.store();
@@ -505,8 +499,8 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
         if (height % 5000 == 0)
             _wallet.getHistory().refresh();
 
-        if (_recoveryHeight > 0) { // we are recovery, long process, store often
-            if (height % 5000 == 0) {
+        if (_recoveryHeight > 0 && height > _recoveryHeight) { // we are recovery, long process, store often
+            if (height % 15000 == 0) {
                 System.out.println("storing...");
                 _wallet.store();
             }
