@@ -2,9 +2,11 @@ package com.bytetobyte.xwallet.ui.listeners;
 
 import android.support.v4.app.DialogFragment;
 
+import com.bytetobyte.xwallet.BaseFragment;
 import com.bytetobyte.xwallet.R;
 import com.bytetobyte.xwallet.ui.activity.MainActivity;
 import com.bytetobyte.xwallet.ui.fragment.InfoFragment;
+import com.bytetobyte.xwallet.ui.fragment.SettingsFragment;
 import com.nightonke.boommenu.BoomButtons.BoomButton;
 import com.nightonke.boommenu.OnBoomListener;
 
@@ -12,6 +14,9 @@ import com.nightonke.boommenu.OnBoomListener;
  * Created by bruno on 26.04.17.
  */
 public class SettingsBoomListener implements OnBoomListener {
+    // setting boom
+    public static final int INFO_CREDITS_INDEX = 0;
+    public static final int SETTINGS_INDEX = 1;
     //
     private final MainActivity _mainAct;
 
@@ -30,7 +35,7 @@ public class SettingsBoomListener implements OnBoomListener {
      */
     @Override
     public void onClicked(int index, BoomButton boomButton) {
-        DialogFragment newContent = null;
+        BaseFragment newContent = null;
 
         switch (index) {
 //            case MainActivity.BACKUP_BOOM_INDEX:
@@ -43,8 +48,13 @@ public class SettingsBoomListener implements OnBoomListener {
 //                _mainAct.replaceContent(newContent, R.id.xwallet_content_layout);
 //                break;
 
-            case MainActivity.INFO_CREDITS_INDEX:
+            case INFO_CREDITS_INDEX:
                 newContent = new InfoFragment();
+                _mainAct.replaceContent(newContent, R.id.xwallet_main_content_layout);
+                break;
+
+            case SETTINGS_INDEX:
+                newContent = new SettingsFragment();
                 _mainAct.replaceContent(newContent, R.id.xwallet_main_content_layout);
                 break;
 

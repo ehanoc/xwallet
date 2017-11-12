@@ -12,7 +12,6 @@ import java.io.File;
 public class Monero implements CurrencyCoin<MoneroWalletManager> {
 
     public static final int WALLET_EXTRA_ID = 0x666;
-    public static boolean IS_TEST_NETWORK = true;
 
     public static final String MONERO_DATA_DIR_NAME = "moneroDataDir";
     private final File _dataDir;

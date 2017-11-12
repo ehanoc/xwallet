@@ -78,7 +78,7 @@ public abstract class CoinManagerFactory {
             Pattern p = null;
 
             p = Pattern.compile("^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$");
-            if (Constants.NETWORK_PARAMETERS == TestNet3Params.get()) {
+            if (Constants.IS_TESTNET) {
                 p = Pattern.compile("^[2mn][1-9A-HJ-NP-Za-km-z]{25,34}");
             }
 
@@ -90,7 +90,7 @@ public abstract class CoinManagerFactory {
             Pattern p = Pattern.compile("4[0-9AB][123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{93}");
             Matcher m = p.matcher(address);
 
-            if(Monero.IS_TEST_NETWORK)
+            if(Constants.IS_TESTNET)
                 return true;
 
             return m.matches();

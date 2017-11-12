@@ -38,7 +38,7 @@
                 android:id="@+id/recover_date_label_btn"
                 android:layout_weight="1"
                 android:textSize="@dimen/recover_set_date_text_size"
-                android:text="Enter Date"
+                android:text="Enter Creation Date"
                 android:textColor="@color/colorSecondary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />

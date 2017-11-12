@@ -3,6 +3,7 @@ package com.bytetobyte.xwallet.service.coin.monero;
 import android.content.Context;
 import android.os.Handler;
 
+import com.bytetobyte.xwallet.service.Constants;
 import com.bytetobyte.xwallet.service.coin.CoinAction;
 import com.bytetobyte.xwallet.service.coin.CoinManager;
 import com.bytetobyte.xwallet.service.coin.CurrencyCoin;
@@ -60,7 +61,7 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
 
     private static String TEST_NODE = "testnet.xmrchain.net:28081";
     private static String DEFAULT_NODE = "node.moneroworld.com:18089";
-    private static String NODE = Monero.IS_TEST_NETWORK ? TEST_NODE : DEFAULT_NODE;
+    private static String NODE = Constants.IS_TESTNET ? TEST_NODE : DEFAULT_NODE;
 
     final static PendingTransaction.Priority Priorities[] =
             {PendingTransaction.Priority.Priority_Default,
@@ -86,11 +87,11 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
     public void setup(final CoinAction.CoinActionCallback callback) {
         _callback = callback;
 
-        _walletFile = new File(_coin.getDataDir().getAbsoluteFile() + "/monerowallet_" + Monero.IS_TEST_NETWORK + Monero.WALLET_EXTRA_ID);
+        _walletFile = new File(_coin.getDataDir().getAbsoluteFile() + "/monerowallet_" + Constants.IS_TESTNET + Monero.WALLET_EXTRA_ID);
 
         System.out.println("MoneroManager::setup");
         moneroManagerXmrLib = WalletManager.getInstance();
-        moneroManagerXmrLib.setDaemon(NODE, Monero.IS_TEST_NETWORK, "", "");
+        moneroManagerXmrLib.setDaemon(NODE, Constants.IS_TESTNET, "", "");
         _targetHeight = moneroManagerXmrLib.getBlockchainTargetHeight();
 
         System.out.println("#2");
@@ -186,7 +187,7 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
                         tx.hash,
                         formatAmount(amount),
                         Long.toString(tx.confirmations),
-                        new Date(tx.timestamp)
+                        new Date(tx.timestamp * 1000)
                 );
 
                 allTxs.add(aNewCoinTx);
@@ -306,7 +307,7 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
 //            _wallet.close();
 //        }
 
-        File newWalletFile = new File(_coin.getDataDir().getAbsoluteFile() + "/monerowallet_" + Monero.IS_TEST_NETWORK + Monero.WALLET_EXTRA_ID);
+        File newWalletFile = new File(_coin.getDataDir().getAbsoluteFile() + "/monerowallet_" + Constants.IS_TESTNET + Monero.WALLET_EXTRA_ID);
 
         for(File file: _coin.getDataDir().listFiles()) {
             if (!file.isDirectory()) {
@@ -317,7 +318,7 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
 
         if (moneroManagerXmrLib == null) {
             moneroManagerXmrLib = WalletManager.getInstance();
-            moneroManagerXmrLib.setDaemon(NODE, Monero.IS_TEST_NETWORK, "", "");
+            moneroManagerXmrLib.setDaemon(NODE, Constants.IS_TESTNET, "", "");
         }
 
         _targetHeight = moneroManagerXmrLib.getBlockchainTargetHeight();

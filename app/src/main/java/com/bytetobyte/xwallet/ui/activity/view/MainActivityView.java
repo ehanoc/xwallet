@@ -107,8 +107,8 @@ public class MainActivityView implements MainViewContract {
      *
      */
     private void initSettingsBoom() {
-        int[] settingsBtns = { R.drawable.ic_info };
-        String[] settingsStrs = { "Info & Credits" };
+        int[] settingsBtns = { R.drawable.ic_info, android.R.drawable.ic_menu_preferences};
+        String[] settingsStrs = { "Info & Credits",  "Settings" };
 
 
         _settingsBmb = (BoomMenuButton) _act.findViewById(R.id.main_settings_boom);

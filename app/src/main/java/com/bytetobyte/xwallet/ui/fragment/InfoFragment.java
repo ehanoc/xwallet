@@ -7,12 +7,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bytetobyte.xwallet.BaseDialogFragment;
+import com.bytetobyte.xwallet.BaseFragment;
 import com.bytetobyte.xwallet.R;
 
 /**
  * Created by bruno on 08.05.17.
  */
-public class InfoFragment extends BaseDialogFragment {
+public class InfoFragment extends BaseFragment {
 
     /**
      *

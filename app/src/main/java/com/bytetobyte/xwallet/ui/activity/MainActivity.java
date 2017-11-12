@@ -39,9 +39,6 @@ public class MainActivity extends XWalletBaseActivity {
 
     public static final int MY_PERMISSIONS_REQUEST_CAMERA = 0x77;
 
-    // setting boom
-    public static final int INFO_CREDITS_INDEX = 0;
-
     public static final int BACKUP_UNLOCK_REQUEST_CODE = 0x7;
 
     private static final String PREFS_KEY_LAST_SYNCED_MESSAGE = "PREFS_KEY_LAST_SYNCED_MESSAGE";
