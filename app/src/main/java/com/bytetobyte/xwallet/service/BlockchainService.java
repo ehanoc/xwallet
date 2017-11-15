@@ -73,10 +73,10 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
      * Target we publish for clients to send messages to IncomingHandler.
      */
     final Messenger mMessenger = new Messenger(new IncomingHandler());
-    private static Messenger _replyTo;
+    private Messenger _replyTo;
 
-    private static PowerManager.WakeLock _wakeLock;
-    private static WifiManager.WifiLock _wifiLock;
+    private PowerManager.WakeLock _wakeLock;
+    private WifiManager.WifiLock _wifiLock;
     private CoinManager _coinManager;
 
     /**
@@ -250,7 +250,7 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
                     acquireWakeLocks();
                     System.out.println("#1");
                     System.out.println("service setup! : " + _coinManager);
-                    //startForeground(NOTIFICATION_SYNC_ID + _coinManager.getCurrencyCoin().getCoinId(), getServiceNotification("Starting", _coinManager.getCurrencyCoin().getCoinId()));
+                    startForeground(NOTIFICATION_SYNC_ID + _coinManager.getCurrencyCoin().getCoinId(), getServiceNotification("Starting", _coinManager.getCurrencyCoin().getCoinId()));
                     _coinManager.setup(BlockchainService.this);
                     System.out.println("#2");
                     break;
@@ -262,7 +262,7 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
 
                     acquireWakeLocks();
                     //wakeLock.acquire(1000 * 360 * 5);
-                    //startForeground(NOTIFICATION_SYNC_ID + _coinManager.getCurrencyCoin().getCoinId(), getServiceNotification("Starting", _coinManager.getCurrencyCoin().getCoinId()));
+                    startForeground(NOTIFICATION_SYNC_ID + _coinManager.getCurrencyCoin().getCoinId(), getServiceNotification("Starting", _coinManager.getCurrencyCoin().getCoinId()));
                     // illness bulk jewel deer chaos swing goose fetch patch blood acid call creation
                     System.out.println("service recover! : " + _coinManager);
                     _coinManager.recoverWalletBy(BlockchainService.this, recoverMsg.getSeed(), recoverMsg.getDate(), recoverMsg.getBlockHeight());
@@ -376,10 +376,14 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
      *
      */
     private void releaseWakeLocks() {
-        if (_wakeLock.isHeld())
+        if (_wakeLock != null && _wakeLock.isHeld()) {
             _wakeLock.release();
+            _wakeLock = null;
+        }
 
-        if (_wifiLock.isHeld())
+        if (_wifiLock != null && _wifiLock.isHeld()) {
             _wifiLock.release();
+            _wifiLock = null;
+        }
     }
 }

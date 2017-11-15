@@ -1,4 +1,4 @@
-package com.bytetobyte.xwallet.ui.activity;
+package com.bytetobyte.xwallet.lock.activity;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -9,35 +9,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bytetobyte.xwallet.R;
-import com.bytetobyte.xwallet.service.coin.CoinManagerFactory;
-import com.bytetobyte.xwallet.service.ipcmodel.BlockDownloaded;
-import com.bytetobyte.xwallet.service.ipcmodel.CoinTransaction;
-import com.bytetobyte.xwallet.service.ipcmodel.SpentValueMessage;
-import com.bytetobyte.xwallet.service.ipcmodel.SyncedMessage;
 import com.bytetobyte.xwallet.util.EncryptUtils;
 import com.bytetobyte.xwallet.views.WheelMenuLayout;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import org.spongycastle.crypto.engines.AESFastEngine;
-
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.KeySpec;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.PBEKeySpec;
-import javax.crypto.spec.SecretKeySpec;
 
 /**
  * Created by bruno on 05.04.17.
