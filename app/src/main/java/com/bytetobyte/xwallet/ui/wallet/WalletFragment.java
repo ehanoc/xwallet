@@ -4,6 +4,7 @@ package com.bytetobyte.xwallet.ui.wallet;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -83,7 +84,9 @@ public class WalletFragment extends BaseFragment implements CexChartAPI.CexChart
     @Override
     public void onResume() {
         super.onResume();
-        getBaseActivity().syncChain(this._coinId);
+
+        if (getBaseActivity().hasSyncedCoinBefore(_coinId))
+            getBaseActivity().syncChain(this._coinId);
 
         //new CexChartAPI(this).execute();
         new PriceRequestAPI(PriceRequestAPI.GetCoinUrl(_coinId), this).execute();
@@ -94,7 +97,8 @@ public class WalletFragment extends BaseFragment implements CexChartAPI.CexChart
      */
     @Override
     public void onServiceReady(int coinId) {
-        getBaseActivity().syncChain(this._coinId);
+        if (getBaseActivity().hasSyncedCoinBefore(_coinId))
+            getBaseActivity().syncChain(this._coinId);
     }
 
     /**

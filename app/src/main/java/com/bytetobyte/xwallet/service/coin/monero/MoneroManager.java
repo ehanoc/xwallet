@@ -55,6 +55,9 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
                     PendingTransaction.Priority.Priority_Medium,
                     PendingTransaction.Priority.Priority_High}; // must match the layout XML
 
+    //pending
+    private PendingTransaction _pendingTx;
+
     /**
      *
      * @param moneroCoin
@@ -122,22 +125,33 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
     /**
      *
      * @param address
-     * @param amount
+     * @param amountsStr
      * @param callback
      */
     @Override
-    public void sendCoins(String address, String amount, CoinAction.CoinActionCallback callback) {
-        PendingTransaction pendingTx = _wallet.createTransaction(address,
-                "",
-                Wallet.getAmountFromString(amount),
-                4,
-                PendingTransaction.Priority.Priority_Default);
+    public void sendCoins(String address, String amountsStr, Map<Integer, Object> options, CoinAction.CoinActionCallback callback) {
+//        PendingTransaction pendingTx = _wallet.createTransaction(address,
+//                "",
+//                Wallet.getAmountFromString(amountsStr),
+//                4,
+//                PendingTransaction.Priority.Priority_Default);
 
-        String txid = pendingTx.getFirstTxId();
-        boolean success = pendingTx.commit("", true);
-
-        System.out.println("Committing :" + txid + " success : " + success);
-        _wallet.disposePendingTransaction();
+//        String priorityValue = (String) options.get(Monero.KEY_TX_PRIORITY);
+//        Double mixinDouble = (Double) (options.get(Monero.KEY_TX_MIXINS)); //dont know why
+//        String paymentId = (String) options.get(Monero.KEY_TX_PAYMENT_ID);
+//
+//        int mixin = mixinDouble.intValue();
+//        long amount = Wallet.getAmountFromString(amountsStr);
+//
+//        PendingTransaction.Priority priority = PendingTransaction.Priority.valueOf(priorityValue);
+//
+//        if (amount == _pendingTx.getAmount() && address == _pendingTx.getFirstTxId())
+//
+//        String txid = pendingTx.getFirstTxId();
+//        boolean success = pendingTx.commit("", true);
+//
+//        System.out.println("Committing :" + txid + " success : " + success);
+//        _wallet.disposePendingTransaction();
     }
 
     /**
@@ -222,23 +236,31 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
         Map<Integer, Object> options = valueMessage.getExtraOptions();
 
         String priorityValue = (String) options.get(Monero.KEY_TX_PRIORITY);
-        double mixin = (Double) options.get(Monero.KEY_TX_MIXINS);
+        Double mixinDouble = (Double) (options.get(Monero.KEY_TX_MIXINS)); //dont know why
         String paymentId = (String) options.get(Monero.KEY_TX_PAYMENT_ID);
 
-        PendingTransaction pendingTx = _wallet.createTransaction(valueMessage.getAddress(),
-                paymentId,
-                Wallet.getAmountFromString(valueMessage.getAmount()),
-                (int) mixin,
-                PendingTransaction.Priority.valueOf(priorityValue));
+        int mixin = mixinDouble.intValue();
+        long amount = Wallet.getAmountFromString(valueMessage.getAmount());
+        String address = valueMessage.getAddress();
+        PendingTransaction.Priority priority = PendingTransaction.Priority.valueOf(priorityValue);
 
-        long fee = pendingTx.getFee();
+        _pendingTx = _wallet.createTransaction(address,
+                paymentId,
+                amount,
+                mixin,
+                priority);
+
+        long fee = _pendingTx.getFee();
         String feeAmount = Wallet.getDisplayAmount(fee);
         System.out.println("Fee amount calculated " + feeAmount + " (" + fee + ")");
 
         valueMessage.setTxFee(feeAmount);
 
+        System.out.println(" tx status : " + _pendingTx.getStatus());
+        System.out.println(" tx error : " + _pendingTx.getErrorString());
+
         // we just want to calculate the tx for now, dispose
-        _wallet.disposeTransaction(pendingTx);
+        //_wallet.disposeTransaction(pendingTx);
 
         return valueMessage;
     }

@@ -40,9 +40,9 @@ public class MainBoomListener implements OnBoomListener {
         DialogFragment newContent = null;
 
         switch (index) {
-//            case MainActivityView.SYNC_BOOM_INDEX:
-//                _mainAct.syncChain(_mainAct.getSelectedCoin());
-//                return;
+            case MainActivityView.SYNC_BOOM_INDEX:
+                _mainAct.syncChain(_mainAct.getSelectedCoin());
+                return;
 //
 //            case MainActivityView.STOP_BOOM_INDEX:
 //                _mainAct.stopChain(_mainAct.getSelectedCoin());
@@ -53,9 +53,9 @@ public class MainBoomListener implements OnBoomListener {
                 break;
 
             case MainActivityView.RECEIVE_BOOM_INDEX:
-                if (_mainAct.getLastSyncedMessage() == null) return;
+                if (_mainAct.getLastSyncedMessage(_mainAct.getSelectedCoin()) == null) return;
 
-                List<String> addrs = _mainAct.getLastSyncedMessage().getAddresses();
+                List<String> addrs = _mainAct.getLastSyncedMessage(_mainAct.getSelectedCoin()).getAddresses();
                 if (addrs.size() > 0) {
                     String lastAddr = addrs.get(addrs.size() - 1);
                     newContent = new ReceiveFragment();

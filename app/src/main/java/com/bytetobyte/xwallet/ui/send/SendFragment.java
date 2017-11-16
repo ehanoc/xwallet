@@ -172,7 +172,7 @@ public class SendFragment extends BaseDialogFragment {
                             getBaseActivity().getSelectedCoin());
                     if (!isAddressValid) return;
 
-                    boolean isValidAmount = TextUtils.isDigitsOnly(amount);
+                    boolean isValidAmount = isNumeric(amount);
                     if (!isValidAmount) return;
 
                     getBaseActivity().requestTxFee(address, amount, _sendViewContract.getExtraOptions(), getBaseActivity().getSelectedCoin());
@@ -181,6 +181,24 @@ public class SendFragment extends BaseDialogFragment {
         };
 
         _handler.postDelayed(_textHandlerRunnable, 1000);
+    }
+
+    /**
+     * Util, probably should be moved
+     * @param str
+     * @return
+     */
+    private static boolean isNumeric(String str)
+    {
+        try
+        {
+            double d = Double.parseDouble(str);
+        }
+        catch(NumberFormatException nfe)
+        {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -195,7 +213,7 @@ public class SendFragment extends BaseDialogFragment {
      *
      */
     public void onMaxAmountSelected() {
-        SyncedMessage lastSyncedMsg = getBaseActivity().getLastSyncedMessage();
+        SyncedMessage lastSyncedMsg = getBaseActivity().getLastSyncedMessage(getBaseActivity().getSelectedCoin());
         if (lastSyncedMsg != null) {
             String amountStr = lastSyncedMsg.getAmount();
             _sendViewContract.setAmount(amountStr);

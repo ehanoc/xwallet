@@ -43,6 +43,7 @@ public abstract class XWalletBaseActivity extends AppCompatActivity {
     // ACTIONS
     public static final String SEND_ACTION = "android.intent.action.SEND_COIN";
     public static final String ACTION_GENERATE_QR_CODE = "ACTION_GENERATE_QR_CODE";
+    private static final String PREFS_KEY_LAST_SYNCED_MESSAGE = "PREFS_KEY_LAST_SYNCED_MESSAGE";
 
     private Gson _gson;
 
@@ -288,6 +289,38 @@ public abstract class XWalletBaseActivity extends AppCompatActivity {
     /**
      *
      */
+    public boolean hasSyncedCoinBefore(int coinId) {
+        return null != getLastSyncedMessage(coinId);
+    }
+
+    /**
+     *
+     * @return
+     */
+    public SyncedMessage getLastSyncedMessage(int coinId) {
+        return getPreferencesLastSyncedMsg(coinId);
+    }
+
+    /**
+     *
+     * @return
+     */
+    protected SyncedMessage getPreferencesLastSyncedMsg(int coinId) {
+        SharedPreferences prefs = getSharedPreferences(getString(R.string.app_name), MODE_PRIVATE);
+        String lastSyncMsgStr = prefs.getString(PREFS_KEY_LAST_SYNCED_MESSAGE + coinId, null);
+
+        SyncedMessage lastSyncMsg = null;
+
+        if (lastSyncMsgStr != null) {
+            lastSyncMsg = new Gson().fromJson(lastSyncMsgStr, SyncedMessage.class);
+        }
+
+        return lastSyncMsg;
+    }
+
+    /**
+     *
+     */
     // This class handles the Service response
     class ResponseHandler extends Handler {
 
@@ -343,7 +376,15 @@ public abstract class XWalletBaseActivity extends AppCompatActivity {
        // syncChain(CoinManagerFactory.MONERO);
     }
 
-    protected void onSyncReady(SyncedMessage syncedMessage) {}
+    /**
+     *
+     * @param syncedMessage
+     */
+    protected void onSyncReady(SyncedMessage syncedMessage) {
+        SharedPreferences prefs = getSharedPreferences(getString(R.string.app_name), MODE_PRIVATE);
+        prefs.edit().putString(PREFS_KEY_LAST_SYNCED_MESSAGE + syncedMessage.getCoinId(), new Gson().toJson(syncedMessage)).apply();
+    }
+
     protected void onBlockDownloaded(BlockDownloaded block) {}
     protected void onFeeCalculated(SpentValueMessage feeSpentcal) {}
     protected void onTransactions(List<CoinTransaction> txs) {}

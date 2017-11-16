@@ -41,8 +41,6 @@ public class MainActivity extends XWalletBaseActivity {
 
     public static final int BACKUP_UNLOCK_REQUEST_CODE = 0x7;
 
-    private static final String PREFS_KEY_LAST_SYNCED_MESSAGE = "PREFS_KEY_LAST_SYNCED_MESSAGE";
-
     //
     private MainViewContract _mainView;
 
@@ -102,10 +100,10 @@ public class MainActivity extends XWalletBaseActivity {
     protected void onResume() {
         super.onResume();
 
-        if (getPreferencesLastSyncedMsg() == null) {
+        if (getPreferencesLastSyncedMsg(getSelectedCoin()) == null) {
             _mainView.startTutorial();
         } else {
-            _lastSyncedMessage = getPreferencesLastSyncedMsg();
+            _lastSyncedMessage = getPreferencesLastSyncedMsg(getSelectedCoin());
 //            BlockchainClientListener chainListener = (BlockchainClientListener) getSupportFragmentManager().findFragmentById(R.id.xwallet_main_content_layout);
 //            if (chainListener != null) {
 //                chainListener.onSyncReady(_lastSyncedMessage);
@@ -142,13 +140,12 @@ public class MainActivity extends XWalletBaseActivity {
      */
     @Override
     protected void onSyncReady(SyncedMessage syncedMessage) {
+        super.onSyncReady(syncedMessage);
+
         System.out.println("MainActivity::onSyncReady()");
         _mainView.setSyncProgress(syncedMessage.getCoinId(), 100);
 
         _lastSyncedMessage = syncedMessage;
-
-        SharedPreferences prefs = getSharedPreferences(getString(R.string.app_name), MODE_PRIVATE);
-        prefs.edit().putString(PREFS_KEY_LAST_SYNCED_MESSAGE, new Gson().toJson(_lastSyncedMessage)).apply();
 
         _btcWalletFragment.onSyncReady(syncedMessage);
         _btcTransactionsFragment.onSyncReady(syncedMessage);
@@ -175,8 +172,8 @@ public class MainActivity extends XWalletBaseActivity {
     protected void onBlockDownloaded(BlockDownloaded block) {
         _mainView.setSyncProgress(block.getCoin(), (int) block.getPct());
 
-        TextView textStatus = (TextView) findViewById(R.id.main_status_textview);
-        textStatus.setText("Last block : " + block.getLastBlockDate());
+     //   TextView textStatus = (TextView) findViewById(R.id.main_status_textview);
+     //   textStatus.setText("Last block : " + block.getLastBlockDate());
     }
 
     /**
@@ -304,31 +301,6 @@ public class MainActivity extends XWalletBaseActivity {
         }
 
         return coinId;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public SyncedMessage getLastSyncedMessage() {
-        return _lastSyncedMessage;
-    }
-
-    /**
-     *
-     * @return
-     */
-    private SyncedMessage getPreferencesLastSyncedMsg() {
-        SharedPreferences prefs = getSharedPreferences(getString(R.string.app_name), MODE_PRIVATE);
-        String lastSyncMsgStr = prefs.getString(PREFS_KEY_LAST_SYNCED_MESSAGE, null);
-
-        SyncedMessage lastSyncMsg = null;
-
-        if (lastSyncMsgStr != null) {
-            lastSyncMsg = new Gson().fromJson(lastSyncMsgStr, SyncedMessage.class);
-        }
-
-        return lastSyncMsg;
     }
 
     /**

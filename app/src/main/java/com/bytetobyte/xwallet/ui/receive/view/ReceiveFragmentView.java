@@ -63,7 +63,7 @@ public class ReceiveFragmentView implements ReceiveFragmentViewContract, TextWat
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-        _receiveFragment.generateQRCode(s.toString());
+        _receiveFragment.generateQRCode(s.toString(), _receiveFragment.getBaseActivity().getSelectedCoin());
     }
 
     @Override

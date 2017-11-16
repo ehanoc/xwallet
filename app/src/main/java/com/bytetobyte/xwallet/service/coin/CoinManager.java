@@ -12,7 +12,7 @@ import java.util.Map;
  */
 public interface CoinManager {
     void setup(CoinAction.CoinActionCallback callback);
-    void sendCoins(String address, String amount, CoinAction.CoinActionCallback callback);
+    void sendCoins(String address, String amount, Map<Integer, Object> extraOptions, CoinAction.CoinActionCallback callback);
     void onCoinsReceived();
 
     void onReady();

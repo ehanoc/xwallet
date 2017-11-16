@@ -77,7 +77,7 @@ public class ReceiveFragment extends BaseDialogFragment {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                generateQRCode(null);
+                generateQRCode(null, getBaseActivity().getSelectedCoin());
             }
         }).start();
     }
@@ -86,9 +86,9 @@ public class ReceiveFragment extends BaseDialogFragment {
      *
      * @param amount
      */
-    public void generateQRCode(String amount) {
+    public void generateQRCode(String amount, int coinId) {
 
-        String coinName = getBaseActivity().getLastSyncedMessage().getCoinName();
+        String coinName = getBaseActivity().getLastSyncedMessage(coinId).getCoinName();
 
         String uriStr = coinName + ":" + _addr;
         if (amount != null && !amount.isEmpty()) {

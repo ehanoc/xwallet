@@ -74,7 +74,7 @@ public class BitcoinManager implements CoinManager, CoinAction.CoinActionCallbac
      *
      */
     @Override
-    public void sendCoins(String address, String amount, CoinAction.CoinActionCallback callback) {
+    public void sendCoins(String address, String amount, Map<Integer, Object> extraOptions, CoinAction.CoinActionCallback callback) {
         BitcoinSendAction sendAction = new BitcoinSendAction(address, amount, _coin);
         sendAction.execute(callback);
     }

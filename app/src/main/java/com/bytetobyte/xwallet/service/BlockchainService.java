@@ -271,7 +271,7 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
                 case IPC_MSG_WALLET_SEND_AMOUNT:
                     String spentJson = msg.getData().getString(IPC_BUNDLE_DATA_KEY);
                     SpentValueMessage spentValueMsg = _gson.fromJson(spentJson, SpentValueMessage.class);
-                    _coinManager.sendCoins(spentValueMsg.getAddress(), spentValueMsg.getAmount(), BlockchainService.this);
+                    _coinManager.sendCoins(spentValueMsg.getAddress(), spentValueMsg.getAmount(), spentValueMsg.getExtraOptions(), BlockchainService.this);
                     break;
 
                 case IPC_MSG_WALLET_CALCULATE_FEE:
