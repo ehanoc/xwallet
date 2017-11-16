@@ -1,7 +1,6 @@
 package com.bytetobyte.xwallet.service.coin.monero;
 
 import android.content.Context;
-import android.os.Handler;
 
 import com.bytetobyte.xwallet.service.Constants;
 import com.bytetobyte.xwallet.service.coin.CoinAction;
@@ -9,21 +8,14 @@ import com.bytetobyte.xwallet.service.coin.CoinManager;
 import com.bytetobyte.xwallet.service.coin.CurrencyCoin;
 import com.bytetobyte.xwallet.service.ipcmodel.CoinTransaction;
 import com.bytetobyte.xwallet.service.ipcmodel.SpentValueMessage;
-import com.github.mikephil.charting.utils.FileUtils;
-import com.google.zxing.common.detector.MathUtils;
-import com.m2049r.xmrwallet.SendFragment;
 import com.m2049r.xmrwallet.model.PendingTransaction;
 import com.m2049r.xmrwallet.model.TransactionInfo;
 import com.m2049r.xmrwallet.model.Wallet;
 import com.m2049r.xmrwallet.model.WalletListener;
 import com.m2049r.xmrwallet.model.WalletManager;
 
-import org.bitcoinj.core.Coin;
-
 import java.io.File;
 import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -227,7 +219,28 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
      */
     @Override
     public SpentValueMessage applyTxFee(SpentValueMessage valueMessage) {
-        return null;
+        Map<Integer, Object> options = valueMessage.getExtraOptions();
+
+        String priorityValue = (String) options.get(Monero.KEY_TX_PRIORITY);
+        double mixin = (Double) options.get(Monero.KEY_TX_MIXINS);
+        String paymentId = (String) options.get(Monero.KEY_TX_PAYMENT_ID);
+
+        PendingTransaction pendingTx = _wallet.createTransaction(valueMessage.getAddress(),
+                paymentId,
+                Wallet.getAmountFromString(valueMessage.getAmount()),
+                (int) mixin,
+                PendingTransaction.Priority.valueOf(priorityValue));
+
+        long fee = pendingTx.getFee();
+        String feeAmount = Wallet.getDisplayAmount(fee);
+        System.out.println("Fee amount calculated " + feeAmount + " (" + fee + ")");
+
+        valueMessage.setTxFee(feeAmount);
+
+        // we just want to calculate the tx for now, dispose
+        _wallet.disposeTransaction(pendingTx);
+
+        return valueMessage;
     }
 
     /**

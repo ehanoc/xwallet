@@ -1,12 +1,10 @@
 package com.bytetobyte.xwallet.ui.listeners;
 
-import android.support.v4.app.DialogFragment;
-
 import com.bytetobyte.xwallet.BaseFragment;
 import com.bytetobyte.xwallet.R;
-import com.bytetobyte.xwallet.ui.activity.MainActivity;
-import com.bytetobyte.xwallet.ui.fragment.InfoFragment;
-import com.bytetobyte.xwallet.ui.fragment.SettingsFragment;
+import com.bytetobyte.xwallet.ui.main.MainActivity;
+import com.bytetobyte.xwallet.ui.info.InfoFragment;
+import com.bytetobyte.xwallet.ui.settings.SettingsFragment;
 import com.nightonke.boommenu.BoomButtons.BoomButton;
 import com.nightonke.boommenu.OnBoomListener;
 

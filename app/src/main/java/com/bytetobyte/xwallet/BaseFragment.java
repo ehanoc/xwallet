@@ -9,7 +9,7 @@ import com.bytetobyte.xwallet.service.ipcmodel.CoinTransaction;
 import com.bytetobyte.xwallet.service.ipcmodel.MnemonicSeedBackup;
 import com.bytetobyte.xwallet.service.ipcmodel.SpentValueMessage;
 import com.bytetobyte.xwallet.service.ipcmodel.SyncedMessage;
-import com.bytetobyte.xwallet.ui.activity.XWalletBaseActivity;
+import com.bytetobyte.xwallet.ui.XWalletBaseActivity;
 
 import java.util.List;
 

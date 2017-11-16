@@ -17,6 +17,16 @@ public class Monero implements CurrencyCoin<MoneroWalletManager> {
     private final File _dataDir;
     private MoneroWalletManager _wallet;
 
+    // ==========
+    // Consts keys for extra options in txs
+    // ==========
+    public static final Integer KEY_TX_PAYMENT_ID = 0x5;
+    public static final Integer KEY_TX_MIXINS = 0x6;
+    public static final Integer KEY_TX_PRIORITY = 0xA;
+
+    // possible mixin values
+    public final static Integer Mixins[] = {4, 7, 12, 25};
+
     /**
      *
      * @param dataDir

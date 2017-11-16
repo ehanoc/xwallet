@@ -1,5 +1,7 @@
 package com.bytetobyte.xwallet.service.ipcmodel;
 
+import java.util.Map;
+
 /**
  * Created by bruno on 25.03.17.
  */
@@ -9,15 +11,28 @@ public class SpentValueMessage {
     private String _amount;
     private String _txFee;
 
+    private Map<Integer, Object> _extraOptions;
+
     /**
      *
      * @param address
      * @param amount
+     * @param txFee
+     * @param extraOptions
      */
-    public SpentValueMessage(String address, String amount) {
+    public SpentValueMessage(String address, String amount, String txFee, Map<Integer, Object> extraOptions) {
         this._address = address;
         this._amount = amount;
-        this._txFee = null;
+        this._txFee = txFee;
+        this._extraOptions = extraOptions;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public Map<Integer, Object> getExtraOptions() {
+        return _extraOptions;
     }
 
     /**

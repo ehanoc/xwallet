@@ -3,12 +3,12 @@ package com.bytetobyte.xwallet.ui.listeners;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 
-import com.bytetobyte.xwallet.ui.activity.MainActivity;
+import com.bytetobyte.xwallet.ui.main.MainActivity;
 import com.bytetobyte.xwallet.R;
-import com.bytetobyte.xwallet.ui.activity.view.MainActivityView;
-import com.bytetobyte.xwallet.ui.fragment.ReceiveFragment;
-import com.bytetobyte.xwallet.ui.fragment.RecoverFragment;
-import com.bytetobyte.xwallet.ui.fragment.SendFragment;
+import com.bytetobyte.xwallet.ui.main.view.MainActivityView;
+import com.bytetobyte.xwallet.ui.receive.ReceiveFragment;
+import com.bytetobyte.xwallet.ui.recover.RecoverFragment;
+import com.bytetobyte.xwallet.ui.send.SendFragment;
 import com.nightonke.boommenu.BoomButtons.BoomButton;
 import com.nightonke.boommenu.OnBoomListener;
 
