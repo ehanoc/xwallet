@@ -3,6 +3,7 @@ package com.bytetobyte.xwallet.ui.send;
 import android.view.SurfaceView;
 import android.widget.EditText;
 
+import com.bytetobyte.xwallet.service.ipcmodel.SpentValueMessage;
 import com.bytetobyte.xwallet.ui.ViewsContract;
 
 import java.util.Map;
@@ -20,6 +21,13 @@ public interface SendFragmentViewContract extends ViewsContract {
     String getAmount();
     void setAddress(String address);
     void setAmount(String amount);
+
+    /**
+     *
+     * @param spentMsgWithFee
+     */
+    void onFeeCalculated(SpentValueMessage spentMsgWithFee);
+    void onCalculatingFee();
 
     /**
      * IF AVAILABLE FOR A PARTICULAR COIN

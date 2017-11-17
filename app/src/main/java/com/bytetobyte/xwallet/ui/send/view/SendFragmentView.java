@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.bytetobyte.xwallet.R;
 import com.bytetobyte.xwallet.service.coin.CoinManagerFactory;
+import com.bytetobyte.xwallet.service.ipcmodel.SpentValueMessage;
 import com.bytetobyte.xwallet.ui.send.SendFragmentViewContract;
 import com.bytetobyte.xwallet.ui.send.SendFragment;
 
@@ -61,6 +62,8 @@ public class SendFragmentView implements SendFragmentViewContract, View.OnClickL
             _coinLabel.setTextColor(Color.RED);
         }
 
+        _sendBtn.setEnabled(false);
+        _sendBtn.setVisibility(View.INVISIBLE);
         _sendBtn.setOnClickListener(this);
         _maxTextView.setOnClickListener(this);
         _addressEdit.addTextChangedListener(this);
@@ -70,6 +73,30 @@ public class SendFragmentView implements SendFragmentViewContract, View.OnClickL
         _extraOptions.initViews();
 
         System.out.println("listeners setup");
+    }
+
+    /**
+     *
+     * @param spentMsgWithFee
+     */
+    @Override
+    public void onFeeCalculated(SpentValueMessage spentMsgWithFee) {
+        if (null == spentMsgWithFee) return;
+
+        String fee = spentMsgWithFee.getTxFee();
+        if (fee == null || fee.isEmpty()) return;
+
+        _sendBtn.setEnabled(true);
+        _sendBtn.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     *
+     */
+    @Override
+    public void onCalculatingFee() {
+        _sendBtn.setEnabled(false);
+        _sendBtn.setVisibility(View.INVISIBLE);
     }
 
     /**

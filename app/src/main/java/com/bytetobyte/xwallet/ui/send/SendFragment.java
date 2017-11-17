@@ -149,13 +149,15 @@ public class SendFragment extends BaseDialogFragment {
         super.onFeeCalculated(feeSpentcal);
 
         _feeToSpend = feeSpentcal;
-       // _sendViewContract.getSendBtn().setEnabled(true);
+        _sendViewContract.onFeeCalculated(feeSpentcal);
     }
 
     /**
      *
      */
     public void queueRequestTxFee() {
+        _sendViewContract.onCalculatingFee();
+
         _textHandlerRunnable = new Runnable() {
             @Override
             public void run() {

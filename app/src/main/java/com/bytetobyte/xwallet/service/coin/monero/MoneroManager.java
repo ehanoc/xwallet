@@ -135,13 +135,25 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
 //                Wallet.getAmountFromString(amountsStr),
 //                4,
 //                PendingTransaction.Priority.Priority_Default);
-
+//
 //        String priorityValue = (String) options.get(Monero.KEY_TX_PRIORITY);
 //        Double mixinDouble = (Double) (options.get(Monero.KEY_TX_MIXINS)); //dont know why
 //        String paymentId = (String) options.get(Monero.KEY_TX_PAYMENT_ID);
 //
 //        int mixin = mixinDouble.intValue();
-//        long amount = Wallet.getAmountFromString(amountsStr);
+
+        if (_pendingTx == null) return; // no prepared TX with calculated fee ?
+
+        long amount = Wallet.getAmountFromString(amountsStr);
+
+        if (_pendingTx.getAmount() == amount && _pendingTx.getStatus() == PendingTransaction.Status.Status_Ok) {
+            String txid = _pendingTx.getFirstTxId();
+            boolean success = _pendingTx.commit("", true);
+
+            System.out.println("Committing :" + txid + " success : " + success);
+            _wallet.disposePendingTransaction();
+            _pendingTx = null;
+        }
 //
 //        PendingTransaction.Priority priority = PendingTransaction.Priority.valueOf(priorityValue);
 //
@@ -233,6 +245,11 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
      */
     @Override
     public SpentValueMessage applyTxFee(SpentValueMessage valueMessage) {
+        if (_pendingTx != null) {
+            _wallet.disposePendingTransaction();
+            _pendingTx = null;
+        }
+
         Map<Integer, Object> options = valueMessage.getExtraOptions();
 
         String priorityValue = (String) options.get(Monero.KEY_TX_PRIORITY);
