@@ -128,7 +128,15 @@ public class WalletFragment extends BaseFragment implements CexChartAPI.CexChart
 
         if(_chartEntries != null && !_chartEntries.isEmpty()) {
             Entry latestValue = _chartEntries.get(_chartEntries.size() - 1);
-            Double actualBalance = Double.parseDouble(balance);
+            Double actualBalance = null;
+
+            try {
+                actualBalance = Double.parseDouble(balance);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return;
+            }
+
             Locale locale = new Locale("en", "US");
             NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(locale);
 

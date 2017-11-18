@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.bytetobyte.xwallet.BaseDialogFragment;
 import com.bytetobyte.xwallet.R;
 import com.bytetobyte.xwallet.ui.recover.view.RecoverFragmentView;
+import com.bytetobyte.xwallet.util.EncryptUtils;
 import com.codetroopers.betterpickers.calendardatepicker.CalendarDatePickerDialogFragment;
 import com.codetroopers.betterpickers.calendardatepicker.MonthAdapter;
 import com.codetroopers.betterpickers.numberpicker.NumberPickerBuilder;

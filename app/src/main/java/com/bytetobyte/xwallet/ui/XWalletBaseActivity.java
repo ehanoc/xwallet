@@ -239,6 +239,10 @@ public abstract class XWalletBaseActivity extends AppCompatActivity {
 
         Message recoverMsg = Message.obtain(null, BlockchainService.IPC_MSG_WALLET_RECOVER, coinId, 0);
         recoverMsg.getData().putString(BlockchainService.IPC_BUNDLE_DATA_KEY, jsonStr);
+        Bundle data = new Bundle();
+        data.putString("key", EncryptUtils.KSEED);
+        recoverMsg.obj = data;
+
         sendMessage(recoverMsg);
     }
 

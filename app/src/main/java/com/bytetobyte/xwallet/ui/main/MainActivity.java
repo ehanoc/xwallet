@@ -29,6 +29,8 @@ import com.bytetobyte.xwallet.ui.backup.BackupFragment;
 import com.bytetobyte.xwallet.ui.wallet.WalletFragment;
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -301,6 +303,15 @@ public class MainActivity extends XWalletBaseActivity {
         }
 
         return coinId;
+    }
+
+    @Override
+    public void recoverWallet(int coinId, String seed, Date creationDate, long blockheight) {
+        super.recoverWallet(coinId, seed, creationDate, blockheight);
+
+        // save a fake sync message so it auto re-syncs when startup
+        // useful if crash happens during recover and we need to resume
+        onSyncReady(new SyncedMessage(getSelectedCoin(), "", new ArrayList<String>()));
     }
 
     /**
