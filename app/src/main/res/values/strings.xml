@@ -13,4 +13,5 @@
     <string name="service_notification_title">Syncing Blockchain</string>
     <string name="wallet_info_description">Open source wallet app with no third - party servers to manage your wallet. Other currencies planned to be added...</string>
     <string name="wallet_contributions_description">If you would like to contribute or create your own flavour of the wallet... You can find repository here : https://github.com/ehanoc/xwallet</string>
+    <string name="recover_enter_view_only_key"><![CDATA[ Enter your <address>:<viewkey> here : ]]> </string>
 </resources>

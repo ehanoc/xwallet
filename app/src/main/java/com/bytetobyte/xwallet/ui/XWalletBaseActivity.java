@@ -226,13 +226,13 @@ public abstract class XWalletBaseActivity extends AppCompatActivity {
     /**
      *
      * @param coinId
-     * @param seed
+     * @param input
      * @param creationDate
      */
-    public void recoverWallet(int coinId, String seed, Date creationDate, long blockheight) {
+    public void recoverWallet(int coinId, String input, Date creationDate, long blockheight, boolean isViewOnly) {
         System.out.println("recoverWallet coinId : " + coinId);
 
-        RecoverWalletMessage recoverWalletMessage = new RecoverWalletMessage(seed, creationDate, blockheight);
+        RecoverWalletMessage recoverWalletMessage = new RecoverWalletMessage(input, creationDate, blockheight, isViewOnly);
 
         Gson gson = new Gson();
         String jsonStr = gson.toJson(recoverWalletMessage);

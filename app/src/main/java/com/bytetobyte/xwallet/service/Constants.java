@@ -11,7 +11,7 @@ import org.bitcoinj.utils.MonetaryFormat;
  * Created by bruno on 23.03.17.
  */
 public class Constants {
-    public static final boolean IS_TESTNET = true;
+    public static final boolean IS_TESTNET = false;
 
     public static final org.bitcoinj.core.NetworkParameters NETWORK_PARAMETERS = IS_TESTNET ? TestNet3Params.get() : MainNetParams.get();
   //  public static final org.bitcoinj.core.NetworkParameters NETWORK_PARAMETERS = MainNetParams.get();

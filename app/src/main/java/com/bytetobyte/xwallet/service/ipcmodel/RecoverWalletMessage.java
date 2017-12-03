@@ -7,21 +7,35 @@ import java.util.Date;
  */
 public class RecoverWalletMessage {
 
-    private String _seed;
+    private boolean _isViewOnly;
+    private String _input;
     private Date _date;
     private long _blockHeight;
 
     /**
      *
-     * @param seed
+     * @param input
      * @param date
      */
-    public RecoverWalletMessage(String seed, Date date, long blockHeight) {
-        this._seed = seed;
+    public RecoverWalletMessage(String input, Date date, long blockHeight, boolean isViewOnly) {
+        this._input = input;
         this._date = date;
         this._blockHeight = blockHeight;
+        this._isViewOnly = isViewOnly;
     }
 
+    /**
+     *
+     * @return
+     */
+    public boolean isViewOnly() {
+        return _isViewOnly;
+    }
+
+    /**
+     *
+     * @return
+     */
     public long getBlockHeight() {
         return _blockHeight;
     }
@@ -30,8 +44,8 @@ public class RecoverWalletMessage {
      *
      * @return
      */
-    public String getSeed() {
-        return _seed;
+    public String getInput() {
+        return _input;
     }
 
     /**

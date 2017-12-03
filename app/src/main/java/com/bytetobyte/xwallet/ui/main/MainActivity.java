@@ -306,8 +306,8 @@ public class MainActivity extends XWalletBaseActivity {
     }
 
     @Override
-    public void recoverWallet(int coinId, String seed, Date creationDate, long blockheight) {
-        super.recoverWallet(coinId, seed, creationDate, blockheight);
+    public void recoverWallet(int coinId, String input, Date creationDate, long blockheight, boolean isViewOnly) {
+        super.recoverWallet(coinId, input, creationDate, blockheight, isViewOnly);
 
         // save a fake sync message so it auto re-syncs when startup
         // useful if crash happens during recover and we need to resume

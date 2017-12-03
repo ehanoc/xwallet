@@ -81,6 +81,8 @@ public class SendFragmentView implements SendFragmentViewContract, View.OnClickL
      */
     @Override
     public void onFeeCalculated(SpentValueMessage spentMsgWithFee) {
+        System.out.println("SendFragmentView spent : " + spentMsgWithFee.getTxFee());
+
         if (null == spentMsgWithFee) return;
 
         String fee = spentMsgWithFee.getTxFee();

@@ -30,7 +30,7 @@ public interface CoinManager {
     public String getMnemonicSeed();
     public Date getMnemonicSeedCreationDate();
 
-    void recoverWalletBy(CoinAction.CoinActionCallback callback, String seed, Date creationdDate, long blockHeight);
+    void recoverWalletBy(CoinAction.CoinActionCallback callback, String input, Date creationdDate, long blockHeight, boolean isViewOnlyKey);
 
     void stopSync();
 

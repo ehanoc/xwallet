@@ -312,6 +312,7 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
 
         keys.put("spend", _wallet.getSecretSpendKey());
         keys.put("view", _wallet.getSecretViewKey());
+        keys.put("public address", _wallet.getAddress());
 
         return keys;
     }
@@ -337,11 +338,11 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
     /**
      *
      * @param callback
-     * @param seed
+     * @param input
      * @param creationdDate
      */
     @Override
-    public void recoverWalletBy(CoinAction.CoinActionCallback callback, String seed, Date creationdDate, long blockheight) {
+    public void recoverWalletBy(CoinAction.CoinActionCallback callback, String input, Date creationdDate, long blockheight, boolean isViewOnly) {
         _callback = callback;
 
         _recoveryHeight = blockheight;
@@ -368,7 +369,12 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
         }
 
         _targetHeight = moneroManagerXmrLib.getBlockchainTargetHeight();
-        _wallet = moneroManagerXmrLib.recoveryWallet(newWalletFile, seed, _recoveryHeight);
+        if (!isViewOnly) {
+            _wallet = moneroManagerXmrLib.recoveryWallet(newWalletFile, input, _recoveryHeight);
+        } else {
+            String[] inputTokens = input.trim().split(":");
+            _wallet = moneroManagerXmrLib.createWalletFromKeys(newWalletFile, "English", _recoveryHeight, inputTokens[0], inputTokens[1], "");
+        }
         _wallet.setPassword(_walletPwd);
 //        _wallet.setSeedLanguage("English");
 //        _wallet.store();

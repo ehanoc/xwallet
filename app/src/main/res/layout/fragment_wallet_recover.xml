@@ -8,7 +8,7 @@
     <RelativeLayout
         android:padding="@dimen/title_padding"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/recover_dialog_size">
+        android:layout_height="match_parent">
 
         <TextView
             android:layout_alignParentTop="true"
@@ -22,7 +22,7 @@
             android:layout_below="@+id/recover_text_description"
             android:layout_width="match_parent"
             android:textSize="@dimen/recover_seed_input_text_size"
-            android:layout_height="@dimen/recover_input_height" />
+            android:layout_height="wrap_content" />
 
         <LinearLayout
             android:id="@+id/recovery_date_options"
@@ -55,10 +55,9 @@
         <LinearLayout
             android:id="@+id/recovery_block_height_options_layout"
             android:layout_below="@+id/recovery_date_options"
-            android:layout_above="@+id/recover_button"
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <TextView
                 android:text="Wallet Block height :"
@@ -69,6 +68,24 @@
             <EditText
                 android:id="@+id/recovery_block_height_text"
                 android:inputType="number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_below="@+id/recovery_block_height_options_layout"
+            android:layout_above="@+id/recover_button"
+            android:visibility="invisible"
+            android:id="@+id/monero_recover_options_layout"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Switch
+                android:id="@+id/monero_recover_view_wallet_switch"
+                android:text="View only wallet"
+                android:textColor="@color/colorSecondary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 

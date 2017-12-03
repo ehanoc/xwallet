@@ -36,6 +36,7 @@ public class RecoverFragment extends BaseDialogFragment implements CalendarDateP
     private RecoverFragmentView _rView;
     private Date _lastDateSet;
     private Calendar _calendar;
+    private boolean _isViewOnlyWallet;
 
     /**
      *
@@ -164,7 +165,7 @@ public class RecoverFragment extends BaseDialogFragment implements CalendarDateP
                 .setPositiveButton("Yes, Recover!", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        getBaseActivity().recoverWallet(getBaseActivity().getSelectedCoin(), seed, _lastDateSet, finalBlockHeight);
+                        getBaseActivity().recoverWallet(getBaseActivity().getSelectedCoin(), seed, _lastDateSet, finalBlockHeight, _isViewOnlyWallet);
                         Toast.makeText(RecoverFragment.this.getBaseActivity(), "Initiating recovery... Please wait!", Toast.LENGTH_SHORT).show();
 
                         Handler handler = new Handler();
@@ -189,5 +190,21 @@ public class RecoverFragment extends BaseDialogFragment implements CalendarDateP
 
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    /**
+     *
+     * @param isChecked
+     */
+    public void onViewOnlyWallet(boolean isChecked) {
+        this._isViewOnlyWallet = isChecked;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public boolean isViewOnlyWallet() {
+        return _isViewOnlyWallet;
     }
 }

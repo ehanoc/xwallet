@@ -254,15 +254,15 @@ public class BitcoinManager implements CoinManager, CoinAction.CoinActionCallbac
     /**
      *
      * @param callback
-     * @param seed
+     * @param input
      */
     @Override
-    public void recoverWalletBy(CoinAction.CoinActionCallback callback, String seed, Date creationDate, long blockheight) {
-        System.out.println("recoverWallet with seed : " + seed);
+    public void recoverWalletBy(CoinAction.CoinActionCallback callback, String input, Date creationDate, long blockheight, boolean isViewOnlyKey) {
+        System.out.println("recoverWallet with seed : " + input);
         _isSyncing = true;
         _isSynced = false;
 
-        _recoverAction = new BitcoinRecoverAction(this, seed, creationDate);
+        _recoverAction = new BitcoinRecoverAction(this, input, creationDate);
         _recoverAction.execute(callback, this);
 
         // illness bulk jewel deer chaos swing goose fetch patch blood acid call creation

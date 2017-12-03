@@ -268,7 +268,7 @@ public class BlockchainService extends Service implements CoinAction.CoinActionC
                     //startForeground(NOTIFICATION_SYNC_ID + _coinManager.getCurrencyCoin().getCoinId(), getServiceNotification("Starting", _coinManager.getCurrencyCoin().getCoinId()));
                     // illness bulk jewel deer chaos swing goose fetch patch blood acid call creation
                     System.out.println("service recover! : " + _coinManager);
-                    _coinManager.recoverWalletBy(BlockchainService.this, recoverMsg.getSeed(), recoverMsg.getDate(), recoverMsg.getBlockHeight());
+                    _coinManager.recoverWalletBy(BlockchainService.this, recoverMsg.getInput(), recoverMsg.getDate(), recoverMsg.getBlockHeight(), recoverMsg.isViewOnly());
                     break;
 
                 case IPC_MSG_WALLET_SEND_AMOUNT:

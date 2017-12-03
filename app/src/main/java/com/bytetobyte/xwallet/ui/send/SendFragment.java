@@ -131,17 +131,6 @@ public class SendFragment extends BaseDialogFragment {
 
     /**
      *
-     * @param text
-     * @return
-     */
-    private boolean isBitcoinAddress(CharSequence text) {
-        Pattern p = Pattern.compile("^[13-m][a-km-zA-HJ-NP-Z1-9]{25,34}$");
-        Matcher m = p.matcher(text);
-        return m.matches();
-    }
-
-    /**
-     *
      * @param feeSpentcal
      */
     @Override
@@ -170,7 +159,7 @@ public class SendFragment extends BaseDialogFragment {
                     String amount = _sendViewContract.getAmount();
 
                     boolean isAddressValid = CoinManagerFactory.isCoinAddress(
-                            amount,
+                            address,
                             getBaseActivity().getSelectedCoin());
                     if (!isAddressValid) return;
 
