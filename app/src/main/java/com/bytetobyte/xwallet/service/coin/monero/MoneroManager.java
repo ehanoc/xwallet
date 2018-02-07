@@ -46,7 +46,7 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
     private long _recoveryHeight;
 
     private static String TEST_NODE = "testnet.xmrchain.net:28081";
-    private static String DEFAULT_NODE = "node.moneroworld.com:18089";
+    private static String DEFAULT_NODE = "eu.node.moneroworld.com:18089";
     private static String NODE = Constants.IS_TESTNET ? TEST_NODE : DEFAULT_NODE;
 
     final static PendingTransaction.Priority Priorities[] =
@@ -117,9 +117,11 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
         System.out.println("wallet is synced : " + isSynced);
 
         System.out.println("wallet height : " + _wallet.getBlockChainHeight()
-                + " daemon height :" + _wallet.getDaemonBlockChainHeight());
+                + " daemon height :" + _wallet.getDaemonBlockChainHeight()
+                + "daemon target height : " + _wallet.getDaemonBlockChainTargetHeight()
+        );
 
-        _wallet.refresh();
+        _wallet.startRefresh();
     }
 
     /**
@@ -370,10 +372,11 @@ public class MoneroManager implements CoinManager, CoinAction.CoinActionCallback
 
         _targetHeight = moneroManagerXmrLib.getBlockchainTargetHeight();
         if (!isViewOnly) {
-            _wallet = moneroManagerXmrLib.recoveryWallet(newWalletFile, input, _recoveryHeight);
+            _wallet = moneroManagerXmrLib.recoveryWallet(newWalletFile, _walletPwd, input, _recoveryHeight);
+            //_wallet = moneroManagerXmrLib.recoveryWallet(newWalletFile, input, _recoveryHeight);
         } else {
             String[] inputTokens = input.trim().split(":");
-            _wallet = moneroManagerXmrLib.createWalletFromKeys(newWalletFile, "English", _recoveryHeight, inputTokens[0], inputTokens[1], "");
+            _wallet = moneroManagerXmrLib.createWalletWithKeys(newWalletFile, _walletPwd, "English", _recoveryHeight, inputTokens[0], inputTokens[1], "");
         }
         _wallet.setPassword(_walletPwd);
 //        _wallet.setSeedLanguage("English");
